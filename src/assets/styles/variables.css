@@ -1,0 +1,131 @@
+.bg-light-yellow{
+  background-color: #FFDD57;
+}
+
+.bg-mint-green{
+  background-color: #66D9A6;
+}
+
+
+.btn-hover{
+  transition: all 0.5s;
+}
+
+.btn-hover:hover{
+  opacity: 0.8;
+  transform: scale(1.1);
+  transition: all 0.5s;
+}
+
+
+/* animation banner */
+
+@keyframes decreaseHeight {
+  from {
+    height: 100%;
+  }
+
+  to {
+    height: 0px;
+  }
+}
+
+
+@keyframes increaseTranslateY {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+
+@keyframes revertTranslateY {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes TranslateY {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-50%); /* Move para cima */
+  }
+  100% {
+    transform: translateY(0); /* Volta para a posição inicial */
+  }
+}
+
+
+
+@keyframes pulsar {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1); /* Aumenta o tamanho */
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+@keyframes FadeColor {
+  0% {
+    background-color: rgba(255, 204, 0, 0); /* Amarelo transparente */
+  }
+  100% {
+    background-color: rgba(255, 204, 0, 1); /* Amarelo sólido */
+  }
+}
+
+
+
+
+
+.animate-banner {
+  opacity: 0;
+  transform: translateY(-50px) scale(0.95) rotate(-2deg);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  /* animation:  decreaseHeight 1s ease-in-out forwards; */
+}
+
+.animate-banner-off {
+  opacity: 1;
+  transform: translateY(0px) scale(1) rotate(0);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.animate-banner.active {
+  opacity: 1;
+  transform: translateY(0) scale(1) rotate(0);
+}
+
+.animate-screen-phone{
+  animation:  increaseTranslateY 1s ease-in-out forwards;
+}
+
+.animate-screen-phone-off{
+  animation:  revertTranslateY 1s ease-in-out forwards;
+}
+
+.animate-content{
+  animation: TranslateY 1s ease-in-out forwards;
+  background-color: #F8F8F8!important;
+}
+
+.animate-content-off{
+  animation: FadeColor 0.8s ease-in-out forwards;
+}
+
+.animate-pulsar{
+  animation: pulsar 1s ease-in-out infinite;
+}
+

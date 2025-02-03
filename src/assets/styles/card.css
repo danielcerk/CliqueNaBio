@@ -1,0 +1,27 @@
+.card-content {
+  border: 1px solid #d3d3d3; 
+  border-radius: 5%; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06); 
+  background-color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
+  cursor: pointer;
+
+  break-inside: avoid;
+  page-break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+
+  margin-bottom: 10px;
+}
+
+.card-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombras mais intensas */
+}
+
+
+.card-with-link {
+  position: relative;
+  padding-top: 40px; 
+}
+
+
