@@ -126,7 +126,7 @@ export default function Home() {
           <CardContent className="pl-2">
             <ResponsiveContainer width="100%" height={350}>
               <BarChart data={data}>
-                <Bar dataKey="revenue" fill="#adfa1d" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="revenue" fill="#facc15" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -155,11 +155,11 @@ export default function Home() {
                   dataKey="subscription"
                   activeDot={{
                     r: 6,
-                    style: { fill: "var(--theme-primary)", opacity: 0.25 },
+                    style: { fill: "#facc15", opacity: 0.25 },
                   }}
                   style={
                     {
-                      stroke: "var(--theme-primary)",
+                      stroke: "#eab308",
                     } as React.CSSProperties
                   }
                 />

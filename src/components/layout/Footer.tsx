@@ -2,11 +2,9 @@
 
 import Link from "next/link";
 
-interface FooterProps {
-  openModal: () => void; // Define a tipagem da função recebida
-}
 
-export default function Footer({ openModal }: FooterProps){
+
+export default function Footer(){
   const currentYear = new Date().getFullYear();
   return (
 <footer className="bg-gray-100 rounded-xl shadow dark:bg-gray-900 m-4">
@@ -17,7 +15,7 @@ export default function Footer({ openModal }: FooterProps){
         className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
       >
         <h1 className='font-semibold text-3xl text-gray-950 p-1'>
-          CliqueNaBio <i className="fa-solid fa-hand-point-up"></i>
+          CliqueNaBio
         </h1>
 
       </Link>
@@ -38,9 +36,9 @@ export default function Footer({ openModal }: FooterProps){
           </Link>
         </li>
         <li>
-          <button onClick={openModal} className="hover:underline">
-            Contato
-          </button>
+          <Link href="/Status" className="hover:underline me-4 md:me-6">
+            Status
+          </Link>
         </li>
       </ul>
     </div>

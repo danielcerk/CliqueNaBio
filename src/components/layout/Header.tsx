@@ -6,11 +6,10 @@ import Cookie from "js-cookie"
 
 type HeaderProps = {
   openModalLogin: () => void;
-  openModalContact: () => void;
 };
 
 
-const Header = ({ openModalLogin, openModalContact }: HeaderProps) => {
+const Header = ({ openModalLogin }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolling, setScrolling] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -54,7 +53,7 @@ const Header = ({ openModalLogin, openModalContact }: HeaderProps) => {
                       scrolling === 0 ? 'text-3xl' : 'text-xl'
                     }`}
                   >
-                    CliqueNaBio <i className="fa-solid fa-hand-point-up"></i>
+                    CliqueNaBio
                   </h1>
                 </Link>
               </div>
@@ -70,9 +69,7 @@ const Header = ({ openModalLogin, openModalContact }: HeaderProps) => {
                {/* <Link href="" className="py-5 px-3 text-gray-700 hover:text-gray-900">
                   Blog
                </Link> */}
-               <button onClick={openModalContact} className="py-5 px-3 text-gray-700 hover:text-gray-900">
-                  Contato
-               </button>
+
                <Link href="" className="py-5 px-3 text-gray-700 hover:text-gray-900">
                   Suporte
                </Link>
@@ -137,9 +134,7 @@ const Header = ({ openModalLogin, openModalContact }: HeaderProps) => {
             {/* <Link href="" className="py-5 px-3 text-gray-700 hover:text-gray-900">
               Blog
             </Link> */}
-            <button onClick={openModalContact}  className="py-5 px-3 text-gray-700 hover:text-gray-900">
-              Contato
-            </button>
+
             <Link href="" className="py-5 px-3 text-gray-700 hover:text-gray-900">
               Suporte
             </Link>

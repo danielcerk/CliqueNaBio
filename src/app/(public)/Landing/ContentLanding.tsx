@@ -52,7 +52,7 @@ export default function ContentLanding() {
           className={`isolate bg-yellow-400 overflow-hidden px-6 py-24 lg:px-8 rounded transition-all duration-500 ${
             scrolling > componentPosition - 300 ? "animate-content " : "animate-content-off"
           }`} ref={contentRef} >
-          <div className="absolute inset-0 -z-10 opacity-30"></div>
+          <div className=" inset-0 -z-10 opacity-30"></div>
           <div className="mx-auto max-w-6xl text-center">
             <h2
               className="text-5xl font-semibold text-gray-900 mb-6 uppercase"
@@ -216,69 +216,6 @@ export default function ContentLanding() {
                 <a href="#" aria-describedby="tier-enterprise" className="mt-8 block rounded-xl px-3.5 py-2.5 text-center text-sm font-semibold text-yellow-600 ring-1 ring-inset ring-yellow-200 hover:ring-yellow-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600 sm:mt-10 btn-hover hover:bg-yellow-400 hover:text-black">Comece agora</a>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="bg-[#F8F8F8]">
-          <div className="testimonials-wrap max-w-6xl mx-auto p-10" data-aos="fade-up">
-
-          <div className="row mb-24">
-              <div className="col-full testimonials-header">
-                  <h2 className="text-5xl uppercase text-gray-900 font-bold text-center">O que nossos usuarios acham?</h2>
-              </div>
-          </div>
-
-          <div className="row testimonials">
-
-              <div className="col-full slick-slider testimonials__slider grid lg:grid-cols-2 gap-5 justify-center">
-
-                  <div className="testimonials__slide gap-5 max-w-xl p-3 flex flex-col md:flex-row items-start" data-aos="fade-right">
-                    <Image src="/user-03.jpg" alt="Author image" className="testimonials__avatar rounded-full w-fit" width={75}
-                    height={75} />
-                      <div >
-                        <p className="text-sm">Qui ipsam temporibus quisquam velMaiores eos cumque distinctio nam accusantium ipsum. 
-                        Laudantium quia consequatur molestias delectus culpa facere hic dolores aperiam. Accusantium praesentium corpori.</p>
-
-                        <div className="testimonials__author">
-                            <span className="testimonials__name text-gray-900 font-semibold">Naruto Uzumaki</span>
-                            <a href="#0" className="testimonials__link">@narutouzumaki</a>
-                        </div>
-                      </div>
-                  </div> 
-
-                  <div className="testimonials__slide gap-5 flex flex-col md:flex-row items-start  max-w-xl p-3" data-aos="fade-left">
-                      <Image src="/user-05.jpg" alt="Author image" className="testimonials__avatar rounded-full w-fit" width={75}
-                    height={75}/>
-                      <div>
-                        <p className="text-sm">Excepturi nam cupiditate culpa doloremque deleniti repellat. Veniam quos repellat voluptas animi adipisci.
-                        Nisi eaque consequatur. Quasi voluptas eius distinctio. Atque eos maxime. Qui ipsam temporibus quisquam vel.</p>
-                        
-                        <div className="testimonials__author">
-                            <span className="testimonials__name text-gray-900 font-semibold">Sasuke Uchiha</span>
-                            <a href="#0" className="testimonials__link">@sasukeuchiha</a>
-                        </div>
-                      </div>
-                  </div> 
-
-                  <div className="testimonials__slide gap-5 flex flex-col md:flex-row items-start max-w-xl p-3" data-aos="fade-right">
-                    
-                      <Image src="/user-01.jpg" alt="Author image" className="testimonials__avatar rounded-full w-fit" width={75}
-                    height={75}/>
-                      <div>
-                        <p className="text-sm">Repellat dignissimos libero. Qui sed at corrupti expedita voluptas odit. Nihil ea quia nesciunt. Ducimus aut sed ipsam.  
-                        Autem eaque officia cum exercitationem sunt voluptatum accusamus. Quasi voluptas eius distinctio.</p>
-                        <br />
-                        <div className="testimonials__author">
-                            <span className="testimonials__name text-gray-900 font-semibold">Shikamaru Nara</span>
-                            <a href="#0" className="testimonials__link">@shikamarunara</a>
-                        </div>
-                      </div>
-                  </div> 
-                  
-              </div> 
-
-          </div> 
-
           </div>
         </div>
 

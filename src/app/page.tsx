@@ -11,14 +11,12 @@ import Header from "@/components/layout/Header";
 import SideBar from "@/components/layout/Sidebar";
 import Footer from "@/components/layout/Footer";
 import IconWhatsapp from "@/components/common/IconWhatsapp";
-import Contact from "@/components/common/Contact";
 import Login from "./(public)/User/Login/Login";
 
 
 export default function Page() {
 
 
-  const [isModalOpenContact, setIsModalOpenContact] = useState(false);
   const [isModalOpenLogin, setIsModalOpenLogin] = useState(false);
 
   const pathname = usePathname(); // Rota atual
@@ -31,8 +29,7 @@ export default function Page() {
     AOS.init({ duration: 1000, once: true });
   }, []);
 
-  const openModalContact = () => setIsModalOpenContact(true);
-  const closeModalContact = () => setIsModalOpenContact(false);
+
   const openModalLogin = () => setIsModalOpenLogin(true);
   const closeModalLogin = () => setIsModalOpenLogin(false);
 
@@ -41,7 +38,7 @@ export default function Page() {
     <div className="flex flex-col">
         {/* Renderiza o Header em rotas públicas ou na raiz */}
         {isPublicRoute && (
-          <Header openModalContact={openModalContact} openModalLogin={openModalLogin} />
+          <Header openModalLogin={openModalLogin} />
         )}
 
         {/* Renderiza o SideBar somente em rotas autenticadas */}
@@ -60,24 +57,6 @@ export default function Page() {
         </div>
 
 
-        {/* Modal de Contato */}
-        {isModalOpenContact && (
-          <div
-            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-            id="contact"
-          >
-            <div
-              className="bg-white p-3 rounded-xl shadow-lg w-full max-w-md text-end"
-              data-aos="zoom-in"
-            >
-              <i
-                onClick={closeModalContact}
-                className="fa-solid fa-xmark cursor-pointer text-3xl"
-              ></i>
-              <Contact />
-            </div>
-          </div>
-        )}
 
         {/* Modal de Login */}
         {isModalOpenLogin && (
@@ -98,7 +77,7 @@ export default function Page() {
           </div>
         )}
 
-        <Footer openModal={openModalContact} />
+        <Footer/>
       </div>
 
   );

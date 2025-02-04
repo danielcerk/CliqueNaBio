@@ -20,13 +20,8 @@ export default function SideBar() {
   useEffect(() => {
     handleLinkClick(pathname)
     const savedActiveLink = localStorage.getItem("activeLink");
-
-    console.log(pathname)
-    console.log(savedActiveLink)
-
     if (savedActiveLink === pathname) {
       setActiveLink(savedActiveLink);
-      console.log(savedActiveLink + "--" + pathname)
     }
   }, [pathname]);
 
@@ -77,9 +72,9 @@ export default function SideBar() {
       >
         <nav className="nav">
           <div>
-            <Link href="/" className="nav_logo text-yellow-400 py-10 border-b-2">
-                  <i className='fa-solid fa-hand-point-up'></i>
-                  <span className="nav_name font-semibold ">CliqueNaBio</span>
+            <Link href="/" className="nav_logo py-10 border-b-2">
+                  <i className="fa-solid fa-c text-2xl text-yellow-400 "></i>
+                  <span className="nav_name font-semibold text-sm text-[#AFA5D9]">CliqueNaBio</span>
             </Link>
             <div className="nav_list">
               {[
@@ -89,7 +84,7 @@ export default function SideBar() {
                 { href: "/Account", icon: "fas fa-user", name: "Perfil" },
                 { href: "logout", icon: "fas fa-right-from-bracket", name: "Sair" },
               ].map((link) => (
-                <a
+                <Link
                   key={link.name}
                   href={link.href}
                   className={`nav_link ${activeLink === link.href ? "active" : ""}`}
@@ -105,7 +100,7 @@ export default function SideBar() {
                 >
                   <i className={link.icon}></i>
                   <span className="nav_name">{link.name}</span>
-                </a>
+                </Link>
               ))}
             </div>
           </div>

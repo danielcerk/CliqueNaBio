@@ -2,6 +2,7 @@ import Image from "next/image";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function Banner() {
   const [scrolling, setScrolling] = useState(0);
@@ -54,9 +55,9 @@ export default function Banner() {
               Crie páginas de links personalizadas, acompanhe o engajamento e aumente seus resultados.
             </p>
             <br />
-            <button className="bg-gray-800 text-white w-fit  hover:bg-yellow-400 hover:text-black font-semibold text-xl px-4 py-2 rounded-xl uppercase animate-pulsar transition-all" data-aos="zoom-in">
+            <Link href="/User/Register" className=" bg-gray-900 cursor-pointer text-white w-fit  hover:bg-yellow-400 hover:text-black font-semibold text-xl px-4 py-2 rounded-xl uppercase animate-pulsar transition-all duration-500" data-aos="zoom-in">
               Comece grátis <i className="fa-solid fa-right-long hidden"></i>
-            </button>
+            </Link>
           </div>
         </div>
       </div>
