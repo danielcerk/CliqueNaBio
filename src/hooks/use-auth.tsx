@@ -16,31 +16,25 @@ interface LoginError {
 
 export const register = async (
   apiBase: AxiosInstance, 
-  name: string, 
+  name: string,
+  first_name: string,
+  last_name: string, 
   email: string, 
   password: string
 ): Promise<TokenResponse | undefined> => {  // Ajuste aqui para permitir undefined como retorno
 
   try {
     const response = await apiBase.post<TokenResponse>('api/v1/auth/register/', {
-      name,
+      name, 
+      first_name,
+      last_name,
       email,
       password,
     });
+
     console.log("Resposta do servidor:", response.data); 
-    const { access, refresh } = response.data;
 
-    if (!access || !refresh) {
-      throw new Error("A resposta do servidor não contém tokens válidos.");
-    }
-
-
-    Cookies.set('access_token', access, { expires: 1, path: '/' });
-    Cookies.set('refresh_token', refresh, { expires: 50, path: '/' });
-
-    apiBase.defaults.headers.common["Authorization"] = `Bearer ${access}`;
-
-    return response.data;  // Retorna os tokens
+    return response.data;  
 
   } catch (error: unknown) {
     if (error instanceof Error) {

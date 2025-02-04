@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('access_token'); // Obter o token dos cookies
 
   // Páginas públicas
-  const publicRoutes = ['/', '/User/Login', '/User/Register', '/Terms/PrivacyPolicy', '/Terms/TermsOfUse'];
+  const publicRoutes = ['/', '/User/Login', '/User/Register', '/Terms/PrivacyPolicy', '/Terms/TermsOfUse', '/Status'];
 
   const { pathname } = request.nextUrl;
 

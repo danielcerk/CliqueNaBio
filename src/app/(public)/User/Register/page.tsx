@@ -9,8 +9,8 @@ import { useRouter } from 'next/navigation';
 
 export default function Register() {
   const [formData, setFormData] = useState({
-    name: '',
-    surname: '',
+    first_name: '',
+    last_name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -43,22 +43,23 @@ export default function Register() {
 
     // Preparando os dados para o registro
     const data = {
-      name: formData.name,
+      name: `${formData.first_name} ${formData.last_name}`, 
+      first_name: formData.first_name,
+      last_name: formData.last_name,
       email: formData.email,
       password: formData.password,
     };
 
     try {
-      setLoading(true);  // Definindo o estado de carregamento
-      // Chama a função register com os dados
-      const response = await register(axiosInstance, data.name, data.email, data.password);
+      setLoading(true); 
+      const response = await register(axiosInstance, data.name, data.first_name, data.last_name, data.email, data.password);
+
       console.log('Registro bem-sucedido:', response);
-      // Se o registro for bem-sucedido
       setSuccessMessage('Conta criada com sucesso');
 
       router.push('/');
     } catch (error) {
-      // Lida com erros
+
       if (error instanceof Error) {
         console.error('Erro ao criar conta:', error.message);
         setError('Erro ao criar conta');
@@ -67,7 +68,7 @@ export default function Register() {
         setError('Erro desconhecido');
       }
     } finally {
-      setLoading(false);  // Finaliza o carregamento
+      setLoading(false);
     }
   };
 
@@ -99,9 +100,20 @@ export default function Register() {
                 <input
                   className="w-full text-[18px] text-gray-800 py-3 leading-[1.2] outline-none pl-4 pr-4 mb-5 bg-gray-100 rounded-[10px]"
                   type="text"
-                  name="name"
+                  name="first_name"
                   placeholder="Nome"
-                  value={formData.name}
+                  value={formData.first_name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="relative w-full">
+                <input
+                  className="w-full text-[18px] text-gray-800 py-3 leading-[1.2] outline-none pl-4 pr-4 mb-5 bg-gray-100 rounded-[10px]"
+                  type="text"
+                  name="last_name"
+                  placeholder="Sobrenome"
+                  value={formData.last_name}
                   onChange={handleChange}
                   required
                 />
