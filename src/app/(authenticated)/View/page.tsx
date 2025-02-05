@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import BioEditor from "@/app/(authenticated)/Create/page"
 import MobileScreen from "./dynamic-mobile-screen"
 
 interface ContentItem {
@@ -22,24 +21,19 @@ interface BioData {
 
 export default function View() {
   const [bioData, setBioData] = useState<BioData>({
-    name: "",
-    username: "",
-    bio: "",
-    profilePicture: "https://via.placeholder.com/150",
+    name: "Thiago Bonitão",
+    username: "O brabo",
+    bio: "Aquele que diz manjar, mas não manja",
+    profilePicture: "/cartoon.png",
     content: [],
-    location: "",
+    location: "Serrinha-BA",
   })
 
-  // const handleSave = (data: BioData) => {
-  //   console.log("Saving data:", data)
-  //   setBioData(data)
-  // }
+
 
   return (
     <div className="flex flex-col lg:flex-row">
-      {/* <div className="lg:w-2/3">
-        <BioEditor onSave={handleSave} initialData={bioData} />
-      </div> */}
+
       <div className="mx-auto">
         <MobileScreen bioData={bioData} />
       </div>

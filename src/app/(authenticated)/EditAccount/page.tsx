@@ -15,7 +15,7 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
+  // CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -35,7 +35,7 @@ export default function Account() {
    const [user, loadingUser, errorUser] = useAxios({ 
     axiosInstance,  // Sua instância do axios
     method: 'get',
-    url: '/api/v1/account',
+    url: '/api/v1/account/2',
     othersConfig: {  // Passando os cabeçalhos aqui
       headers: {
         Authorization: `Bearer ${token}`
@@ -61,117 +61,6 @@ export default function Account() {
 
 
   return  (
-    // <div className="bg-gray-100 flex min-h-screen items-center justify-center p-4">
-    //   <div className="bg-white max-w-md w-full rounded-lg shadow-md p-6">
-    //     <h2 className="text-2xl font-bold text-gray-950 mb-8">Editar Perfil</h2>
-
-
-    //     <form>
-
-    //       <div>
-    //         {/* Nome */}
-    //         <div className="mb-4">
-    //           <input
-    //             id="firstName"
-    //             type="text"
-    //             value={user?.name}
-    //             // onChange={(e) => setFirstName(e.target.value)}
-    //             className="w-full text-gray-950 p-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    //           />
-    //         </div>
-
-    //         {/* Email */}
-    //         <div className="mb-4">
-    //           <input
-    //             id="email"
-    //             type="email"
-    //             value={user?.email}
-    //             // onChange={(e) => setEmail(e.target.value)}
-    //             className="w-full text-gray-950 p-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    //           />
-    //         </div>
-
-    //         {/* Telefone */}
-    //         <div className="mb-4">
-    //           <input
-    //             id="phone"
-    //             type="tel"
-    //             value={user?.phone}
-    //             // onChange={(e) => setPhone(e.target.value)}
-    //             className="w-full text-gray-950 p-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    //           />
-    //         </div>
-    //       </div>
-
-    //       <div className="hidden">
-    //         {/* Alterar Senha */}
-    //         <h3 className="text-xl font-bold text-gray-800 mt-6 mb-4">Alterar Senha</h3>
-
-    //         {/* Senha Atual */}
-    //         <div className="mb-4">
-    //           <label className="block text-gray-700 font-medium mb-2" htmlFor="currentPassword">
-    //             Senha Atual
-    //           </label>
-    //           <input
-    //             id="currentPassword"
-    //             type="password"
-    //             value={''}
-    //             // onChange={(e) => setCurrentPassword(e.target.value)}
-    //             className="w-full text-gray-950 p-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    //           />
-    //         </div>
-
-    //         {/* Nova Senha */}
-    //         <div className="mb-4">
-    //           <label className="block text-gray-700 font-medium mb-2" htmlFor="newPassword">
-    //             Nova Senha
-    //           </label>
-    //           <input
-    //             id="newPassword"
-    //             type="password"
-    //             value={''}
-    //             // onChange={(e) => setNewPassword(e.target.value)}
-    //             className="w-full text-gray-950 p-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    //           />
-    //         </div>
-
-    //         {/* Confirmar Nova Senha */}
-    //         <div className="mb-6">
-    //           <label className="block text-gray-700 font-medium mb-2" htmlFor="confirmPassword">
-    //             Confirmar Nova Senha
-    //           </label>
-    //           <input
-    //             id="confirmPassword"
-    //             type="password"
-    //             value={''}
-    //             // onChange={(e) => setConfirmPassword(e.target.value)}
-    //             className="w-full text-gray-950 p-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    //           />
-    //         </div>
-    //       </div>
-
-    //       <button className="font-medium px-4 py-2 underline">
-    //            Trocar senha
-    //       </button>
-    //       {/* Botões de Ação */}
-    //       <div className="flex justify-end space-x-4">
-         
-    //         <button
-    //           type="reset"
-    //           className="bg-red-500 text-white font-medium px-4 py-2 rounded-lg hover:bg-red-600"
-    //         >
-    //           Cancelar
-    //         </button>
-    //         <button
-    //           type="submit"
-    //           className="bg-green-500 text-white font-medium px-4 py-2 rounded-lg hover:bg-green-600"
-    //         >
-    //           Salvar
-    //         </button>
-    //       </div>
-    //     </form>
-    //   </div>
-    // </div>
 
     <div className="bg-gray-100 flex flex-col min-h-screen items-center p-4">
 
@@ -199,8 +88,12 @@ export default function Account() {
           </CardHeader>
           <CardContent className="space-y-2 flex flex-col gap-3">
             <div className="space-y-1">
-              <Label htmlFor="name">Nome completo</Label>
-              <Input className="text-gray-800" id="name" defaultValue={user?.name} />
+              <Label htmlFor="first_name">Nome</Label>
+              <Input className="text-gray-800" id="first_name" defaultValue={user?.first_name} />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="last_name">Sobrenome</Label>
+              <Input className="text-gray-800" id="last_name" defaultValue={user?.last_name} />
             </div>
             <div className="space-y-1">
               <Label htmlFor="username">Nome de usuário</Label>

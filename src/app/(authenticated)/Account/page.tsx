@@ -3,8 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { CalendarDays, MapPin, LinkIcon, Twitter, Share } from "lucide-react"
+import { Share } from "lucide-react"
 
 
 import Link from "next/link"
@@ -25,7 +24,7 @@ export default function Account() {
    const [user, loadingUser, errorUser] = useAxios({ 
     axiosInstance,  // Sua instância do axios
     method: 'get',
-    url: `/api/v1/profile`,
+    url: `/api/v1/account/2`,
     othersConfig: {  // Passando os cabeçalhos aqui
       headers: {
         Authorization: `Bearer ${token}`
