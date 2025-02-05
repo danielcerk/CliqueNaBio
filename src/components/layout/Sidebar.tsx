@@ -11,8 +11,8 @@ export default function SideBar() {
   const [isNavbarVisible, setIsNavbarVisible] = useState(false);
   const [activeLink, setActiveLink] = useState<string | null>(null);
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('')
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState('')
   const router = useRouter();
   const pathname = usePathname() || 'Home'; 
 
@@ -40,7 +40,6 @@ export default function SideBar() {
 
 
   const handleLogout = async ()=>{
-    setLoading(true);
     try {
       const response = await logout(axiosInstance);
       console.log('Logout bem-sucedido:', response);
@@ -49,11 +48,7 @@ export default function SideBar() {
       router.push('/');
     } catch (error) {
       console.error('Erro no logout:', error);
-      setError('Error. Tente novamente.')
-    } finally {
-      // Certifique-se de que o estado de carregamento seja desmarcado
-      setLoading(false);
-    }
+    } 
   }
 
   return (
@@ -81,6 +76,7 @@ export default function SideBar() {
                 { href: "/Home", icon: "fa-solid fa-gauge", name: "Painel" },
                 { href: "/View", icon: "fa-solid fa-eye", name: "Visualizar"},
                 { href: "/Create", icon: "fa-solid fa-circle-plus", name: "Criar" },
+                { href: "/Signature", icon: "fa-solid fa-file-contract", name: "Assinar" },
                 { href: "/Account", icon: "fas fa-user", name: "Perfil" },
                 { href: "logout", icon: "fas fa-right-from-bracket", name: "Sair" },
               ].map((link) => (

@@ -39,8 +39,8 @@ export default function Banner() {
         }`}
       >
         <Image
-          src={"/garotaNoCelular.jpeg"}
-          alt="Link na bio"
+          src={"/garotaNoCelular.png"}
+          alt="image"
           className="w-full max-w-md rounded-xl"
           width={400}
           height={250}
