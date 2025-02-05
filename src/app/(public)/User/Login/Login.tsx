@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { AlertModal } from '@/components/common/AlertModal';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -12,17 +13,30 @@ export default function Login() {
   const [error, setError] = useState('')
   const router = useRouter();
 
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalType, setModalType] = useState<"success" | "error" | "info">("success")
+  const [modalMessage, setModalMessage] = useState("")
+
+  
+
+  const showAlert = (type: "success" | "error" | "info", message: string) => {
+    setModalType(type)
+    setModalMessage(message)
+    setIsModalOpen(true)
+  }
+
+
   const handleLogin = async () => {
     setLoading(true);
     try {
       const response = await login(axiosInstance, email, password);
       console.log('Login bem-sucedido:', response);
-      
-      // Redirecionamento após login bem-sucedido
+      showAlert("error", "Login bem-sucedido!")
       router.push('/Home');
     } catch (error) {
       console.error('Erro no login:', error);
       setError('Email ou senha inválidos. Tente novamente.')
+      showAlert("error", "Erro! Senha ou email incorretos")
     } finally {
       // Certifique-se de que o estado de carregamento seja desmarcado
       setLoading(false);
@@ -126,6 +140,7 @@ export default function Login() {
           </form>
         </div>
       </div>
+        <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }
