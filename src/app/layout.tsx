@@ -2,6 +2,7 @@ import "../assets/styles/globals.css";
 import "../assets/styles/variables.css";
 
 import React from "react";
+import Script from 'next/script';
 
 export const metadata = {
   title: "CliqueNaBio | Seus links, sua identidade digital",
@@ -26,6 +27,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
+
+        {/* Script do Google Tag Manager */}
+        <Script
+          strategy="afterInteractive" // Carrega o script após a interação do usuário
+          src="https://www.googletagmanager.com/gtag/js?id=G-N7VDCH1XYJ"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-N7VDCH1XYJ');
+          `}
+        </Script>
       </head>
       <body>
         <main>
