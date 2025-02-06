@@ -15,34 +15,36 @@ interface LoginError {
 }
 
 export const register = async (
-  apiBase: AxiosInstance, 
-  name: string,
-  first_name: string,
-  last_name: string, 
-  email: string, 
-  password: string
-): Promise<TokenResponse | undefined> => {  // Ajuste aqui para permitir undefined como retorno
-
+    apiBase: AxiosInstance,
+    name: string,
+    first_name: string,
+    last_name: string,
+    email: string,
+    password: string
+  ): Promise<TokenResponse> => {  
   try {
-    const response = await apiBase.post<TokenResponse>('api/v1/auth/register/', {
-      name, 
-      first_name,
-      last_name,
-      email,
-      password,
-    });
+    const response = await apiBase.post<TokenResponse>(
+      "api/v1/auth/register/",
+      { name, first_name, last_name, email, password },
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      }
+    );
+    
+    Cookies.set("access_token", response.data.access);
+    Cookies.set("refresh_token", response.data.refresh);
 
-    console.log("Resposta do servidor:", response.data); 
+    apiBase.defaults.headers.common["Authorization"] = `Bearer ${response.data.access}`;
 
-    return response.data;  
-
+    return response.data;
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.error('Erro ao criar conta:', error.message);
+      console.error("Erro ao criar conta:", error.message);
     } else {
-      console.error('Erro desconhecido', error);
+      console.error("Erro desconhecido", error);
     }
-    throw error;  // Lança o erro novamente para propagá-lo
+    throw error;
   }
 }
 
@@ -58,7 +60,7 @@ export const login = async (
       email,
       password,
     });
-
+    
     // Extraindo corretamente os tokens
     const { access, refresh } = response.data; 
 

@@ -46,12 +46,15 @@ export default function Footer(){
 
 
     <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
-      © {currentYear}{" "}
-      <Link href="https://flowbite.com/" className="hover:underline">
+      {/*© {currentYear}{" "}
+      <Link href="https://cliquenabio.vercel.app/" className="hover:underline">
         CliqueNaBio
       </Link>
-      . Todos os direitos reservados.
+      . Todos os direitos reservados.*/}
+      Feito com ❤️ em Feira de Santana
     </span>
+
+
 
   </div>
 </footer>

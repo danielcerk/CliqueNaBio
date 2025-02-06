@@ -12,8 +12,6 @@ const axiosInstance = axios.create({
   withCredentials: true,  
 })
 
-
-
 axiosInstance.interceptors.response.use(
   resp => resp,
   async error => {

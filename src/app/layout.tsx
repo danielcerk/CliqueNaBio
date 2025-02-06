@@ -5,8 +5,7 @@ import React from "react";
 import Script from 'next/script';
 
 export const metadata = {
-  title: "CliqueNaBio | Seus links, sua identidade digital",
-  description: "",
+  title: "CliqueNaBio | Guarde memórias e experiências em um link na bio",
 };
 
 
@@ -16,6 +15,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-br">
       <head>
+        <link rel="icon" type="image/x-icon" href="/icons/image.ico" />
+        <meta name="description" content="CliqueNaBio é uma plataforma poderosa que permite criar links personalizados, estéticos e otimizados para suas redes sociais, ajudando você a destacar seus momentos e experiências.
+        Com o CliqueNaBio, você deixa seu espaço a sua cara, totalmente personalizado e de graça!" />
+        <meta name="keywords" content="CliqueNaBio, cliquenabio, Cliquenabio, link na bio, Linktree, linktree,
+        compartilhar momentos, postar fotos, catálogo profissional, catálogo para freelancer" />
+        <meta name="author" content="CliqueNaBio" />
+        <meta property="og:title" content="CliqueNaBio | Guarde memórias e experiências em um link na bio" />
+        <meta property="og:description" content="CliqueNaBio é um espaço completo para tornar seus momentos e experiências mais aesthetics." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://cliquenabio.vercel.app" />
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
@@ -27,10 +36,33 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
+        <Script type="application/ld+json" id="json-ld">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "CliqueNaBio",
+            "url": "https://cliquenabio.vercel.app/",
+            "description": "CliqueNaBio é uma plataforma poderosa que permite criar links personalizados, estéticos e otimizados para suas redes sociais, ajudando você a destacar seus momentos e experiências.",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Web",
+            "softwareVersion": "1.0",
+            "creator": {
+              "@type": "Organization",
+              "name": "CliqueNaBio",
+              "url": "https://cliquenabio.vercel.app/"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": "Sob Consulta",
+              "priceCurrency": "BRL",
+              "availability": "https://schema.org/InStock"
+            }
+          })}
+        </Script>
 
         {/* Script do Google Tag Manager */}
         <Script
-          strategy="afterInteractive" // Carrega o script após a interação do usuário
+          strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-N7VDCH1XYJ"
         />
         <Script id="google-analytics" strategy="afterInteractive">

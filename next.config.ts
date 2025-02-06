@@ -9,43 +9,48 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "another-domain.com",
-        pathname: "/**"
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "tailwindui.com",
-        pathname: "/**"
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "i.pinimg.com",
-        pathname: "/**"
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "images.unsplash.com",
-        pathname: "/**"
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "cdn.rareblocks.xyz",
-        pathname: "/**"
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "via.placeholder.com",
-        pathname: "/**"
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "br.pinterest.com",
-        pathname: "/**"
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: 'reqres.in',
-        pathname: "/**"
-      }
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        pathname: "/**",
+      },
     ],
   },
 };

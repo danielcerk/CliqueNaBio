@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { AlertCircle, CheckCircle2, XCircle } from "lucide-react"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 
 type AlertType = "success" | "error" | "info"
 
@@ -50,6 +51,9 @@ export function AlertModal({ type, message, isOpen, onClose }: AlertModalProps) 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className={`sm:max-w-[425px] ${getBackgroundColor()}`}>
+        <VisuallyHidden>
+          <DialogTitle>Alerta</DialogTitle>
+        </VisuallyHidden>
         <div className="flex items-center gap-4">
           {getIcon()}
           <p className="text-sm font-medium">{message}</p>
@@ -58,4 +62,3 @@ export function AlertModal({ type, message, isOpen, onClose }: AlertModalProps) 
     </Dialog>
   )
 }
-

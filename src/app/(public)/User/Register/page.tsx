@@ -15,7 +15,6 @@ export default function Register() {
     last_name: '',
     email: '',
     password: '',
-    confirmPassword: '',
     agree: false,
   });
 
@@ -49,13 +48,6 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validar se as senhas coincidem
-    if (formData.password !== formData.confirmPassword) {
-      alert('As senhas não coincidem');
-      return;
-    }
-
-    // Preparando os dados para o registro
     const data = {
       name: `${formData.first_name} ${formData.last_name}`, 
       first_name: formData.first_name,
@@ -66,9 +58,9 @@ export default function Register() {
 
     try {
       setLoading(true); 
+
       const response = await register(axiosInstance, data.name, data.first_name, data.last_name, data.email, data.password);
 
-      console.log('Registro bem-sucedido:', response);
       setSuccessMessage('Conta criada com sucesso');
       showAlert("success", "Sucesso! Conta criada com sucesso!")
 
@@ -164,17 +156,6 @@ export default function Register() {
                   name="password"
                   placeholder="Senha"
                   value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="relative w-full flex items-center mt-3">
-                <input
-                  className="w-full text-[18px] text-gray-800 py-3 leading-[1.2] outline-none pl-4 pr-4 mb-5 bg-gray-100 rounded-[10px]"
-                  type="password"
-                  name="confirmPassword"
-                  placeholder="Repita sua senha"
-                  value={formData.confirmPassword}
                   onChange={handleChange}
                   required
                 />

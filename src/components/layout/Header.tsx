@@ -18,22 +18,20 @@ const Header = ({ openModalLogin }: HeaderProps) => {
     setIsMenuOpen((prev) => !prev);
   };
 
-  // Detectar o scroll da página
   useEffect(() => {
     const handleScroll = () => {
-      setScrolling(window.scrollY); // Atualiza a variável com o valor do scroll
+      setScrolling(window.scrollY);
     };
 
-    window.addEventListener("scroll", handleScroll); // Adiciona o listener para o scroll
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll); // Limpa o listener ao desmontar o componente
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
   useEffect(() => {
     const hasToken = Cookie.get('access_token');
-
     setIsAuthenticated(!!hasToken);
   }, []);
 
@@ -41,13 +39,11 @@ const Header = ({ openModalLogin }: HeaderProps) => {
     <div className="fixed w-full z-50">
       <nav className="bg-gray-100">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             {/* Logo e Links */}
             <div className="flex space-x-4">
-              <div className='relative  rounded-full rounded-tl-md transition-all duration-300 max-h-[80px]'>
-
-                <Link href="/" className="flex items-center py-5 px-2 text-gray-900 hover:text-gray-800 transition duration-300"
-                >
+              <div className="relative rounded-full rounded-tl-md transition-all duration-300 max-h-[80px]">
+                <Link href="/" className="flex items-center py-5 px-2 text-gray-900 hover:text-gray-800 transition duration-300">
                   <h1
                     className={`font-semibold text-3xl p-1 transition-all duration-300 ${
                       scrolling === 0 ? 'text-3xl' : 'text-xl'
@@ -60,25 +56,18 @@ const Header = ({ openModalLogin }: HeaderProps) => {
 
               {/* Links para Desktop */}
               <div className="hidden md:flex items-center space-x-1">
-               <Link href="/#price" className="py-5 px-3 text-gray-700 hover:text-gray-900">
+                <Link href="/#price" className="py-5 px-3 text-gray-700 hover:text-gray-900">
                   Preços
-               </Link>
-               <Link href="/#FAQ" className="py-5 px-3 text-gray-700 hover:text-gray-900">
+                </Link>
+                <Link href="/#FAQ" className="py-5 px-3 text-gray-700 hover:text-gray-900">
                   Sobre
-               </Link>
-               {/* <Link href="" className="py-5 px-3 text-gray-700 hover:text-gray-900">
-                  Blog
-               </Link> */}
-
-               <Link href="" className="py-5 px-3 text-gray-700 hover:text-gray-900">
-                  Suporte
-               </Link>
+                </Link>
               </div>
             </div>
 
             {/* Ações (Login e Signup) */}
-            <div className="hidden md:flex items-center space-x-1">
-             {isAuthenticated ? (
+            <div className="flex items-center space-x-1 ml-auto">
+              {isAuthenticated ? (
                 <Link
                   href="/Home"
                   className="py-2 px-4 btn-hover font-medium bg-light-yellow text-gray-900 rounded-xl"
@@ -93,26 +82,6 @@ const Header = ({ openModalLogin }: HeaderProps) => {
                   Entrar <i className="fa-solid fa-door-open"></i>
                 </button>
               )}
-            </div>
-
-            {/* Botão de Menu Mobile */}
-            <div className="md:hidden flex items-center">
-              <button onClick={toggleMenu} className="mobile-menu-button">
-                <svg
-                  className="w-6 h-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              </button>
             </div>
           </div>
         </div>
@@ -131,18 +100,12 @@ const Header = ({ openModalLogin }: HeaderProps) => {
             <Link href="/#FAQ" className="py-5 px-3 text-gray-700 hover:text-gray-900">
               Sobre
             </Link>
-            {/* <Link href="" className="py-5 px-3 text-gray-700 hover:text-gray-900">
-              Blog
-            </Link> */}
-
-            <Link href="" className="py-5 px-3 text-gray-700 hover:text-gray-900">
-              Suporte
-            </Link>
           </div>
         </div>
       </nav>
     </div>
   );
-}
+};
+
 
 export default Header
