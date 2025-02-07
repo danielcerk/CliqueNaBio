@@ -35,7 +35,7 @@ export default function Account() {
    const [user, loadingUser, errorUser] = useAxios({ 
     axiosInstance,  // Sua instância do axios
     method: 'get',
-    url: '/api/v1/account/2',
+    url: '/api/v1/account/me/',
     othersConfig: {  // Passando os cabeçalhos aqui
       headers: {
         Authorization: `Bearer ${token}`

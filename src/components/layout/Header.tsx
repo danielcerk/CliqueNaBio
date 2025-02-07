@@ -53,20 +53,15 @@ const Header = ({ openModalLogin }: HeaderProps) => {
                   </h1>
                 </Link>
               </div>
-
-              {/* Links para Desktop */}
-              <div className="hidden md:flex items-center space-x-1">
-                <Link href="/#price" className="py-5 px-3 text-gray-700 hover:text-gray-900">
-                  Preços
-                </Link>
-                <Link href="/#FAQ" className="py-5 px-3 text-gray-700 hover:text-gray-900">
-                  Sobre
-                </Link>
-              </div>
             </div>
 
-            {/* Ações (Login e Signup) */}
             <div className="flex items-center space-x-1 ml-auto">
+              <Link href="/#price" className="py-5 px-3 text-gray-700 hover:text-gray-900">
+                Preços
+              </Link>
+              <Link href="/#FAQ" className="py-5 px-3 text-gray-700 hover:text-gray-900">
+                Sobre
+              </Link>
               {isAuthenticated ? (
                 <Link
                   href="/Home"

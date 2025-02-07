@@ -39,20 +39,20 @@ export default function Banner() {
         }`}
       >
         <Image
-          src={"/garotaNoCelular.png"}
-          alt="image"
+          src={"/flat-devices-mockup-removebg-preview.png"}
+          alt="Imagem de aparelhos utilizando o aplicativo da CliqueNaBio: app para criação e personalização de link na bio"
           className="w-full max-w-md rounded-xl"
-          width={400}
-          height={250}
+          width={600}
+          height={450}
           data-aos="fade-dissipate"
         />
         <div className="w-full">
-          <div className="text-center max-w-3xl mx-auto px-4 h-full flex flex-col items-center justify-center">
+          <div className="text-left max-w-3xl mx-auto px-4 h-full flex flex-col items-center justify-center">
             <h1 className="text-4xl text-yellow-500 lg:text-6xl uppercase font-extrabold mb-5" data-aos="zoom-in">
-              Transforme seus links em oportunidades.
+              Um Link na bio cheio de memória e experiência
             </h1>
-            <p className="text-2xl uppercase max-w-3xl mx-auto font-semibold mb-5" data-aos="zoom-in">
-              Crie páginas de links personalizadas, acompanhe o engajamento e aumente seus resultados.
+            <p className="text-2xl italic uppercase max-w-3xl mx-auto font-semibold mb-5" data-aos="zoom-in">
+              Transforme sua bio em uma vitrine interativa de memórias e conquistas. Personalize, acompanhe o engajamento e expanda sua presença online.
             </p>
             <br />
             <Link href="/User/Register" className=" bg-gray-900 cursor-pointer text-white w-fit  hover:bg-yellow-400 hover:text-black font-semibold text-xl px-4 py-2 rounded-xl uppercase animate-pulsar transition-all duration-500" data-aos="zoom-in">
