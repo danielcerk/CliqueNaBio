@@ -64,7 +64,7 @@ export default function Register() {
       setSuccessMessage('Conta criada com sucesso');
       showAlert("success", "Sucesso! Conta criada com sucesso!")
 
-      router.push('/');
+      router.push('/Home');
     } catch (error) {
 
       if (error instanceof Error) {

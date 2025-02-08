@@ -107,4 +107,32 @@ export const logout = async (apiBase: AxiosInstance): Promise<void> => {
 };
 
 
+export const updateUserPassword = async (
+  apiBase: AxiosInstance,
+  currentPassword: string,
+  newPassword: string
+): Promise<void> => {
+  try {
+    const response = await apiBase.post(
+      "/api/v1/auth/password/change/",
+      { 
+        current_password: currentPassword, 
+        new_password: newPassword 
+      }, // Enviando os dois campos corretamente
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      }
+    );
 
+    console.log("Senha do usuário atualizada com sucesso:", response.data);
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      console.error("Erro ao atualizar a senha:", error.response?.data || error.message);
+      throw error.response?.data || error;
+    } else {
+      console.error("Erro desconhecido:", error);
+      throw error;
+    }
+  }
+};

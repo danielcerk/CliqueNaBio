@@ -31,7 +31,7 @@ export default function Login() {
     try {
       const response = await login(axiosInstance, email, password);
       console.log('Login bem-sucedido:', response);
-      showAlert("error", "Login bem-sucedido!")
+      showAlert("success", "Login bem-sucedido!")
       router.push('/Home');
     } catch (error) {
       console.error('Erro no login:', error);
