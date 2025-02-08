@@ -1,174 +1,135 @@
-"use client"
+"use client";
 
-import { Bar, BarChart, Line, LineChart, ResponsiveContainer } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, LabelList } from "recharts"
 import { Users } from "lucide-react"
-import type React from "react" // Added import for React
+import type React from "react"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import axiosInstance from "@/helper/axios-instance"
+import useAxios from "@/hooks/use-axios"
+import Cookie from "js-cookie"
 
-const data = [
-  {
-    revenue: 10000,
-    subscription: 240,
-  },
-  {
-    revenue: 14405,
-    subscription: 300,
-  },
-  {
-    revenue: 9400,
-    subscription: 200,
-  },
-  {
-    revenue: 8200,
-    subscription: 278,
-  },
-  {
-    revenue: 7000,
-    subscription: 189,
-  },
-  {
-    revenue: 9600,
-    subscription: 239,
-  },
-  {
-    revenue: 11244,
-    subscription: 278,
-  },
-]
+import Loading from "./loading"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
+interface CountView {
+  date: string;
+  views: number;
+}
+
+interface Log {
+  action: string;
+  timestamp: string;
+}
 
 export default function Home() {
+  const token = Cookie.get('access_token')
+
+  const [dashboard, setDashboard, errorDashboard] = useAxios({
+    axiosInstance, 
+    method: 'get',
+    url: `/api/v1/account/dashboard/`,
+    othersConfig: {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  });
+
+  if (setDashboard) {
+    return <Loading />
+  }
+
+  if (errorDashboard) {
+    return (
+      <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+        <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">
+          <p className="text-red-500">Erro ao carregar os dados. Tente novamente mais tarde.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const countViewsPerDate = dashboard?.count_views_per_date;
+
+  const chartData: CountView[] = countViewsPerDate ? Object.entries(countViewsPerDate).map(([date, views]) => ({
+    date,
+    views: views as number
+  })) : [];
+
+  const logsList = dashboard?.logs?.slice(0, 5);
+
   return (
     <div className="flex flex-col flex-1 max-w-6xl mx-auto p-8 pt-6 gap-5">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Visitas totais</CardTitle>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="h-4 w-4 text-muted-foreground"
-            >
-              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-            </svg>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12,340</div>
-            <p className="text-xs text-muted-foreground">+20.1% do mês passado</p>
+            <div className="text-2xl font-bold">{dashboard?.views ?? 0}</div>
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Visitas diárias</CardTitle>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="h-4 w-4 text-muted-foreground"
-            >
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
+            <CardTitle className="text-sm font-medium">Snaps Criados</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">230</div>
-            <p className="text-xs text-muted-foreground">+180.1% do mês passado</p>
+            <div className="text-2xl font-bold">{dashboard?.snaps_count}</div>
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Taxa de cliques</CardTitle>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="h-4 w-4 text-muted-foreground"
-            >
-              <rect width="20" height="14" x="2" y="5" rx="2" />
-              <path d="M2 10h20" />
-            </svg>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">12.00%</div>
-            <p className="text-xs text-muted-foreground">+19% do mês passado</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Membros</CardTitle>
+            <CardTitle className="text-sm font-medium">Links Criados</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">682</div>
-            <p className="text-xs text-muted-foreground">+201 desde a última hora</p>
+            <div className="text-2xl font-bold">{dashboard?.links_count}</div>
           </CardContent>
         </Card>
       </div>
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
           <CardHeader>
             <CardTitle>Visão geral</CardTitle>
           </CardHeader>
-          <CardContent className="pl-2">
-            <ResponsiveContainer width="100%" height={350}>
-              <BarChart data={data}>
-                <Bar dataKey="revenue" fill="#facc15" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+          <CardContent className="pl-2 flex items-center justify-center h-[350px]">
+            {chartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={350}>
+                <BarChart data={chartData}>
+                  <Bar dataKey="views" fill="#facc15" radius={[4, 4, 0, 0]}>
+                    <LabelList dataKey="date" position="top" />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <p className="text-gray-500 text-center text-lg">Sem dados disponíveis</p>
+            )}
           </CardContent>
         </Card>
+
         <Card className="col-span-3">
           <CardHeader>
             <CardTitle>Interações Recentes</CardTitle>
-            <CardDescription>
-            Você teve 0 Interações este mês.
-            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={350}>
-              <LineChart
-                data={data}
-                margin={{
-                  top: 5,
-                  right: 10,
-                  left: 10,
-                  bottom: 0,
-                }}
-              >
-                <Line
-                  type="monotone"
-                  strokeWidth={2}
-                  dataKey="subscription"
-                  activeDot={{
-                    r: 6,
-                    style: { fill: "#facc15", opacity: 0.25 },
-                  }}
-                  style={
-                    {
-                      stroke: "#eab308",
-                    } as React.CSSProperties
-                  }
-                />
-              </LineChart>
-            </ResponsiveContainer>
+          <CardContent className="pl-2">
+            <ul className="space-y-2">
+              {logsList?.length ? (
+                logsList.map((log: Log, index: number) => (
+                  <li key={index} className="text-gray-800">
+                    <p>{log.action}</p>
+                    <p className="text-sm text-gray-500">{log.timestamp}</p>
+                  </li>
+                ))
+              ) : (
+                <li className="text-gray-500">Sem registros disponíveis</li>
+              )}
+            </ul>
           </CardContent>
         </Card>
       </div>
     </div>
   )
 }
-

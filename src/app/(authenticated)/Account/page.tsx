@@ -20,7 +20,6 @@ export default function Account() {
    // Recupera o token do localStorage
    const token = Cookie.get('access_token');
 
-
    const [user, loadingUser, errorUser] = useAxios({ 
     axiosInstance,  // Sua instância do axios
     method: 'get',
@@ -32,7 +31,8 @@ export default function Account() {
     }
   });
 
-  console.log(user)
+  const usrName = user ? user.name : ''
+  const usrNameFirst2Letters = usrName ? usrName.substring(0, 2) : ''
  
   if (loadingUser) {
     return(
@@ -50,7 +50,6 @@ export default function Account() {
     );
   }
 
-
   return (
 
   <div className="min-h-screen bg-gray-100 flex justify-center p-4">
@@ -58,7 +57,7 @@ export default function Account() {
       <CardHeader className="flex flex-col sm:flex-row items-center gap-4">
         <Avatar className="w-24 h-24 sm:w-32 sm:h-32">
           <AvatarImage src={user?.data?.avatar ?? "/placeholder.svg?height=128&width=128"} alt="Alex Johnson" />
-          <AvatarFallback>AJ</AvatarFallback>
+          <AvatarFallback>{usrNameFirst2Letters}</AvatarFallback>
         </Avatar>
         <div className="text-center sm:text-left">
           <CardTitle className="text-2xl sm:text-3xl">{user?.name} </CardTitle>

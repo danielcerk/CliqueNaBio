@@ -15,7 +15,7 @@ export default function Register() {
     last_name: '',
     email: '',
     password: '',
-    agree: false,
+    terms_of_use_is_ready: false,
   });
 
   const [loading, setLoading] = useState(false);
@@ -54,12 +54,14 @@ export default function Register() {
       last_name: formData.last_name,
       email: formData.email,
       password: formData.password,
+      terms_of_use_is_ready: formData.terms_of_use_is_ready
     };
 
     try {
       setLoading(true); 
 
-      const response = await register(axiosInstance, data.name, data.first_name, data.last_name, data.email, data.password);
+      const response = await register(axiosInstance, data.name, 
+        data.first_name, data.last_name, data.email, data.password, data.terms_of_use_is_ready);
 
       setSuccessMessage('Conta criada com sucesso');
       showAlert("success", "Sucesso! Conta criada com sucesso!")
@@ -68,7 +70,7 @@ export default function Register() {
     } catch (error) {
 
       if (error instanceof Error) {
-        console.error('Erro ao criar conta:', error.message);
+        console.error('Erro ao criar conta:', error);
         setError('Erro ao criar conta');
         showAlert("error", "Erro ao criar conta!")
       } else {
@@ -163,17 +165,18 @@ export default function Register() {
             </div>
 
             <div className="flex gap-x-4 sm:col-span-2">
-              <label htmlFor="agree" className="text-sm text-gray-600">
+              <label htmlFor="terms_of_use_is_ready" className="text-sm text-gray-600">
                 Declaro que li e aceito os <a href="#" className="font-semibold text-yellow-600">termos de uso</a>.
               </label>
               <div className="flex h-6 items-center">
                 <input
                   type="checkbox"
-                  id="agree"
-                  name="agree"
-                  checked={formData.agree}
+                  id="terms_of_use_is_ready"
+                  name="terms_of_use_is_ready"
+                  checked={formData.terms_of_use_is_ready}
                   onChange={handleChange}
                   className="h-4 w-4"
+                  required
                 />
               </div>
             </div>

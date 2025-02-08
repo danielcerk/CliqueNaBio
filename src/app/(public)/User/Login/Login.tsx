@@ -111,23 +111,10 @@ export default function Login() {
 
               <div className="flex justify-center gap-5 my-5">
                 <Link href="#" className="hover:scale-105 transition-all leading-[1.2] duration-[0.4s]">
-                  <span className="text-[1.125rem] leading-[1.2] flex justify-center items-center p-4 h-[70px] rounded-[10px] shadow-md transition-all duration-[0.4s] relative bg-[#006af1] text-white z-1 mb-5 gap-3">
-                    <Image
-                      src="/icons/icon-facebook.png"
-                      alt="GOOGLE"
-                      width={24}
-                      height={24}
-                      className="bg-white"
-                    />
-                    Facebook
-                  </span>
-                </Link>
-
-                <Link href="#" className="hover:scale-105 transition-all leading-[1.2] duration-[0.4s]">
                   <span className="text-[1.125rem] leading-[1.2] flex justify-center items-center p-4 h-[70px] rounded-[10px] shadow-md transition-all duration-[0.4s] relative bg-white text-[#555555] z-1 mb-5">
                     <Image
-                      src="/icons/icon-google.png"
-                      alt="GOOGLE"
+                      src="/../icons/icon-google.png"
+                      alt="Login no CliqueNaBio usando o Google"
                       width={24}
                       height={24}
                       className="mr-[15px] pb-[3px]"

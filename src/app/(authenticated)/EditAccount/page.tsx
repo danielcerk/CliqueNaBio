@@ -27,10 +27,20 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
 
 export default function Account() {
   const token = Cookie.get('access_token');
   const router = useRouter();
+
+  const [formData, setFormData] = useState({
+    name:'',
+    first_name: '',
+    last_name: '',
+    email: '',
+    password: '',
+    biografy: '',
+  })
 
   const [user, loadingUser, errorUser] = useAxios({ 
     axiosInstance,
@@ -63,7 +73,58 @@ export default function Account() {
     }
   }, [token, router]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleDelete = async () => {
+    try {
+      if (!token) {
+        console.error("Token não encontrado.");
+        return;
+      }
+
+      await axiosInstance.delete("/api/v1/account/me/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      Cookie.remove("access_token");
+      router.push("/login");
+      console.log("Conta excluída com sucesso.");
+    } catch (error) {
+      console.error("Erro ao excluir a conta:", error);
+    }
+  };
+
+  const handleAccountSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const data = {
+      name: formData.name,
+      
+    }
+
+    try {
+      if (user) {
+        const response = await axiosInstance.put("/api/v1/account/me/", {
+          name: user.name,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+          biografy: user.biografy,
+        }, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }
+        });
+
+        console.log("Dados atualizados com sucesso");
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar os dados:", error);
+    }
+  };
+
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
@@ -75,26 +136,29 @@ export default function Account() {
       showAlert("error", "Por favor, insira sua senha atual.");
       return;
     }
-    
-
-    const data = {
-      currentPassword: currentPassword,
-      newPassword: newPassword
-    };
 
     setIsSaving(true);
+
     try {
       await updateUserPassword(axiosInstance, currentPassword, newPassword);
-      
-      showAlert("success", "Senha alterada com sucesso!")
-      router.push('/Home');
+      showAlert("success", "Senha alterada com sucesso!");
+      router.push("/Home");
     } catch (error) {
       if (error instanceof Error) {
-        showAlert("error", 'Erro ao atualizar a senha:' + error.message)
+        showAlert("error", "Erro ao atualizar a senha: " + error.message);
       } else {
-        showAlert("error", 'Erro desconhecido')
+        showAlert("error", "Erro desconhecido");
       }
+    } finally {
+      setIsSaving(false);
     }
+  };
+
+  const updateUserPassword = async (axiosInstance: any, currentPassword: string, newPassword: string) => {
+    await axiosInstance.put("/api/v1/account/change-password/", {
+      currentPassword,
+      newPassword,
+    });
   };
 
   if (loadingUser) {
@@ -113,8 +177,7 @@ export default function Account() {
 
   return (
     <div className="bg-gray-100 flex flex-col min-h-screen items-center p-4">
-
-      <div className="w-[400px] mt-3 mb-5 ">
+      <div className="w-[400px] mt-3 mb-5">
         <Link
           href="/Account"
           className="p-3 rounded-xl w-fit bg-gray-900 hover:bg-gray-900/75 transition-all duration-500 text-white flex items-center"
@@ -124,94 +187,101 @@ export default function Account() {
       </div>
 
       <Tabs defaultValue="account" className="w-[400px]">
-
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="account">Conta</TabsTrigger>
           <TabsTrigger value="password">Senha</TabsTrigger>
         </TabsList>
+
         <TabsContent value="account">
           <Card>
             <CardHeader>
-              <CardDescription>    
-                Faça alterações em sua conta aqui. Clique em salvar quando terminar.
-              </CardDescription>
+              <CardDescription>Faça alterações em sua conta aqui. Clique em salvar quando terminar.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-2 flex flex-col gap-3">
-              <div className="space-y-1">
-                <Label htmlFor="first_name">Nome</Label>
-                <Input className="text-gray-800" id="first_name" defaultValue={user?.first_name} />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="last_name">Sobrenome</Label>
-                <Input className="text-gray-800" id="last_name" defaultValue={user?.last_name} />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="username">Nome de usuário</Label>
-                <Input className="text-gray-800" type="text" id="username" defaultValue={user?.name} />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="email">Email</Label>
-                <Input className="text-gray-800" type="text" id="email" defaultValue={user?.email} />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="phone">Telefone</Label>
-                <Input className="text-gray-800" type="text" id="phone" defaultValue={user?.phone} />
-              </div>
+              <form onSubmit={handleAccountSubmit}>
+                <div className="space-y-1">
+                  <Label htmlFor="first_name">Nome</Label>
+                  <Input className="text-gray-800" id="first_name" defaultValue={user?.first_name} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="last_name">Sobrenome</Label>
+                  <Input className="text-gray-800" id="last_name" defaultValue={user?.last_name} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="username">Nome de usuário</Label>
+                  <Input className="text-gray-800" type="text" id="username" defaultValue={user?.name} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="email">Email</Label>
+                  <Input className="text-gray-800" type="text" id="email" defaultValue={user?.email} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="biografy">Sua Bio</Label>
+                  <Textarea
+                    className="text-gray-800 h-32"
+                    id="biografy"
+                    defaultValue={user?.biografy}
+                  />
+                </div>
+
+                <CardFooter>
+                  <Button type="submit">Salvar alterações</Button>
+                </CardFooter>
+              </form>
             </CardContent>
-            <CardFooter>
-              <Button>Salvar alterações</Button>
-            </CardFooter>
           </Card>
         </TabsContent>
+
         <TabsContent value="password">
           <Card>
             <CardHeader>
-              <CardDescription>
-                Altere sua senha aqui. Depois de salvar, todos vocês serão desconectados.
-              </CardDescription>
+              <CardDescription>Altere sua senha aqui. Depois de salvar, todos vocês serão desconectados.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
-              <div className="space-y-1">
-                <Label htmlFor="current">Senha atual</Label>
-                <Input
-                  className="text-gray-800"
-                  id="current"
-                  type="password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="new">Nova senha</Label>
-                <Input
-                  className="text-gray-800"
-                  id="new"
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="confirm">Confirmar senha</Label>
-                <Input
-                  className="text-gray-800"
-                  id="confirm"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button onClick={handleSubmit} disabled={isSaving}>
-                {isSaving ? "Alterando..." : "Alterar senha"}
-              </Button>
-            </CardFooter>
+              <form onSubmit={handlePasswordSubmit}>
+                <div className="space-y-1">
+                  <Label htmlFor="current">Senha atual</Label>
+                  <Input
+                    className="text-gray-800"
+                    id="current"
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="new">Nova senha</Label>
+                  <Input
+                    className="text-gray-800"
+                    id="new"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="confirm">Confirmar senha</Label>
+                  <Input
+                    className="text-gray-800"
+                    id="confirm"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                </div>
 
+                <CardFooter>
+                  <Button type="submit" disabled={isSaving}>
+                    {isSaving ? "Alterando..." : "Alterar senha"}
+                  </Button>
+                </CardFooter>
+              </form>
+            </CardContent>
           </Card>
         </TabsContent>
-        <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       </Tabs>
+
+      <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

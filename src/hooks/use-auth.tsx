@@ -7,8 +7,6 @@ interface TokenResponse {
   refresh: string; // Token de atualização
 }
 
-
-
 interface LoginError {
   detail?: string;
   [key: string]: any;
@@ -20,12 +18,13 @@ export const register = async (
     first_name: string,
     last_name: string,
     email: string,
-    password: string
+    password: string,
+    terms_of_use_is_ready: boolean,
   ): Promise<TokenResponse> => {  
   try {
     const response = await apiBase.post<TokenResponse>(
       "api/v1/auth/register/",
-      { name, first_name, last_name, email, password },
+      { name, first_name, last_name, email, password, terms_of_use_is_ready },
       {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
@@ -38,14 +37,23 @@ export const register = async (
     apiBase.defaults.headers.common["Authorization"] = `Bearer ${response.data.access}`;
 
     return response.data;
+
   } catch (error: unknown) {
+
     if (error instanceof Error) {
+
       console.error("Erro ao criar conta:", error.message);
+      
     } else {
-      console.error("Erro desconhecido", error);
+
+      console.error("Um erro foi encontrado:", error);
+
     }
+
     throw error;
+
   }
+  
 }
 
 
