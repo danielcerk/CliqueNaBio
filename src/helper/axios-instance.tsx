@@ -5,11 +5,11 @@ import Cookies from "js-cookie";
 let refresh = false;
 
 const axiosInstance = axios.create({
-  baseURL: 'http://127.0.0.1:8000',  
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true,  
+  baseURL: process.env.NODE_ENV === 'production' 
+    ? 'http://api-cliquenabio.vercel.app/'
+    : 'http://127.0.0.1:8000',
+  headers: { 'Content-Type': 'application/json' },
+  withCredentials: true
 })
 
 axiosInstance.interceptors.response.use(

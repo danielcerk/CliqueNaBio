@@ -147,6 +147,34 @@ export default function ContentLanding() {
           </div>
         </section>
 
+        <div>
+          <section className="px-6 py-24 bg-gray-100 text-center" data-aos="fade-up">
+            <h2 className="text-4xl font-semibold text-gray-900">Gerencie tudo no Dashboard</h2>
+            <p className="text-lg text-gray-700 mt-4">Acompanhe métricas de visualizações e interações no seu dashboard.</p>
+            <div className="mt-8 flex justify-center">
+              <Image src="https://placehold.co/600x400.png" alt="Dashboard interativo do CliqueNaBio" width={600} height={400} />
+            </div>
+          </section>
+          <section className="px-6 py-24 bg-white text-center" data-aos="fade-up">
+            <h2 className="text-4xl font-semibold text-gray-900">Adicione Snaps e Links na Bio</h2>
+            <p className="text-lg text-gray-700 mt-4">Crie um link dinâmico e interativo em poucos cliques.</p>
+            <div className="mt-8 flex justify-center">
+              <Image src="https://placehold.co/400x600.png" alt="Snaps e links adicionados na CliqueNaBio" width={300} height={600} />
+            </div>
+          </section>
+          <section className="px-6 py-24 bg-gray-100 text-center" data-aos="fade-up">
+            <h2 className="text-4xl font-semibold text-gray-900">Modelo de Links na Bio</h2>
+            <div className="mt-8 flex justify-center">
+              <Image src="https://placehold.co/800x400.png" alt="Modelos de Link Na Bios feitos com o CliqueNaBio" width={900} height={400} />
+            </div>
+            <div className="mt-8">
+              <a href="/User/Register" className="inline-block px-8 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                Quero um link na bio Grátis
+              </a>
+            </div>
+          </section>
+        </div>
+
         <div className="relative isolate bg-[#F8F8F8] px-6 py-14 lg:px-8 rounded" id="price"> 
           <div className="max-w-6xl mx-auto">
             <div className="max-w-4xl mx-auto text-center">
@@ -164,16 +192,18 @@ export default function ContentLanding() {
                 <p className="mt-4 text-5xl font-semibold text-gray-900">R$0</p>
                 <p className="text-base text-gray-500">/mês</p>
                 <p className="mt-6 text-gray-600">Ideal para quem deseja experimentar e dar os primeiros passos na criação de um perfil interativo.</p>
-                <li className="flex items-center gap-3 justify-center">
-                  <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
-                  </svg> Limite de 3 links
-                </li>
-                <li className="flex items-center gap-3 justify-center">
-                  <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
-                  </svg> Limite de 10 snaps
-                </li>
+                <ul className="mt-6 space-y-3 text-sm">
+                  <li className="flex items-left gap-3 justify-left">
+                    <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
+                    </svg> Limite de 3 links
+                  </li>
+                  <li className="flex items-left gap-3 justify-left">
+                    <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
+                    </svg> Limite de 10 snaps
+                  </li>
+                </ul>
                 <a href="#" className="mt-8 block rounded-xl px-3.5 py-2.5 bg-yellow-400 text-black font-semibold ring-1 ring-inset ring-gray-900/25 hover:ring-yellow-300">Comece agora</a>
               </div>
 
@@ -184,37 +214,37 @@ export default function ContentLanding() {
                 <p className="text-base text-gray-400">/mês</p>
                 <p className="mt-6 text-gray-600">Ideal para criadores de conteúdo e pequenas empresas que desejam um perfil mais dinâmico e atrativo.</p>
                 <ul className="mt-6 space-y-3 text-sm text-gray-300">
-                  <li className="flex items-center gap-3 justify-center">
+                  <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                     </svg> Limite de 6 links
                   </li>
-                  <li className="flex items-center gap-3 justify-center">
+                  <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                     </svg> Limite de 50 snaps
                   </li>
-                  <li className="flex items-center gap-3 justify-center">
+                  {/*<li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                     </svg> Templates para Personalização
-                  </li>
-                  <li className="flex items-center gap-3 justify-center">
+                  </li>*/}
+                  <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
-                    </svg> Análises avançadas
+                    </svg> Analytics
                   </li>
-                  <li className="flex items-center gap-3 justify-center">
+                  <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                     </svg> Formulário de Contato
                   </li>
-                  <li className="flex items-center gap-3 justify-center">
+                  <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
-                    </svg> Sem Marca d'água CliqueNaBio para assinantes
+                    </svg> Sem Marca d'água CliqueNaBio
                   </li>
-                  <li className="flex items-center gap-3 justify-center">
+                  <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                     </svg> Suporte 24/7
@@ -230,27 +260,27 @@ export default function ContentLanding() {
                 <p className="text-base text-gray-500">/mês</p>
                 <p className="mt-6 text-gray-600">Ideal para negócios e influenciadores que querem profissionalizar sua presença digital.</p>
                 <ul className="mt-6 space-y-3 text-sm text-gray-600">
-                  <li className="flex items-center gap-3 justify-center">
+                  <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                     </svg> Tudo do Plano Conexão
                   </li>
-                  <li className="flex items-center gap-3 justify-center">
+                  <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                     </svg> Sem Limite de links
                   </li>
-                  <li className="flex items-center gap-3 justify-center">
+                  <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                     </svg> Sem Limite de Snaps
                   </li>
-                  <li className="flex items-center gap-3 justify-center">
+                  {/*<li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                     </svg> URL personalizada
-                  </li>
-                  <li className="flex items-center gap-3 justify-center">
+                  </li>*/}
+                  <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                     </svg> Acesso a recursos extras

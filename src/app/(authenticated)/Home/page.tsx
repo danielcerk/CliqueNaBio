@@ -35,6 +35,17 @@ export default function Home() {
     }
   });
 
+  const [user, loadingUser, errorUser] = useAxios({ 
+      axiosInstance,
+      method: 'get',
+      url: `/api/v1/account/me/`,
+      othersConfig: {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    });
+
   if (setDashboard) {
     return <Loading />
   }
@@ -90,46 +101,54 @@ export default function Home() {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>Visão geral</CardTitle>
-          </CardHeader>
-          <CardContent className="pl-2 flex items-center justify-center h-[350px]">
-            {chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={350}>
-                <BarChart data={chartData}>
-                  <Bar dataKey="views" fill="#facc15" radius={[4, 4, 0, 0]}>
-                    <LabelList dataKey="date" position="top" />
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <p className="text-gray-500 text-center text-lg">Sem dados disponíveis</p>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="col-span-3">
-          <CardHeader>
-            <CardTitle>Interações Recentes</CardTitle>
-          </CardHeader>
-          <CardContent className="pl-2">
-            <ul className="space-y-2">
-              {logsList?.length ? (
-                logsList.map((log: Log, index: number) => (
-                  <li key={index} className="text-gray-800">
-                    <p>{log.action}</p>
-                    <p className="text-sm text-gray-500">{log.timestamp}</p>
-                  </li>
-                ))
+      {user?.plan !== 'GRÁTIS' ? (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+          <Card className="col-span-4">
+            <CardHeader>
+              <CardTitle>Visão geral</CardTitle>
+            </CardHeader>
+            <CardContent className="pl-2 flex items-center justify-center h-[350px]">
+              {chartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={350}>
+                  <BarChart data={chartData}>
+                    <Bar dataKey="views" fill="#facc15" radius={[4, 4, 0, 0]}>
+                      <LabelList dataKey="date" position="top" />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               ) : (
-                <li className="text-gray-500">Sem registros disponíveis</li>
+                <p className="text-gray-500 text-center text-lg">Sem dados disponíveis</p>
               )}
-            </ul>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+
+          <Card className="col-span-3">
+            <CardHeader>
+              <CardTitle>Interações Recentes</CardTitle>
+            </CardHeader>
+            <CardContent className="pl-2">
+              <ul className="space-y-2">
+                {logsList?.length ? (
+                  logsList.map((log: Log, index: number) => (
+                    <li key={index} className="text-gray-800">
+                      <p>{log.action}</p>
+                      <p className="text-sm text-gray-500">{log.timestamp}</p>
+                    </li>
+                  ))
+                ) : (
+                  <li className="text-gray-500">Sem registros disponíveis</li>
+                )}
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
+      ) : (
+        <div className="flex items-center justify-center h-[200px]">
+          <p className="text-gray-600 text-center text-lg">
+            Métricas para análise não estão disponíveis para usuários do plano gratuito.
+          </p>
+        </div>
+      )}
     </div>
   )
 }

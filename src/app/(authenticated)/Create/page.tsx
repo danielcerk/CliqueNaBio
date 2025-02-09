@@ -144,7 +144,6 @@ const BioEditor: React.FC<BioEditorProps> = ({ onSave, initialData }) => {
         ))}
       </div>
 
-      {/* Botão de Salvar */}
       <div className="mt-10 text-center">
         <Button onClick={handleSave} className="px-6 py-3 text-lg">
           Salvar Bio
