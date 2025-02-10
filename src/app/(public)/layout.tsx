@@ -3,7 +3,7 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
-import Login from "./User/Login/Login";
+import Login from "./User/login/Login";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useState, useEffect } from "react";

@@ -55,7 +55,7 @@ export default function Banner() {
               Transforme sua bio em uma vitrine interativa de memórias e conquistas. Personalize, acompanhe o engajamento e expanda sua presença online.
             </p>
             <br />
-            <Link href="/User/Register" className=" bg-gray-900 cursor-pointer text-white w-fit hover:bg-yellow-400 hover:text-black font-semibold text-xl px-4 py-2 rounded-xl uppercase animate-pulsar transition-all duration-500" data-aos="zoom-in">
+            <Link href="/user/register" className=" bg-gray-900 cursor-pointer text-white w-fit hover:bg-yellow-400 hover:text-black font-semibold text-xl px-4 py-2 rounded-xl uppercase animate-pulsar transition-all duration-500" data-aos="zoom-in">
               Comece grátis <i className="fa-solid fa-right-long hidden"></i>
             </Link>
           </div>

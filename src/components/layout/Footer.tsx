@@ -26,17 +26,17 @@ export default function Footer(){
           </Link>
         </li>
         <li>
-          <Link href="/Terms/PrivacyPolicy" className="hover:underline me-4 md:me-6">
+          <Link href="/terms/privacyPolicy" className="hover:underline me-4 md:me-6">
             Política de Privacidade
           </Link>
         </li>
         <li>
-          <Link href="/Terms/TermsOfUse" className="hover:underline me-4 md:me-6">
+          <Link href="/terms/termsOfUse" className="hover:underline me-4 md:me-6">
             Termos de Uso
           </Link>
         </li>
         <li>
-          <Link href="/Status" className="hover:underline me-4 md:me-6">
+          <Link href="/status" className="hover:underline me-4 md:me-6">
             Status
           </Link>
         </li>

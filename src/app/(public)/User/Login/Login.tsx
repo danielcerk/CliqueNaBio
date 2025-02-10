@@ -96,7 +96,7 @@ export default function Login() {
             <div className="w-full flex justify-center items-center mt-4">
               <button
                 type="submit"
-                className="w-full p-3 bg-light-yellow rounded-[10px] text-[1rem] text-gray-950 hover:scale-105 transition-all leading-[1.2] duration-[0.4s] relative z-1 font-bold"
+                className="w-full p-3 bg-light-yellow rounded-[10px] text-[1rem] text-gray-950 hover:scale-105 transition-all leading-[1.2] duration-500 relative z-1 font-bold"
                 disabled={loading} 
               >
                 {loading ? 'Carregando...' : 'Entrar'}
@@ -104,16 +104,16 @@ export default function Login() {
             </div>
 
             <div className="w-full text-center mt-5">
-              <Link href="/User/Register">
+              <Link href="/user/register">
                 <span className="block text-yellow-500 text-lg">Cadastre-se</span>
               </Link>
               <span className="mt-3 text-white">ou</span>
 
               <div className="flex justify-center gap-5 my-5">
-                <Link href="#" className="hover:scale-105 transition-all leading-[1.2] duration-[0.4s]">
-                  <span className="text-[1.125rem] leading-[1.2] flex justify-center items-center p-4 h-[70px] rounded-[10px] shadow-md transition-all duration-[0.4s] relative bg-white text-[#555555] z-1 mb-5">
+                <Link href="#" className="hover:scale-105 transition-all leading-[1.2] duration-500">
+                  <span className="text-[1.125rem] leading-[1.2] flex justify-center items-center p-4 h-[70px] rounded-[10px] shadow-md transition-all duration-500 relative bg-white text-[#555555] z-1 mb-5">
                     <Image
-                      src="/../icons/icon-google.png"
+                      src="/icons/icon-google.png"
                       alt="Login no CliqueNaBio usando o Google"
                       width={24}
                       height={24}

@@ -57,7 +57,7 @@ const Header = ({ openModalLogin }: HeaderProps) => {
               </Link>
               {isAuthenticated ? (
                 <Link
-                  href="/Home"
+                  href="/home"
                   className="py-2 px-4 font-medium bg-light-yellow text-gray-900 rounded-xl transition-all hover:bg-yellow-300"
                 >
                   Seu Painel <i className="fa-solid fa-chart-line"></i>

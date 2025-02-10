@@ -73,11 +73,11 @@ export default function SideBar() {
             </Link>
             <div className="nav_list">
               {[
-                { href: "/Home", icon: "fa-solid fa-gauge", name: "Painel" },
-                { href: "/View", icon: "fa-solid fa-eye", name: "Visualizar"},
-                { href: "/Create", icon: "fa-solid fa-circle-plus", name: "Criar" },
-                { href: "/Signature", icon: "fa-solid fa-file-contract", name: "Assinar" },
-                { href: "/Account", icon: "fas fa-user", name: "Perfil" },
+                { href: "/home", icon: "fa-solid fa-gauge", name: "Painel" },
+                { href: "/view", icon: "fa-solid fa-eye", name: "Visualizar"},
+                { href: "/create", icon: "fa-solid fa-circle-plus", name: "Criar" },
+                { href: "/signature", icon: "fa-solid fa-file-contract", name: "Assinar" },
+                { href: "/account", icon: "fas fa-user", name: "Perfil" },
                 { href: "logout", icon: "fas fa-right-from-bracket", name: "Sair" },
               ].map((link) => (
                 <Link

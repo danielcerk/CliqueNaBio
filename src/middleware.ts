@@ -1,20 +1,22 @@
-
-
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('access_token'); // Obter o token dos cookies
 
   // Páginas públicas
-  const publicRoutes = ['/', '/User/Login', '/User/Register', '/Terms/PrivacyPolicy', '/Terms/TermsOfUse', '/Status'];
+  const publicRoutes = ['/', '/user/login', '/user/register', '/terms/privacyPolicy', '/terms/termsOfUse', '/status'];
 
   const { pathname } = request.nextUrl;
 
+  // **Permitir acesso a arquivos estáticos**
+  if (pathname.startsWith('/_next') || pathname.startsWith('/public') || pathname.match(/\.(png|jpg|jpeg|gif|svg|webp|ico|css|js|woff2?)$/)) {
+    return NextResponse.next();
+  }
+
   // Se não estiver autenticado e tentando acessar uma página não pública, redireciona para '/'
-  if (!token && !publicRoutes.includes(pathname) && !pathname.startsWith('/_next')) {
-    return NextResponse.redirect(new URL('/', request.url)); // Redireciona para a página '/'
+  if (!token && !publicRoutes.includes(pathname)) {
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   return NextResponse.next();
 }
-
