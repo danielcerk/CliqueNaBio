@@ -184,7 +184,7 @@ export default function Account() {
   
     try {
       await axiosInstance.put("/api/v1/account/me/", {
-        new_password: newPassword,
+        password: newPassword,
       }, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -283,7 +283,7 @@ export default function Account() {
                   <Textarea
                     className="text-gray-800 h-32"
                     id="biografy"
-                    value={formData.biografy}
+                    value={formData.biografy || ''}
                     onChange={(e) => setFormData({ ...formData, biografy: e.target.value })}
                   />
                 </div>
