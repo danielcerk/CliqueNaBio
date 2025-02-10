@@ -7,7 +7,7 @@ import { useState, useEffect } from "react"
 import { updateUserPassword } from "@/hooks/use-auth"
 import { useRouter } from 'next/navigation';
 import { AlertModal } from '@/components/common/AlertModal';
-import Loading from "../Account/loading";
+import Loading from "../account/loading";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -219,7 +219,7 @@ export default function Account() {
     <div className="bg-gray-100 flex flex-col min-h-screen items-center p-4">
       <div className="w-[400px] mt-3 mb-5">
         <Link
-          href="/Account"
+          href="/account"
           className="p-3 rounded-xl w-fit bg-gray-900 hover:bg-gray-900/75 transition-all duration-500 text-white flex items-center"
         >
           <i className="fa-solid fa-reply"></i>

@@ -168,7 +168,7 @@ export default function ContentLanding() {
               <Image src="https://placehold.co/800x400.png" alt="Modelos de Link Na Bios feitos com o CliqueNaBio" width={900} height={400} />
             </div>
             <div className="mt-8">
-              <a href="/User/Register" className="inline-block px-8 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+              <a href="/user/register" className="inline-block px-8 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                 Quero um link na bio Grátis
               </a>
             </div>
@@ -242,7 +242,7 @@ export default function ContentLanding() {
                   <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
-                    </svg> Sem Marca d'água CliqueNaBio
+                    </svg> Sem Marca d&apos;água CliqueNaBio
                   </li>
                   <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

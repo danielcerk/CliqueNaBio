@@ -88,7 +88,7 @@ export default function Register() {
   return (
     <div className="w-full mx-auto relative">
       <div className="absolute h-full w-full -z-20 bg-white"></div>
-      <div className="absolute h-full w-full -z-10 opacity-20" style={{ backgroundImage: 'url("/register-image.webp")' }}></div>
+      <div className="absolute h-full w-full -z-10 opacity-20"></div>
       <div className="w-full max-w-6xl mx-auto flex flex-col items-center lg:items-start lg:flex-row lg:justify-between min-h-screen">
         <div className="rounded-xl flex p-10 mt-10">
           <div>
@@ -184,7 +184,7 @@ export default function Register() {
             <div className="w-full flex justify-center items-center mt-4">
               <button
                 type="submit"
-                className="w-full p-3 bg-light-yellow rounded-[10px] text-[1rem] text-gray-900 hover:scale-105 transition-all leading-[1.2] duration-[0.4s] relative z-1 font-bold"
+                className="w-full p-3 bg-light-yellow rounded-[10px] text-[1rem] text-gray-900 hover:scale-105 transition-all leading-[1.2] duration-500 relative z-1 font-bold"
                 disabled={loading}
               >
                 {loading ? 'Cadastrando...' : 'Cadastrar'}
