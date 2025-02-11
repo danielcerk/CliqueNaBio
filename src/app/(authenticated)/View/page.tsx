@@ -21,7 +21,16 @@ interface BioData {
 }
 
 export default function View() {
-  const [bioData, setBioData] = useState<BioData>({
+  // const [bioData, setBioData] = useState<BioData>({
+  //   name: "Thiago Bonitão",
+  //   username: "O brabo",
+  //   bio: "Aquele que diz manjar, mas não manja",
+  //   profilePicture: "/cartoon.png",
+  //   content: [],
+  //   location: "Serrinha-BA",
+  // })
+
+  const [bioData] = useState<BioData>({
     name: "Thiago Bonitão",
     username: "O brabo",
     bio: "Aquele que diz manjar, mas não manja",
@@ -29,7 +38,6 @@ export default function View() {
     content: [],
     location: "Serrinha-BA",
   })
-
 
 
   return (

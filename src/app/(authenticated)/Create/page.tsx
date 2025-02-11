@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { PlusCircle, Globe, ImageIcon, Type, Trash2 } from "lucide-react";
+import {  Globe, ImageIcon, Trash2 } from "lucide-react";
 import Image from "next/image";
 
 interface ContentItem {
@@ -25,14 +25,23 @@ interface BioData {
   location: string;
 }
 
-interface BioEditorProps {
-  onSave: (data: BioData) => void;
-  initialData?: BioData;
-}
+// interface BioEditorProps {
+//   onSave: (data: BioData) => void;
+// }
 
-const BioEditor: React.FC<BioEditorProps> = ({ onSave, initialData }) => {
+const BioEditor =() => {
+  // const [bioData, setBioData] = useState<BioData>(
+  //   initialData || {
+  //     name: "",
+  //     username: "",
+  //     bio: "",
+  //     profilePicture: "",
+  //     content: [],
+  //     location: "",
+  //   }
+  // );
   const [bioData, setBioData] = useState<BioData>(
-    initialData || {
+   {
       name: "",
       username: "",
       bio: "",
@@ -75,9 +84,9 @@ const BioEditor: React.FC<BioEditorProps> = ({ onSave, initialData }) => {
     }
   };
 
-  const handleSave = () => {
-    onSave(bioData);
-  };
+  // const handleSave = () => {
+  //   onSave(bioData);
+  // };
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-10">
@@ -146,7 +155,10 @@ const BioEditor: React.FC<BioEditorProps> = ({ onSave, initialData }) => {
       </div>
 
       <div className="mt-10 text-center">
-        <Button onClick={handleSave} className="px-6 py-3 text-lg">
+        {/* <Button onClick={handleSave} className="px-6 py-3 text-lg">
+          Salvar Bio
+        </Button> */}
+          <Button className="px-6 py-3 text-lg">
           Salvar Bio
         </Button>
       </div>

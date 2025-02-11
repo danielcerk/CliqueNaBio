@@ -46,7 +46,7 @@ export default function Footer(){
 
 
     <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
-      Feito com ❤️ em Feira de Santana
+      Feito com ❤️ em Feira de Santana   <p>{currentYear}</p>
     </span>
 
 

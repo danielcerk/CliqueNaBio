@@ -2,12 +2,13 @@
 
 import axiosInstance from "@/helper/axios-instance"
 import useAxios from "@/hooks/use-axios"
+import axios, { AxiosInstance } from 'axios';
 import Cookie from "js-cookie"
 import { useState, useEffect } from "react"
-import { updateUserPassword } from "@/hooks/use-auth"
+// import { updateUserPassword } from "@/hooks/use-auth"
 import { useRouter } from 'next/navigation';
 import { AlertModal } from '@/components/common/AlertModal';
-import Loading from "../Account/loading";
+import Loading from "../account/loading";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -28,13 +29,31 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
-import axios from 'axios'
 
-export default function Account() {
+
+export default function EditAccount() {
   const token = Cookie.get('access_token');
   const router = useRouter();
 
-  const [user, loadingUser, errorUser] = useAxios({
+  interface User {
+    name: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    biografy?: string; // 'biografy' é opcional
+  }
+
+  interface FormData {
+    name: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    biografy?: string;
+  }
+  
+
+  const [user, loadingUser, errorUser] = useAxios<User | null>({
     axiosInstance,
     method: 'get',
     url: '/api/v1/account/me/',
@@ -45,8 +64,8 @@ export default function Account() {
     },
   });
 
-  const [formData, setFormData] = useState({
-    name: user?.name || '',  // Aqui garantimos que o valor não será null
+  const [formData, setFormData] = useState<FormData>({
+    name: user?.name || '',
     first_name: user?.first_name || '',
     last_name: user?.last_name || '',
     email: user?.email || '',
@@ -54,9 +73,9 @@ export default function Account() {
     biografy: user?.biografy || '',
   });
 
-  const [currentPassword, setCurrentPassword] = useState('');
+  // const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  // const [confirmPassword, setConfirmPassword] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"success" | "error" | "info">("success");
   const [modalMessage, setModalMessage] = useState("");
@@ -78,11 +97,11 @@ export default function Account() {
     if (user) {
       setFormData({
         name: user.name,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        email: user.email,
+        first_name: user.first_name ,
+        last_name: user.last_name ,
+        email: user.email ,
         password: '',
-        biografy: user.biografy,
+        biografy: user.biografy ,
       });
     }
 
@@ -128,7 +147,7 @@ export default function Account() {
   
     try {
       if (user) {
-        const response = await axiosInstance.put("/api/v1/account/me/", data, {
+        await axiosInstance.put("/api/v1/account/me/", data, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -179,7 +198,7 @@ export default function Account() {
   };
 
 
-  const updateUserPassword = async (axiosInstance: any, newPassword: string) => {
+  const updateUserPassword = async (axiosInstance: AxiosInstance, newPassword: string) => {
     const controller = new AbortController();
   
     try {
@@ -192,7 +211,7 @@ export default function Account() {
         },
         signal: controller.signal, // Adiciona suporte para cancelamento
       });
-    } catch (error: any) {
+    } catch (error) {
       if (axios.isCancel(error)) {
         console.log("Requisição cancelada pelo usuário");
       } else {

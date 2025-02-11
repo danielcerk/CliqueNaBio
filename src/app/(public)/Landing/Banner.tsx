@@ -39,14 +39,14 @@ export default function Banner() {
         }`}
       >
         <Image
-          src={"/flat-devices-mockup-removebg-preview.png"}
+          src={""}
           alt="Imagem de aparelhos utilizando o aplicativo da CliqueNaBio: app para criação e personalização de link na bio"
           className="w-full max-w-md rounded-xl"
           width={600}
           height={450}
           data-aos="fade-dissipate"
         />
-        <div className="w-full">
+        <div className="w-full bg-red-400">
           <div className="text-left max-w-2xl mx-auto px-4 h-full flex flex-col  justify-center">
             <h1 className="text-4xl text-yellow-500 lg:text-6xl font-extrabold mb-5" data-aos="zoom-in">
               Um Link na bio cheio de memória e experiência

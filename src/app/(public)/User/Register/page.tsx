@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { AlertModal } from '@/components/common/AlertModal';
-import Login from '@/app/(public)/User/Login/Login';
+import Login from '@/app/(public)/user/login/Login';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -65,7 +65,7 @@ export default function Register() {
     try {
       setLoading(true); 
 
-      const response = await register(axiosInstance, data.name, 
+      await register(axiosInstance, data.name, 
         data.first_name, data.last_name, data.email, data.password, data.terms_of_use_is_ready);
 
       setSuccessMessage('Conta criada com sucesso');

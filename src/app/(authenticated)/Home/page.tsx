@@ -11,6 +11,17 @@ import Cookie from "js-cookie"
 import Loading from "./loading"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
+interface User {
+  name?: string;
+  email?: string;
+  phone?: string;
+  biografy?: string;
+  image?: string;
+  plan?: string,
+  showProfileForm?: boolean;
+}
+
+
 interface CountView {
   date: string;
   views: number;
@@ -21,10 +32,19 @@ interface Log {
   timestamp: string;
 }
 
+interface Dashboard {
+  count_views_per_date: Record<string, number>; // ou qualquer estrutura que represente os dados corretamente
+  logs: Log[];
+  countView: CountView[];
+  views: number;
+  links_count: number; 
+  snaps_count: number;
+}
+
 export default function Home() {
   const token = Cookie.get('access_token')
 
-  const [dashboard, setDashboard, errorDashboard] = useAxios({
+  const [dashboard, setDashboard, errorDashboard] = useAxios<Dashboard>({
     axiosInstance, 
     method: 'get',
     url: `/api/v1/account/dashboard/`,
@@ -35,7 +55,7 @@ export default function Home() {
     }
   });
 
-  const [user, loadingUser, errorUser] = useAxios({ 
+  const [user, loadingUser, errorUser] = useAxios<User>({ 
       axiosInstance,
       method: 'get',
       url: `/api/v1/account/me/`,
@@ -46,11 +66,11 @@ export default function Home() {
       }
     });
 
-  if (setDashboard) {
+  if (setDashboard || loadingUser) {
     return <Loading />
   }
 
-  if (errorDashboard) {
+  if (errorDashboard || errorUser) {
     return (
       <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
         <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">

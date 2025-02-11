@@ -5,6 +5,7 @@ import axiosInstance from "@/helper/axios-instance";
 import useAxios from "@/hooks/use-axios";
 import Cookie from "js-cookie";
 import { FaCheckCircle } from 'react-icons/fa';
+import Loading from "./loading"
 
 const PricingTable = () => {
   const token = Cookie.get('access_token');
@@ -20,11 +21,13 @@ const PricingTable = () => {
     },
   });
 
+
+
   useEffect(() => {
     const script = document.createElement('script');
     script.src = "https://js.stripe.com/v3/pricing-table.js";
     script.async = true;
-    script.onload = () => console.log('Stripe Pricing Table script carregado');
+    script.onload = () => null;
     document.body.appendChild(script);
 
     return () => {
@@ -68,8 +71,24 @@ const PricingTable = () => {
 
   // Verificar o valor de user.plan no console para entender o que está sendo retornado
   useEffect(() => {
+    // eslint-disable-next-line no-console
     console.log('Plano do usuário:', user?.plan);
   }, [user]);
+
+
+  if (loadingUser) {
+    return <Loading />
+  }
+
+  if (errorUser) {
+    return (
+      <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+        <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">
+          <p className="text-red-500">Erro ao carregar os dados. Tente novamente mais tarde.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">

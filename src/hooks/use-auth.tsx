@@ -9,7 +9,7 @@ interface TokenResponse {
 
 interface LoginError {
   detail?: string;
-  [key: string]: any;
+  [key: string]: string | undefined;
 }
 
 export const register = async (

@@ -21,6 +21,11 @@ interface User {
   showProfileForm?: boolean;
 }
 
+interface FormEmail {
+  is_activate: boolean;
+}
+
+
 export default function Account() {
   const token = Cookie.get("access_token");
 
@@ -37,7 +42,7 @@ export default function Account() {
   });
 
   // Carregando informações de formulário de email
-  const [formEmail, setFormEmail] = useAxios({
+  const [formEmail] = useAxios<FormEmail>({
     axiosInstance,
     method: "get",
     url: `/api/v1/account/form-email/`,
