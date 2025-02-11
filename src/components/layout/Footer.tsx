@@ -49,8 +49,6 @@ export default function Footer(){
       Feito com ❤️ em Feira de Santana   <p>{currentYear}</p>
     </span>
 
-
-
   </div>
 </footer>
 
