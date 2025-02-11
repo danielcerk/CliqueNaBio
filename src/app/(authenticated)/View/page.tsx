@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -25,17 +26,20 @@ export default function View() {
     username: "O brabo",
     bio: "Aquele que diz manjar, mas não manja",
     profilePicture: "/cartoon.png",
-    content: [],  // Aqui você pode adicionar alguns itens de conteúdo de teste, se necessário
+    content: [],
     location: "Serrinha-BA",
   })
 
-  console.log("bioData:", bioData) // Verifique no console se os dados estão sendo definidos corretamente
+
 
   return (
     <div className="flex flex-col lg:flex-row">
+
       <div className="mx-auto">
         <MobileScreen bioData={bioData} />
       </div>
     </div>
   )
 }
+
+

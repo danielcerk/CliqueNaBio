@@ -7,7 +7,7 @@ import { useState, useEffect } from "react"
 import { updateUserPassword } from "@/hooks/use-auth"
 import { useRouter } from 'next/navigation';
 import { AlertModal } from '@/components/common/AlertModal';
-import Loading from "../account/loading";
+import Loading from "../Account/loading";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -175,6 +175,7 @@ export default function Account() {
       setIsSaving(false);
       
     }
+    
   };
 
 
@@ -183,7 +184,7 @@ export default function Account() {
   
     try {
       await axiosInstance.put("/api/v1/account/me/", {
-        new_password: newPassword,
+        password: newPassword,
       }, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -282,7 +283,7 @@ export default function Account() {
                   <Textarea
                     className="text-gray-800 h-32"
                     id="biografy"
-                    value={formData.biografy}
+                    value={formData.biografy || ''}
                     onChange={(e) => setFormData({ ...formData, biografy: e.target.value })}
                   />
                 </div>

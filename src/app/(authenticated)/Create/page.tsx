@@ -1,10 +1,12 @@
+
 "use client";
 
+import type React from "react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Globe, ImageIcon, Trash2 } from "lucide-react";
+import { PlusCircle, Globe, ImageIcon, Type, Trash2 } from "lucide-react";
 import Image from "next/image";
 
 interface ContentItem {
@@ -23,7 +25,6 @@ interface BioData {
   location: string;
 }
 
-
 interface BioEditorProps {
   onSave: (data: BioData) => void;
   initialData?: BioData;
@@ -32,35 +33,19 @@ interface BioEditorProps {
 const BioEditor: React.FC<BioEditorProps> = ({ onSave, initialData }) => {
   const [bioData, setBioData] = useState<BioData>(
     initialData || {
-      name: "ggg",
-      username: "ggggggg",
-      bio: "gggggggg",
-      profilePicture: "ggggggg",
-      content: [
-        {
-          id: "1",
-          type: "text",
-          content: "Exemplo de conteúdo",
-        },
-      ],
-      location: "gggggggggg",
+      name: "",
+      username: "",
+      bio: "",
+      profilePicture: "",
+      content: [],
+      location: "",
     }
   );
-  // const addContent = (type: "link" | "photo" | "text") => {
-  //   const newContent: ContentItem = { id: Date.now().toString(), type, content: "", url: "" };
-  //   setBioData((prev) => ({ ...prev, content: [...prev.content, newContent] }));
-  // };
 
   const addContent = (type: "link" | "photo" | "text") => {
-    const newContent: ContentItem = {
-      id: Date.now().toString(),
-      type,
-      content: "",
-      ...(type !== "text" && { url: "" }), 
-    };
+    const newContent: ContentItem = { id: Date.now().toString(), type, content: "", url: "" };
     setBioData((prev) => ({ ...prev, content: [...prev.content, newContent] }));
   };
-  
 
   const updateContent = (id: string, content: string, url?: string) => {
     setBioData((prev) => ({
@@ -78,30 +63,17 @@ const BioEditor: React.FC<BioEditorProps> = ({ onSave, initialData }) => {
     }));
   };
 
-  // const handlePhotoUpload = (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files && e.target.files[0]) {
-  //     const reader = new FileReader();
-  //     reader.onload = (event) => {
-  //       if (event.target) {
-  //         updateContent(id, event.target.result as string);
-  //       }
-  //     };
-  //     reader.readAsDataURL(e.target.files[0]);
-  //   }
-  // };
-
   const handlePhotoUpload = (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        if (event.target?.result) {
+        if (event.target) {
           updateContent(id, event.target.result as string);
         }
       };
       reader.readAsDataURL(e.target.files[0]);
     }
   };
-  
 
   const handleSave = () => {
     onSave(bioData);
@@ -139,25 +111,6 @@ const BioEditor: React.FC<BioEditorProps> = ({ onSave, initialData }) => {
                 </>
               )}
 
-              {/* {item.type === "photo" && (
-                <>
-                  {item.content ? (
-                    <Image src={item.content} alt="Uploaded" width={100} height={100} className="rounded-md" />
-                  ) : (
-                    <label htmlFor={`file-input-${item.id}`} className="cursor-pointer flex flex-col items-center">
-                      <ImageIcon className="w-10 h-10 text-gray-500" />
-                      <span className="text-gray-600 text-sm">Enviar uma imagem</span>
-                    </label>
-                  )}
-                  <input
-                    id={`file-input-${item.id}`}
-                    type="file"
-                    className="hidden"
-                    onChange={(e) => handlePhotoUpload(item.id, e)}
-                  />
-                </>
-              )} */}
-
               {item.type === "photo" && (
                 <>
                   {item.content ? (
@@ -176,7 +129,6 @@ const BioEditor: React.FC<BioEditorProps> = ({ onSave, initialData }) => {
                   />
                 </>
               )}
-
 
               {/* Botão de Remover */}
               <Button
@@ -203,3 +155,4 @@ const BioEditor: React.FC<BioEditorProps> = ({ onSave, initialData }) => {
 };
 
 export default BioEditor;
+
