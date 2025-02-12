@@ -90,7 +90,7 @@ export default function Home() {
   const logsList = dashboard?.logs?.slice(0, 5);
 
   return (
-    <div className="flex flex-col flex-1 max-w-6xl mx-auto p-8 pt-6 gap-5">
+    <div className="flex flex-col flex-1 max-w-6xl mx-auto p-8 pt-6 gap-5 min-h-screen">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

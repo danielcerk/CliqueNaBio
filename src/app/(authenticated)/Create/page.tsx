@@ -1,12 +1,12 @@
-
 "use client";
 
 import type React from "react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {  Globe, ImageIcon, Trash2 } from "lucide-react";
+import { Globe, ImageIcon, Trash2, FileText } from "lucide-react";
 import Image from "next/image";
 
 interface ContentItem {
@@ -25,34 +25,18 @@ interface BioData {
   location: string;
 }
 
-// interface BioEditorProps {
-//   onSave: (data: BioData) => void;
-// }
-
-const BioEditor =() => {
-  // const [bioData, setBioData] = useState<BioData>(
-  //   initialData || {
-  //     name: "",
-  //     username: "",
-  //     bio: "",
-  //     profilePicture: "",
-  //     content: [],
-  //     location: "",
-  //   }
-  // );
-  const [bioData, setBioData] = useState<BioData>(
-   {
-      name: "",
-      username: "",
-      bio: "",
-      profilePicture: "",
-      content: [],
-      location: "",
-    }
-  );
+const BioEditor = () => {
+  const [bioData, setBioData] = useState<BioData>({
+    name: "",
+    username: "",
+    bio: "",
+    profilePicture: "",
+    content: [],
+    location: "",
+  });
 
   const addContent = (type: "link" | "photo" | "text") => {
-    const newContent: ContentItem = { id: Date.now().toString(), type, content: "", url: "" };
+    const newContent: ContentItem = { id: Date.now().toString(), type, content: "" };
     setBioData((prev) => ({ ...prev, content: [...prev.content, newContent] }));
   };
 
@@ -83,13 +67,9 @@ const BioEditor =() => {
       reader.readAsDataURL(e.target.files[0]);
     }
   };
-
-  // const handleSave = () => {
-  //   onSave(bioData);
-  // };
-
+  
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10">
+    <div className="max-w-4xl mx-auto px-6 py-10 min-h-screen">
       <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">Editor de Bio</h2>
 
       {/* Ações para Adicionar Conteúdo */}
@@ -100,13 +80,16 @@ const BioEditor =() => {
         <Button onClick={() => addContent("photo")} className="flex items-center gap-2">
           <ImageIcon className="w-5 h-5" /> Adicionar Foto
         </Button>
+        <Button onClick={() => addContent("text")} className="flex items-center gap-2">
+          <FileText className="w-5 h-5" /> Adicionar Texto
+        </Button>
       </div>
 
       {/* Exibição do Conteúdo Adicionado */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="columns-3 gap-6">
         {bioData.content.map((item) => (
-          <Card key={item.id} className="p-4 shadow-md hover:shadow-lg transition-shadow">
-            <CardContent className="flex flex-col items-center gap-4">
+          <Card key={item.id} className="p-4 shadow-md hover:shadow-lg transition-shadow w-fit max-h-fit card-content">
+            <CardContent className="flex flex-col items-center gap-4 ">
               {item.type === "link" && (
                 <>
                   <Globe className="w-8 h-8 text-gray-500" />
@@ -139,6 +122,18 @@ const BioEditor =() => {
                 </>
               )}
 
+              {item.type === "text" && (
+                <>
+                  <FileText className="w-8 h-8 text-gray-500" />
+                  <Textarea
+                    className="w-full"
+                    placeholder="Digite seu texto aqui..."
+                    value={item.content}
+                    onChange={(e) => updateContent(item.id, e.target.value)}
+                  />
+                </>
+              )}
+
               {/* Botão de Remover */}
               <Button
                 variant="destructive"
@@ -155,16 +150,10 @@ const BioEditor =() => {
       </div>
 
       <div className="mt-10 text-center">
-        {/* <Button onClick={handleSave} className="px-6 py-3 text-lg">
-          Salvar Bio
-        </Button> */}
-          <Button className="px-6 py-3 text-lg">
-          Salvar Bio
-        </Button>
+        <Button className="px-6 py-3 text-lg">Salvar Bio</Button>
       </div>
     </div>
   );
 };
 
 export default BioEditor;
-

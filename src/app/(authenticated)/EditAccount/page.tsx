@@ -258,7 +258,7 @@ export default function EditAccount() {
               <CardDescription>Faça alterações em sua conta aqui. Clique em salvar quando terminar.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-2 flex flex-col gap-3">
-              <form onSubmit={handleAccountSubmit}>
+              <form onSubmit={handleAccountSubmit} className="flex flex-col gap-4">
                 <div className="space-y-1">
                   <Label htmlFor="first_name">Nome</Label>
                   <Input
@@ -307,7 +307,7 @@ export default function EditAccount() {
                   />
                 </div>
 
-                <CardFooter className="mt-2 flex justify-center align-middle space-x-1">
+                <CardFooter className="mt-2 flex justify-between align-middle space-x-1 p-0">
                   <Button type="submit">Salvar alterações</Button>
                   <Button variant="destructive" onClick={handleDelete}>Excluir Conta</Button>
                 </CardFooter>
@@ -354,7 +354,7 @@ export default function EditAccount() {
                   />
                 </div>*/}
 
-                <CardFooter>
+                <CardFooter className="mt-4 p-0">
                   <Button type="submit" disabled={isSaving}>
                     {isSaving ? "Alterando..." : "Alterar senha"}
                   </Button>
