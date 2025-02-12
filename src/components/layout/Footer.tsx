@@ -4,11 +4,12 @@ import Link from "next/link";
 
 
 
+
 export default function Footer(){
   const currentYear = new Date().getFullYear();
   return (
 <footer className="bg-gray-100 rounded-xl shadow dark:bg-gray-900 m-4">
-  <div className="w-full max-w-6xl mx-auto p-4 md:py-8">
+  <div className="w-full mx-auto p-4 md:py-8">
     <div className="sm:flex sm:items-center sm:justify-between">
       <Link
         href="/"

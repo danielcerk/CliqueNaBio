@@ -54,27 +54,28 @@ export default function ContentLanding() {
           }`} ref={contentRef} >
           <div className=" inset-0 -z-10 opacity-30"></div>
           <div className="mx-auto max-w-6xl text-center">
-            <h2
-              className="text-5xl font-semibold text-gray-900 mb-6 uppercase"
-              data-aos="fade-up" // Exemplo de animação
-            >
-              Conquiste Resultados!
-            </h2>
+      
+              <h2
+                className="text-5xl font-semibold text-black mb-6 uppercase"
+                data-aos="fade-up" // Exemplo de animação
+              >
+                Conquiste Resultados!
+              </h2>
 
-            <p
-              className="text-lg sm:text-xl text-gray-700 mb-12 max-w-3xl mx-auto"
-              data-aos="fade-up" // Outra animação
-            >
-              Chega de ser invisível com um layout sem personalidade. É hora de dar destaque ao seu trabalho!
-            </p>
-
+              <p
+                className="text-lg sm:text-xl text-gray-700 mb-12 max-w-3xl mx-auto"
+                data-aos="fade-up" // Outra animação
+              >
+                Chega de ser invisível com um layout sem personalidade. É hora de dar destaque ao seu trabalho!
+              </p>
+  
             <div className=" mt-10">
               <div className="flex flex-col justify-center">
-                <div className="grid lg:grid-cols-2 items-center gap-8 mb-6">
-                  <div className="flex flex-col  items-center w-fit p-6 bg-[#F8F8F8] shadow-lg rounded-xl"
+                <div className="grid lg:grid-cols-4 items-center gap-8 mb-6">
+                  <div className="flex flex-col  items-center w-fit p-6 bg-[#F8F8F8] rounded-xl"
                     data-aos="flip-left" // Exemplo de animação com flip
                   >
-                    <div className="mb-4 text-gray-900 bg-light-yellow w-fit p-3 rounded-full">
+                    <div className="mb-4 text-gray-900 bg-yellow-400 w-fit p-3 rounded-full">
                       <i className="fas fa-clock fa-2x"></i>
                     </div>
                     <h4 className="text-2xl font-semibold text-gray-900 mb-2">
@@ -86,10 +87,10 @@ export default function ContentLanding() {
                   </div>
 
                   <div
-                    className="flex flex-col items-center w-fit p-6 bg-[#F8F8F8] shadow-lg rounded-xl"
+                    className="flex flex-col items-center w-fit p-6 bg-[#F8F8F8] rounded-xl"
                     data-aos="flip-left"
                   >
-                    <div className="mb-4 text-gray-900 bg-light-yellow w-fit p-3 rounded-full">
+                    <div className="mb-4 text-gray-900 bg-yellow-400 w-fit p-3 rounded-full">
                       <i className="fas fa-chart-bar fa-2x"></i>
                     </div>
                     <h4 className="text-2xl font-semibold text-gray-900 mb-2">
@@ -101,10 +102,10 @@ export default function ContentLanding() {
                   </div>
 
                   <div
-                    className="flex flex-col items-center w-fit p-6 bg-[#F8F8F8] shadow-lg rounded-xl"
+                    className="flex flex-col items-center w-fit p-6 bg-[#F8F8F8] rounded-xl"
                     data-aos="flip-left"
                   >
-                    <div className="mb-4 text-gray-900 bg-light-yellow p-3 w-fit rounded-full">
+                    <div className="mb-4 text-gray-900 bg-yellow-400 p-3 w-fit rounded-full">
                       <i className="fas fa-cogs fa-2x"></i>
                     </div>
                     <h4 className="text-2xl font-semibold text-gray-900 mb-2">
@@ -116,10 +117,10 @@ export default function ContentLanding() {
                   </div>
 
                   <div
-                    className="flex flex-col items-center w-fit p-6 bg-[#F8F8F8] shadow-lg rounded-xl"
+                    className="flex flex-col items-center w-fit p-6 bg-[#F8F8F8] rounded-xl"
                     data-aos="flip-left"
                   >
-                    <div className="mb-4 text-gray-900 bg-light-yellow p-3 w-fit rounded-full">
+                    <div className="mb-4 text-gray-900 bg-yellow-400 p-3 w-fit rounded-full">
                       <i className="fas fa-mobile-alt fa-2x"></i>
                     </div>
                     <h4 className="text-2xl font-semibold text-gray-900 mb-2">
@@ -185,9 +186,9 @@ export default function ContentLanding() {
                 Escolha um plano acessível repleto de recursos incríveis para envolver seu público, criar lealdade dos clientes e impulsionar vendas.
               </p>
             </div>
-            <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-3" data-aos="fade-up">
+            <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-3 items-center" data-aos="fade-up">
               {/* Plano Básico */}
-              <div className="rounded-3xl bg-white p-8 ring-1 ring-gray-900/10 text-center">
+              <div className="rounded-3xl bg-white p-8 ring-1 ring-gray-900/10 text-center h-fit">
                 <h3 className="text-base font-semibold text-yellow-600">Plano Básico</h3>
                 <p className="mt-4 text-5xl font-semibold text-gray-900">R$0</p>
                 <p className="text-base text-gray-500">/mês</p>
@@ -254,7 +255,7 @@ export default function ContentLanding() {
               </div>
 
               {/* Plano Influência */}
-              <div className="rounded-3xl bg-white p-8 ring-1 ring-gray-900/10 text-center">
+              <div className="rounded-3xl bg-white p-8 ring-1 ring-gray-900/10 text-center h-fit">
                 <h3 className="text-base font-semibold text-yellow-600">Plano Influência</h3>
                 <p className="mt-4 text-5xl font-semibold text-gray-900">R$14.99</p>
                 <p className="text-base text-gray-500">/mês</p>

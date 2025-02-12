@@ -4,6 +4,7 @@
 @import url('./sidebar.css');
 @import url('./card.css');
 @import url('./profile.css');
+@import url('./signature.css');
 
 @tailwind base;
 @tailwind components;

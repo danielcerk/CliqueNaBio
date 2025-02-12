@@ -1,6 +1,4 @@
-.bg-light-yellow{
-  background-color: #FFDD57;
-}
+
 
 .bg-mint-green{
   background-color: #66D9A6;
@@ -77,12 +75,21 @@
 }
 
 
-@keyframes FadeColor {
+@keyframes FadeColorYellow {
   0% {
     background-color: rgba(255, 204, 0, 0); /* Amarelo transparente */
   }
   100% {
     background-color: rgba(255, 204, 0, 1); /* Amarelo sólido */
+  }
+}
+
+@keyframes FadeColorWhite {
+  0% {
+    background-color: rgba(255, 204, 0, 1); /* Amarelo sólido */
+  }
+  100% {
+    background-color: white;
   }
 }
 
@@ -117,12 +124,11 @@
 }
 
 .animate-content{
-  animation: TranslateY 1s ease-in-out forwards;
-  background-color: #F8F8F8!important;
+  animation: FadeColorWhite 0.8s ease-in-out forwards !important;
 }
 
 .animate-content-off{
-  animation: FadeColor 0.8s ease-in-out forwards;
+  animation: FadeColorYellow 0.4s ease-in-out forwards;
 }
 
 .animate-pulsar{

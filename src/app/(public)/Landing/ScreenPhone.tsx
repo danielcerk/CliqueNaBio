@@ -30,26 +30,7 @@ export default function ScreenPhone() {
 
   return (
 
-    // <div className={`transition-all duration-500 max-h-[450px] ${
-    //   scrolling > 0 ? "bg-yellow-400 " : "bg-[#F8F8F8] "
-    // }`}>
-    // <div className={` flex  flex-col lg:flex-row gap-5 lg:gap-0 justify-center items-center max-w-6xl mx-auto text-center transition-all duration-500 ${
-    //     scrolling > 0 ? "animate-screen-phone " : "animate-screen-phone-off"
-    //   }`}>
-    //     <p className="text-5xl uppercase lg:w-1/3 mx-auto font-extrabold mb-5 p-4" >Conecte, compartilhe e analise. Tudo em um único link.</p>
-    //     <div className=" lg:w-2/3  flex justify-center">
-    //       <Image
-    //           src={"/hero-app-screens-800.png"}
-    //           alt="Link na bio"
-    //           className="w-full max-w-md"
-    //           width={400}
-    //           height={250}
-    //         data-aos="fade-up"
-    //           data-aos-duration="1000"
-    //         />
-    //     </div>
-    // </div>
-    // </div>
+
 
   <div className={`transition-all duration-500 max-h-[450px] relative ${
       scrolling > 0 ? "bg-yellow-400" : "bg-[#F8F8F8]"
@@ -68,9 +49,9 @@ export default function ScreenPhone() {
       <div className={`flex flex-col lg:flex-row gap-5 lg:gap-0 justify-center items-center max-w-6xl mx-auto text-left transition-all duration-500 ${
         scrolling > 0 ? "animate-screen-phone" : "animate-screen-phone-off"
       }`}>
-        <p className="text-5xl uppercase lg:w-1/3 mx-auto font-extrabold mb-5 p-4">
+        <h2 className="text-5xl uppercase lg:w-1/3 mx-auto font-extrabold mb-5 p-4">
           Deixe o link na bio a sua cara, conecte, compartilhe e analise.
-        </p>
+        </h2>
         <div className="lg:w-2/3 flex justify-center">
           <Image
             src={"/hero-app-screens-800.png"}

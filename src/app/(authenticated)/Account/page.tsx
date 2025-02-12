@@ -178,7 +178,7 @@ export default function Account() {
             <Share className="mr-2 h-4 w-4" /> Compartilhar
           </Button>
           <Link href={"editAccount"}>
-            <Button className="flex-1 sm:flex-initial bg-light-yellow btn-hover text-gray-950 hover:bg-yellow-400 hover:text-black">
+            <Button className="flex-1 sm:flex-initial bg-yellow-400 btn-hover text-gray-950 hover:bg-yellow-400 hover:text-black">
               Gerenciamento <i className="fa-solid fa-user-gear"></i>
             </Button>
           </Link>

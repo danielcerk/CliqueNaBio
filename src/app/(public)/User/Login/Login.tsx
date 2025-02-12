@@ -31,7 +31,7 @@ export default function Login() {
       const response = await login(axiosInstance, email, password);
       console.log('Login bem-sucedido:', response);
       showAlert('success', 'Login bem-sucedido!');
-      router.push('/Home');
+      router.push('/home');
     } catch (error) {
       console.error('Erro no login:', error);
       setError('Email ou senha inválidos. Tente novamente.');
@@ -98,7 +98,7 @@ export default function Login() {
             <div className="w-full flex justify-center items-center mt-4">
               <button
                 type="submit"
-                className="w-full p-3 bg-light-yellow rounded-[10px] text-[1rem] text-gray-950 hover:scale-105 transition-all leading-[1.2] duration-500 relative z-1 font-bold"
+                className="w-full p-3 bg-yellow-400 rounded-[10px] text-[1rem] text-gray-950 hover:scale-105 transition-all leading-[1.2] duration-500 relative z-1 font-bold"
                 disabled={loading}
               >
                 {loading ? 'Carregando...' : 'Entrar'}

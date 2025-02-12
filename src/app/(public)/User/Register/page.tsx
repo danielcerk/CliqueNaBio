@@ -71,7 +71,7 @@ export default function Register() {
       setSuccessMessage('Conta criada com sucesso');
       showAlert("success", "Sucesso! Conta criada com sucesso!")
 
-      router.push('/Home');
+      router.push('/home');
     } catch (error) {
 
       if (error instanceof Error) {
@@ -190,7 +190,7 @@ export default function Register() {
               <div className="w-full flex justify-center items-center mt-4">
                 <button
                   type="submit"
-                  className="w-full p-3 bg-light-yellow rounded-[10px] text-[1rem] text-gray-900 hover:scale-105 transition-all leading-[1.2] duration-500 relative z-1 font-bold"
+                  className="w-full p-3 bg-yellow-400 rounded-[10px] text-[1rem] text-gray-900 hover:scale-105 transition-all leading-[1.2] duration-500 relative z-1 font-bold"
                   disabled={loading}
                 >
                   {loading ? 'Cadastrando...' : 'Cadastrar'}
