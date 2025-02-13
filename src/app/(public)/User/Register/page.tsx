@@ -31,14 +31,11 @@ export default function Register() {
   const openModalLogin = () => setIsModalOpenLogin(true);
   const closeModalLogin = () => setIsModalOpenLogin(false);
 
-  
-
   const showAlert = (type: "success" | "error" | "info", message: string) => {
     setModalType(type)
     setModalMessage(message)
     setIsModalOpen(true)
   }
-
 
   // Função para capturar os dados do formulário
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -206,7 +203,7 @@ export default function Register() {
             </button>
           </div>
             
-          <div className="flex flex-col items-center gap-5 my-5">
+          {/*<div className="flex flex-col items-center gap-5 my-5">
           <span className="">ou</span>
               <Link href="#" className="hover:scale-105 transition-all leading-[1.2] duration-500">
                 <span className="text-[1.125rem] leading-[1.2] flex justify-center items-center p-4 h-[70px] rounded-[10px] shadow-md transition-all duration-500 relative bg-white text-[#555555] z-1 mb-5">
@@ -220,7 +217,7 @@ export default function Register() {
                   Google
                 </span>
               </Link>
-          </div>
+          </div>*/}
         </div>
       </div>
 
