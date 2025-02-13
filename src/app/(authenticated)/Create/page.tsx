@@ -11,6 +11,7 @@ import Image from "next/image";
 import axiosInstance from "@/helper/axios-instance";
 import useAxios from "@/hooks/use-axios";
 import Cookie from "js-cookie";
+import Loading from "./loading";
 
 interface ContentItem {
   id: string;
@@ -135,6 +136,23 @@ const BioEditor = () => {
   //     console.error("Erro ao salvar conteúdo:", error);
   //   }
   // };
+
+
+  
+    if (loadingUser) {
+      return <Loading />;
+    }
+  
+    if (errorUser) {
+      return (
+        <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+          <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">
+            <p className="text-red-500">Erro ao carregar os dados. Tente novamente mais tarde.</p>
+          </div>
+        </div>
+      );
+    }
+  
   
 
   return (
@@ -161,7 +179,7 @@ const BioEditor = () => {
                   <Globe className="w-8 h-8 text-gray-500" />
                   <Input
                     type="url"
-                    className="w-full"
+                    className="w-full text-gray-500" 
                     placeholder="https://exemplo.com"
                     value={item.url}
                     onChange={(e) => updateContent(item.id, item.content, e.target.value)}

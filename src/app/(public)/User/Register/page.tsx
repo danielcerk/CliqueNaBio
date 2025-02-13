@@ -3,12 +3,12 @@
 // Importando a função register
 import { register } from '@/hooks/use-auth';
 import axiosInstance from '@/helper/axios-instance';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { AlertModal } from '@/components/common/AlertModal';
-import Login from '@/app/(public)/user/login/Login';
+import Login from '../login/Login';
 
 export default function Register() {
   const [formData, setFormData] = useState({
