@@ -18,7 +18,7 @@ interface ContentItem {
 interface BioData {
   name: string
   username: string
-  bio: string
+  biografy: string
   profilePicture: string
   content: ContentItem[]
   location: string
@@ -46,7 +46,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
             </Avatar>
             <h2 className="mt-4 text-xl font-semibold">{bioData.name}</h2>
             <p className="text-sm text-gray-500">{bioData.username}</p>
-            <p className="mt-2 text-sm">{bioData.bio}</p>
+            <p className="mt-2 text-sm">{bioData.biografy}</p>
           </div>
 
           <div className="mt-4 space-y-4">

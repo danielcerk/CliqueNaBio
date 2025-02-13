@@ -8,6 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Globe, ImageIcon, Trash2, FileText } from "lucide-react";
 import Image from "next/image";
+import Cookie from "js-cookie"
+
+import axiosInstance from "@/helper/axios-instance";
+
 
 interface ContentItem {
   id: string;
@@ -21,17 +25,46 @@ interface BioData {
   username: string;
   bio: string;
   profilePicture: string;
-  content: ContentItem[];
+  content: ContentItem[]; // Corrigido aqui
   location: string;
 }
 
 const BioEditor = () => {
+
+  const token = Cookie.get('access_token');
+
+  const saveBioData = async () => {
+    try {
+      // Aqui você pode ajustar conforme necessário para enviar os dados ao backend
+      const dataToSend = {
+        name: bioData.name,
+        username: bioData.username,
+        bio: bioData.bio,
+        profile_picture: bioData.profilePicture,
+        content: bioData.content.map(item => ({
+          type: item.type,
+          content: item.content,
+          url: item.url || null,
+        })),
+        location: bioData.location,
+      };
+  
+      const response = await axiosInstance.post("/api/save-bio", dataToSend);
+      if (response.status === 200) {
+        console.log("Bio salva com sucesso!");
+      }
+    } catch (error) {
+      console.error("Erro ao salvar bio", error);
+    }
+  };
+  
+
   const [bioData, setBioData] = useState<BioData>({
     name: "",
     username: "",
     bio: "",
     profilePicture: "",
-    content: [],
+    content: [], // Inicializado como um array vazio de ContentItem
     location: "",
   });
 
@@ -67,7 +100,7 @@ const BioEditor = () => {
       reader.readAsDataURL(e.target.files[0]);
     }
   };
-  
+
   return (
     <div className="max-w-4xl mx-auto px-6 py-10 min-h-screen">
       <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">Editor de Bio</h2>
@@ -92,10 +125,10 @@ const BioEditor = () => {
             <CardContent className="flex flex-col items-center gap-4 ">
               {item.type === "link" && (
                 <>
-                  <Globe className="w-8 h-8 text-gray-500" />
+                  <Globe className="w-8 h-8 text-gray-700" />
                   <Input
                     type="url"
-                    className="w-full"
+                    className="w-full text-gray-700"
                     placeholder="https://exemplo.com"
                     value={item.url}
                     onChange={(e) => updateContent(item.id, item.content, e.target.value)}
@@ -124,9 +157,9 @@ const BioEditor = () => {
 
               {item.type === "text" && (
                 <>
-                  <FileText className="w-8 h-8 text-gray-500" />
+                  <FileText className="w-8 h-8 text-gray-700" />
                   <Textarea
-                    className="w-full"
+                    className="w-full text-gray-700"
                     placeholder="Digite seu texto aqui..."
                     value={item.content}
                     onChange={(e) => updateContent(item.id, e.target.value)}
@@ -150,7 +183,9 @@ const BioEditor = () => {
       </div>
 
       <div className="mt-10 text-center">
-        <Button className="px-6 py-3 text-lg">Salvar Bio</Button>
+        <Button onClick={saveBioData} className="px-6 py-3 text-lg">
+          Salvar Bio
+        </Button>
       </div>
     </div>
   );
