@@ -91,16 +91,19 @@ const PricingTable = () => {
   }
 
   return (
+
     <div className='min-h-screen'>
+
       <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg ">
 
         <h2 className="text-2xl font-semibold mb-6">Seu plano</h2>
 
         {/* Exibindo o plano do usuário */}
         {user ? (
+
           <>
 
-            {/* Planos e suas vantagens */}
+            {/* Planos e suas vantagens  */}
             <div className="space-y-6">
               {user.plan === 'GRÁTIS' && (
                 <div className="p-4 border rounded-md bg-gray-100">
@@ -111,8 +114,8 @@ const PricingTable = () => {
                   </div>
                   <div className="mt-4">
                     <stripe-pricing-table
-                      pricing-table-id="prctbl_1QjUuDRtCzJ3GhkZGdANyUQd"
-                      publishable-key="pk_test_51Pk3r3RtCzJ3GhkZLAt3ExMMW58j7x7GGZcBFftxpwjBjPk7oUW7PY8IhVjHd4xzfdcoSke8vCchWjrMJj7gJB3200594SyOXM"
+                      pricing-table-id={process.env.NEXT_PUBLIC_PRICING_TABLE_ID}
+                      publishable-key={process.env.NEXT_PUBLIC_PUBLISHABLE_KEY}
                     ></stripe-pricing-table>
                   </div>
                 </div>
@@ -126,7 +129,7 @@ const PricingTable = () => {
                     {renderPlanFeatures('Conexão')}
                   </div>
                   <div className="mt-4">
-                    <a href="https://billing.stripe.com/p/login/test_28oaFvb7maFhg1O5kk" target="_blank" className="text-blue-500 hover:underline">
+                    <a href={process.env.NEXT_PUBLIC_LINK_CUSTOMER_PORTAL} target="_blank" className="text-blue-500 hover:underline">
                       Acesse o portal para alterar seu plano ou cancelar sua assinatura
                     </a>
                   </div>
@@ -141,7 +144,7 @@ const PricingTable = () => {
                     {renderPlanFeatures('Influência')}
                   </div>
                   <div className="mt-4">
-                    <a href="https://billing.stripe.com/p/login/test_28oaFvb7maFhg1O5kk" target="_blank" className="text-blue-500 hover:underline">
+                    <a href={process.env.NEXT_PUBLIC_LINK_CUSTOMER_PORTAL} target="_blank" className="text-blue-500 hover:underline">
                       Acesse o portal para alterar seu plano ou cancelar sua assinatura
                     </a>
                   </div>

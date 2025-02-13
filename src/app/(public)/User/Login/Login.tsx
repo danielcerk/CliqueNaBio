@@ -1,10 +1,12 @@
 import { login } from '@/hooks/use-auth';
 import axiosInstance from '@/helper/axios-instance';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { AlertModal } from '@/components/common/AlertModal';
+
+import Cookie from 'js-cookie';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -12,6 +14,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
@@ -26,20 +29,70 @@ export default function Login() {
 
   // Função para realizar o login
   const handleLogin = async () => {
+
     setLoading(true);
+
     try {
+
       const response = await login(axiosInstance, email, password);
-      console.log('Login bem-sucedido:', response);
+
       showAlert('success', 'Login bem-sucedido!');
       router.push('/home');
+
     } catch (error) {
+
       console.error('Erro no login:', error);
+
       setError('Email ou senha inválidos. Tente novamente.');
       showAlert('error', 'Erro! Senha ou email incorretos');
+
     } finally {
-      setLoading(false); // Certifique-se de que o estado de carregamento seja desmarcado
+
+      setLoading(false);
+
     }
   };
+
+  useEffect(() => {
+
+    const formData = new URLSearchParams();
+
+    const code = searchParams.get('code');
+
+    // formData.append('code', code);
+
+    if (code) {
+
+      (async () => {
+        try {
+          
+          const response = await axiosInstance.get(`/api/v1/auth/google/callback/?code=${code}`, {
+            headers: { 'Content-Type': 'application/json' },
+          });
+
+          const jwtData = response.data;
+
+          console.log('Google login sucesso:', jwtData);
+
+          if (jwtData.access && jwtData.refresh) {
+
+            Cookie.set('access_token', jwtData.access, { expires: 1, secure: true });
+            Cookie.set('refresh_token', jwtData.refresh, { expires: 7, secure: true });
+
+            showAlert('success', 'Login com Google bem-sucedido!');
+            router.push('/home');
+
+          } else {
+            showAlert('error', 'Erro ao receber tokens');
+          }
+
+        } catch (err) {
+          console.error('Erro ao autenticar com Google:', err);
+          showAlert('error', 'Erro ao autenticar com Google');
+        }
+      })();
+    }
+  }, [searchParams]);
 
   return (
     <div className="w-full mx-auto">
@@ -110,11 +163,9 @@ export default function Login() {
               <Link href="/user/register">
                 <span className="block text-yellow-500 text-lg">Cadastre-se</span>
               </Link>
-              <span className="mt-3 text-white">ou</span>
-
-              {/* Botão de login com Google */}
+              {/*<span className="mt-3 text-white">ou</span>
               <div className="flex justify-center gap-5 my-5">
-                <Link href="#" className="hover:scale-105 transition-all leading-[1.2] duration-500">
+                <Link href={`https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=${process.env.NEXT_PUBLIC_GOOGLE_CALLBACK_URI}&prompt=consent&response_type=code&client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&scope=openid%20email%20profile&access_type=offline`} className="hover:scale-105 transition-all leading-[1.2] duration-500">
                   <span className="text-[1.125rem] leading-[1.2] flex justify-center items-center p-4 h-[70px] rounded-[10px] shadow-md transition-all duration-500 relative bg-white text-[#555555] z-1 mb-5">
                     <Image
                       src="/icons/icon-google.png"
@@ -126,7 +177,7 @@ export default function Login() {
                     Login com Google
                   </span>
                 </Link>
-              </div>
+              </div>*/}
             </div>
           </form>
         </div>
