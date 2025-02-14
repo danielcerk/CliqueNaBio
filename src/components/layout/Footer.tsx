@@ -27,17 +27,17 @@ export default function Footer(){
           </Link>
         </li>
         <li>
-          <Link href="/terms/privacyPolicy" className="hover:underline me-4 md:me-6">
+          <Link href="/PrivacyPolicy" className="hover:underline me-4 md:me-6">
             Política de Privacidade
           </Link>
         </li>
         <li>
-          <Link href="/terms/termsOfUse" className="hover:underline me-4 md:me-6">
+          <Link href="/TermsOfUse" className="hover:underline me-4 md:me-6">
             Termos de Uso
           </Link>
         </li>
         <li>
-          <Link href="/status" className="hover:underline me-4 md:me-6">
+          <Link href="/Status" className="hover:underline me-4 md:me-6">
             Status
           </Link>
         </li>
@@ -55,3 +55,4 @@ export default function Footer(){
 
   );
 }
+

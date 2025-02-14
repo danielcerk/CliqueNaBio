@@ -8,7 +8,7 @@ import { useState, useEffect } from "react"
 // import { updateUserPassword } from "@/hooks/use-auth"
 import { useRouter } from 'next/navigation';
 import { AlertModal } from '@/components/common/AlertModal';
-import Loading from "../account/loading";
+import Loading from "./loading";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";

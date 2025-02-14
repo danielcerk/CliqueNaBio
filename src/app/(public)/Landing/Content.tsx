@@ -169,7 +169,7 @@ export default function ContentLanding() {
               <Image src="https://placehold.co/800x400.png" alt="Modelos de Link Na Bios feitos com o CliqueNaBio" width={900} height={400} />
             </div>
             <div className="mt-8">
-              <a href="/user/register" className="inline-block px-8 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+              <a href="/Register" className="inline-block px-8 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                 Quero um link na bio Grátis
               </a>
             </div>

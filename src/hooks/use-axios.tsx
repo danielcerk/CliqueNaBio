@@ -1,3 +1,4 @@
+
 import { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios';
 import { useEffect, useState, useMemo } from "react";
 
@@ -12,7 +13,7 @@ type ConfigRequest<T = unknown> = {
 export default function useAxios<T = unknown>(configRequest: ConfigRequest<T>) {
   const { axiosInstance, method, url, othersConfig = {} } = configRequest;
 
-  // Memoize othersConfig to prevent unnecessary re-renders
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const memoizedOthersConfig = useMemo(() => othersConfig, [JSON.stringify(othersConfig)]);
 
   const [data, setData] = useState<T | null>(null); 
@@ -54,4 +55,5 @@ export default function useAxios<T = unknown>(configRequest: ConfigRequest<T>) {
   }, [axiosInstance, method, url, memoizedOthersConfig]); // Use memoizedOthersConfig here
 
   return [data, loading, error] as const;
+
 }

@@ -1,3 +1,4 @@
+
 "use client";
 
 import type React from "react";
@@ -11,6 +12,7 @@ import Image from "next/image";
 import axiosInstance from "@/helper/axios-instance";
 import useAxios from "@/hooks/use-axios";
 import Cookie from "js-cookie";
+import Loading from "./loading";
 
 interface ContentItem {
   id: string;
@@ -28,11 +30,16 @@ interface BioData {
   location: string;
 }
 
+interface UserData {
+  plan?: "GRÁTIS" | "CONEXÃO" | "INFLUÊNCIA"; // Torna 'plan' opcional
+}
+
+
 const BioEditor = () => {
   const token = Cookie.get("access_token");
 
   // Requisição para obter dados do usuário e plano
-  const [userData, loadingUser, errorUser] = useAxios({
+  const [userData, loadingUser, errorUser] = useAxios<UserData>({
     axiosInstance,
     method: "get",
     url: `/api/v1/account/me/`,
@@ -41,7 +48,8 @@ const BioEditor = () => {
         Authorization: `Bearer ${token}`,
       },
     },
-  });
+  }) ?? { plan: "GRÁTIS" }; // Garante um fallback
+  
 
   const [bioData, setBioData] = useState<BioData>({
     name: "",
@@ -56,7 +64,7 @@ const BioEditor = () => {
   const [showErrorModal, setShowErrorModal] = useState(false);
 
   useEffect(() => {
-    if (userData) {
+    if (userData && typeof userData === "object" && "plan" in userData) {
       const plan = userData.plan ?? "GRÁTIS";
       const limits = {
         GRÁTIS: { maxLinks: 3, maxSnaps: 10 },
@@ -110,6 +118,44 @@ const BioEditor = () => {
     }
   };
 
+
+  const saveContent = (item: ContentItem) => {
+    console.log("Salvando conteúdo:", item);
+    // Aqui você pode implementar a lógica para enviar os dados para a API
+  };
+
+  
+  // const saveContent = async (item: ContentItem) => {
+  //   try {
+  //     await axiosInstance.put("/api/v1/content/update", item, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     console.log("Conteúdo salvo com sucesso!");
+  //   } catch (error) {
+  //     console.error("Erro ao salvar conteúdo:", error);
+  //   }
+  // };
+
+
+  
+    if (loadingUser) {
+      return <Loading />;
+    }
+  
+    if (errorUser) {
+      return (
+        <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+          <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">
+            <p className="text-red-500">Erro ao carregar os dados. Tente novamente mais tarde.</p>
+          </div>
+        </div>
+      );
+    }
+  
+  
+
   return (
     <div className="max-w-4xl mx-auto px-6 py-10 min-h-screen">
       <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">Editor de Bio</h2>
@@ -134,7 +180,7 @@ const BioEditor = () => {
                   <Globe className="w-8 h-8 text-gray-500" />
                   <Input
                     type="url"
-                    className="w-full"
+                    className="w-full text-gray-500" 
                     placeholder="https://exemplo.com"
                     value={item.url}
                     onChange={(e) => updateContent(item.id, item.content, e.target.value)}
@@ -207,3 +253,4 @@ const BioEditor = () => {
 };
 
 export default BioEditor;
+
