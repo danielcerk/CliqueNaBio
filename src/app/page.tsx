@@ -11,7 +11,7 @@ import Header from "@/components/layout/Header";
 import SideBar from "@/components/layout/Sidebar";
 import Footer from "@/components/layout/Footer";
 import IconWhatsapp from "@/components/common/IconWhatsapp";
-import Login from "./(public)/User/Login/Login";
+import Login from "./(public)/Login/Login";
 
 
 export default function Page() {
