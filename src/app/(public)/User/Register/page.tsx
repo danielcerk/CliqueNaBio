@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { AlertModal } from '@/components/common/AlertModal';
-import Login from '../login/Login';
+import Login from '../Login/Login';
 
 export default function Register() {
   const [formData, setFormData] = useState({

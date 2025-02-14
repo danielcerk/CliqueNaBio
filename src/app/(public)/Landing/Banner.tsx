@@ -72,7 +72,7 @@ export default function Banner() {
               Personalize, acompanhe e expanda sua presença online.
             </p>
             <br />
-            <Link href="/user/register" className=" bg-blue-500 cursor-pointer text-white w-fit hover:text-black font-semibold text-xl px-8 py-5 rounded-xl uppercase transition-all duration-500 hover:bg-yellow-400 hover:transition-all hover:duration-500" data-aos="zoom-in">
+            <Link href="/User/Register" className=" bg-blue-500 cursor-pointer text-white w-fit hover:text-black font-semibold text-xl px-8 py-5 rounded-xl uppercase transition-all duration-500 hover:bg-yellow-400 hover:transition-all hover:duration-500" data-aos="zoom-in">
               Comece grátis
             </Link>
           </div>

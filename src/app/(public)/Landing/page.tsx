@@ -7,10 +7,10 @@ import dynamic from 'next/dynamic';
 import { Progress } from "@/components/ui/progress";
 
 // Carregamento dinâmico de componentes
-const NoSSRBanner = dynamic(() => import('@/app/(public)/landing/Banner'), { ssr: false });
-const NoSSRScreenPhone = dynamic(() => import('@/app/(public)/landing/ScreenPhone'), { ssr: false });
-const NoSSRContent = dynamic(() => import('@/app/(public)/landing/Content'), { ssr: false });
-const NoSSRFAQ = dynamic(() => import('@/app/(public)/landing/FAQ'), { ssr: false });
+const NoSSRBanner = dynamic(() => import('@/app/(public)/Landing/Banner'), { ssr: false });
+const NoSSRScreenPhone = dynamic(() => import('@/app/(public)/Landing/ScreenPhone'), { ssr: false });
+const NoSSRContent = dynamic(() => import('@/app/(public)/Landing/Content'), { ssr: false });
+const NoSSRFAQ = dynamic(() => import('@/app/(public)/Landing/FAQ'), { ssr: false });
 
 export default function LandingPage() {
   const [progress, setProgress] = useState(0); // Inicialize com 0
