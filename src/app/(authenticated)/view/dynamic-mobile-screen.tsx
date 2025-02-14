@@ -17,7 +17,6 @@ interface ContentItem {
 
 interface BioData {
   name: string
-  username: string
   biografy: string
   profilePicture: string
   content: ContentItem[]
@@ -45,7 +44,6 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
               <AvatarFallback>{bioData.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <h2 className="mt-4 text-xl font-semibold">{bioData.name}</h2>
-            <p className="text-sm text-gray-500">{bioData.username}</p>
             <p className="mt-2 text-sm">{bioData.biografy}</p>
             {bioData.location && (
             <div className="mt-4 flex items-center justify-center text-sm text-gray-500">

@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 type ConfigRequest<T = unknown> = {
   axiosInstance: AxiosInstance;
   method: 'get' | 'post' | 'put' | 'delete'; 
-  url: string;
+  url: string | null;
   othersConfig?: AxiosRequestConfig;
   responseType?: T;
 };
@@ -23,6 +23,12 @@ export default function useAxios<T = unknown>(configRequest: ConfigRequest<T>) {
     const controller = new AbortController();
 
     const fetchData = async () => {
+      if (!url) { // Verifica se `url` é `null` ou `undefined`
+        setError('URL não fornecida.');
+        setLoading(false);
+        return;
+      }
+  
       try {
         const response = await axiosInstance[method](url, {
           ...memoizedOthersConfig,

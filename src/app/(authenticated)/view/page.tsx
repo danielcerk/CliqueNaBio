@@ -5,6 +5,7 @@ import MobileScreen from "./dynamic-mobile-screen"
 import axiosInstance from "@/helper/axios-instance"
 import useAxios from "@/hooks/use-axios"
 import Cookie from "js-cookie"
+import { nanoid } from "nanoid"; // Importe nanoid para gerar chaves únicas
 
 interface ContentItem {
   id: string
@@ -13,19 +14,21 @@ interface ContentItem {
   url?: string 
 }
 
+interface ApiResponse {
+  results: ContentItem[];
+}
+
+
 interface BioData {
   name: string
-  username: string
   biografy: string
   profilePicture: string
   content: ContentItem[]
   location: string
 }
 
-// Interface para userData
 interface UserData {
   name: string
-  username: string
   biografy: string
   profilePicture: string
   location: string
@@ -45,21 +48,19 @@ export default function View() {
     },
   })
 
-  const [linkData, loadingLink, errorLink] = useAxios<ContentItem[]>({
+  const [linkData, loadingLink, errorLink] = useAxios<ApiResponse>({
     axiosInstance,
     method: "get",
-    url: userData ? `/api/v1/account/${userData.username}/link/` : "/api/skip",
+    url: userData ? `/api/v1/account/me/link/` : null, // Use null para pular a requisição
     othersConfig: {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     },
   });
-  
 
   const [bioData, setBioData] = useState<BioData>({
     name: "",
-    username: "",
     biografy: "",
     profilePicture: "",
     content: [],
@@ -71,7 +72,6 @@ export default function View() {
       setBioData((prev) => ({
         ...prev,
         name: userData.name || "",
-        username: userData.username || "O brabo",
         biografy: userData?.biografy || "",
         profilePicture: userData.profilePicture || "",
         location: userData.location || "Serrinha-BA",
@@ -79,23 +79,24 @@ export default function View() {
     }
   }, [userData])
 
-useEffect(() => {
-  if (linkData && Array.isArray(linkData.results)) {
-    console.log("Links carregados:", linkData.results);
-    setBioData((prev) => ({
-      ...prev,
-      content: linkData.results.map((link) => ({
-        id: link.created_by.toString(),
-        type: "link",
-        content: link.url,
-        url: link.url,
-      })),
-    }));
-  } else {
-    console.error("Erro na resposta da API de links: resposta inválida", linkData);
-  }
-}, [linkData]);
-
+  useEffect(() => {
+    if (linkData && Array.isArray(linkData.results)) {
+      console.log("Links carregados:", linkData.results);
+      setBioData((prev) => ({
+        ...prev,
+        content: linkData.results.map((link) => ({
+          id: nanoid(), // Gera uma chave única
+          type: "link",
+          content: link.url || "", // Fornece um valor padrão se link.url for undefined
+          url: link.url || "", // Fornece um valor padrão se link.url for undefined
+        })),
+      }));
+    } else if (linkData === null) {
+      console.log("Requisição de links ignorada (userData não disponível).");
+    } else {
+      console.error("Erro na resposta da API de links: resposta inválida", linkData);
+    }
+  }, [linkData]);
 
   if (loadingUser || loadingLink) {
     return <div>Carregando...</div>
