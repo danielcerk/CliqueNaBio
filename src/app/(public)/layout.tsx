@@ -4,7 +4,7 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
-import Login from "./Login/Login";
+import Login from "./login/Login";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useState, useEffect } from "react";

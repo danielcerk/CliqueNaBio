@@ -1,6 +1,6 @@
 "use client"
 
-import LandingPage from "./(public)/Landing/page";
+import LandingPage from "./(public)/landing/page";
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation"; // Detectar a URL atual
@@ -11,7 +11,7 @@ import Header from "@/components/layout/Header";
 import SideBar from "@/components/layout/Sidebar";
 import Footer from "@/components/layout/Footer";
 import IconWhatsapp from "@/components/common/IconWhatsapp";
-import Login from "./(public)/Login/Login";
+import Login from "./(public)/login/Login";
 
 
 export default function Page() {
