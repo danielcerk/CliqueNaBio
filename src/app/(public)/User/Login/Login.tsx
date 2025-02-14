@@ -3,7 +3,7 @@ import axiosInstance from '@/helper/axios-instance';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
+// import Image from 'next/image';
 import { AlertModal } from '@/components/common/AlertModal';
 
 import Cookie from 'js-cookie';
@@ -34,7 +34,7 @@ export default function Login() {
 
     try {
 
-      const response = await login(axiosInstance, email, password);
+      await login(axiosInstance, email, password);
 
       showAlert('success', 'Login bem-sucedido!');
       router.push('/home');
@@ -55,7 +55,8 @@ export default function Login() {
 
   useEffect(() => {
 
-    const formData = new URLSearchParams();
+    // const formData = new URLSearchParams();
+    
 
     const code = searchParams.get('code');
 
@@ -92,7 +93,7 @@ export default function Login() {
         }
       })();
     }
-  }, [searchParams]);
+  }, [searchParams, router]);
 
   return (
     <div className="w-full mx-auto">
