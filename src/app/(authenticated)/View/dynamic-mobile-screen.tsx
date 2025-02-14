@@ -47,7 +47,15 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
             <h2 className="mt-4 text-xl font-semibold">{bioData.name}</h2>
             <p className="text-sm text-gray-500">{bioData.username}</p>
             <p className="mt-2 text-sm">{bioData.biografy}</p>
+            {bioData.location && (
+            <div className="mt-4 flex items-center justify-center text-sm text-gray-500">
+              <MapPin className="w-4 h-4 mr-1" />
+              <span>{bioData.location}</span>
+            </div>
+          )}
           </div>
+          
+       
 
           <div className="mt-4 space-y-4">
             {bioData.content.map((item) => (
@@ -75,13 +83,6 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
               </div>
             ))}
           </div>
-
-          {bioData.location && (
-            <div className="mt-4 flex items-center justify-center text-sm text-gray-500">
-              <MapPin className="w-4 h-4 mr-1" />
-              <span>{bioData.location}</span>
-            </div>
-          )}
         </ScrollArea>
       </Card>
     </div>

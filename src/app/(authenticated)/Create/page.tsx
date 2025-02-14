@@ -1,17 +1,19 @@
 "use client";
 
-import type React from "react";
 import { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Globe, ImageIcon, Trash2, Save } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import Image from "next/image";
-
-import axiosInstance from "@/helper/axios-instance";
-import useAxios from "@/hooks/use-axios";
 import Cookie from "js-cookie";
 import Loading from "./loading";
+import axiosInstance from "@/helper/axios-instance";
+import useAxios from "@/hooks/use-axios";
+
+// Supondo que você já tenha essas funções importadas
+import { createLink } from "@/hooks/use-links";
+import { createSnap } from "@/hooks/use-snaps";
 
 interface ContentItem {
   id: string;
@@ -30,15 +32,25 @@ interface BioData {
 }
 
 interface UserData {
-  plan?: "GRÁTIS" | "CONEXÃO" | "INFLUÊNCIA"; // Torna 'plan' opcional
+  id: string;  // Adicionando id
+  plan?: "GRÁTIS" | "CONEXÃO" | "INFLUÊNCIA";
+  name?: string;
 }
+
+
+interface LinkData {
+  url: string;
+  social_network: string;
+  username: string;
+  created_by: string;  // Ajuste aqui para 'created_by'
+}
+
 
 
 const BioEditor = () => {
   const token = Cookie.get("access_token");
 
-  // Requisição para obter dados do usuário e plano
-  const [userData, loadingUser, errorUser] = useAxios<UserData>({
+  const [userData, loadingUser, errorUser] = useAxios<UserData | null>({
     axiosInstance,
     method: "get",
     url: `/api/v1/account/me/`,
@@ -47,8 +59,10 @@ const BioEditor = () => {
         Authorization: `Bearer ${token}`,
       },
     },
-  }) ?? { plan: "GRÁTIS" }; // Garante um fallback
-  
+  });
+
+  const username = userData?.name || '';
+  const userId = userData?.id || '';
 
   const [bioData, setBioData] = useState<BioData>({
     name: "",
@@ -62,19 +76,31 @@ const BioEditor = () => {
   const [planLimits, setPlanLimits] = useState({ maxLinks: 0, maxSnaps: 0 });
   const [showErrorModal, setShowErrorModal] = useState(false);
 
-  useEffect(() => {
-    if (userData && typeof userData === "object" && "plan" in userData) {
-      const plan = userData.plan ?? "GRÁTIS";
-      const limits = {
-        GRÁTIS: { maxLinks: 3, maxSnaps: 10 },
-        CONEXÃO: { maxLinks: 6, maxSnaps: 50 },
-        INFLUÊNCIA: { maxLinks: Infinity, maxSnaps: Infinity },
-      };
-
-      setPlanLimits(limits[plan] || limits['GRÁTIS']);
-    }
-  }, [userData]);
-
+  // useEffect(() => {
+  //   if (userData && typeof userData === "object" && "plan" in userData) {
+  //     const plan = userData.plan ?? "GRÁTIS";
+  //     const limits = {
+  //       GRÁTIS: { maxLinks: 3, maxSnaps: 10 },
+  //       CONEXÃO: { maxLinks: 6, maxSnaps: 50 },
+  //       INFLUÊNCIA: { maxLinks: Infinity, maxSnaps: Infinity },
+  //     };
+  //     setPlanLimits(limits[plan] || limits['GRÁTIS']);
+  //   }
+  // }, [userData]);
+  
+    // Verifique se userData existe antes de acessar suas propriedades
+    useEffect(() => {
+      if (userData && typeof userData === "object" && "plan" in userData) {
+        const plan = userData.plan ?? "GRÁTIS";
+        const limits = {
+          GRÁTIS: { maxLinks: 3, maxSnaps: 10 },
+          CONEXÃO: { maxLinks: 6, maxSnaps: 50 },
+          INFLUÊNCIA: { maxLinks: Infinity, maxSnaps: Infinity },
+        };
+        setPlanLimits(limits[plan] || limits['GRÁTIS']);
+      }
+    }, [userData]);
+    
   const addContent = (type: "link" | "photo") => {
     const linksCount = bioData.content.filter((item) => item.type === "link").length;
     const snapsCount = bioData.content.filter((item) => item.type === "photo").length;
@@ -117,43 +143,50 @@ const BioEditor = () => {
     }
   };
 
+  const [loadingSave, setLoadingSave] = useState(false);
 
-  const saveContent = (item: ContentItem) => {
-    console.log("Salvando conteúdo:", item);
-    // Aqui você pode implementar a lógica para enviar os dados para a API
+  const saveContent = async (item: ContentItem) => {
+    setLoadingSave(true); // Mostra um estado de carregamento
+    try {
+      if (item.type === "link") {
+        const linkData = {
+          url: item.url || "",
+          social_network: "Facebook",
+          username: username,
+          create_by: userId,
+        };
+  
+        // Exibe os dados no console antes de chamar a API
+        console.log("Dados do link que serão enviados:", linkData);
+  
+        await createLink(axiosInstance, linkData);
+      } else if (item.type === "photo") {
+        await createSnap({
+          name: "My Snap",
+          image: item.content,
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao salvar conteúdo:", error);
+    } finally {
+      setLoadingSave(false); // Remove o estado de carregamento
+    }
   };
-
   
-  // const saveContent = async (item: ContentItem) => {
-  //   try {
-  //     await axiosInstance.put("/api/v1/content/update", item, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-  //     console.log("Conteúdo salvo com sucesso!");
-  //   } catch (error) {
-  //     console.error("Erro ao salvar conteúdo:", error);
-  //   }
-  // };
 
+  if (loadingUser) {
+    return <Loading />;
+  }
 
-  
-    if (loadingUser) {
-      return <Loading />;
-    }
-  
-    if (errorUser) {
-      return (
-        <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-          <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">
-            <p className="text-red-500">Erro ao carregar os dados. Tente novamente mais tarde.</p>
-          </div>
+  if (errorUser) {
+    return (
+      <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+        <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">
+          <p className="text-red-500">Erro ao carregar os dados. Tente novamente mais tarde.</p>
         </div>
-      );
-    }
-  
-  
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-10 min-h-screen">
@@ -173,15 +206,15 @@ const BioEditor = () => {
       <div className="columns-3 gap-6">
         {bioData.content.map((item) => (
           <Card key={item.id} className="p-4 shadow-md hover:shadow-lg transition-shadow w-fit max-h-fit card-content">
-            <CardContent className="flex flex-col items-center gap-4 ">
+            <CardContent className="flex flex-col items-center gap-4">
               {item.type === "link" && (
                 <>
                   <Globe className="w-8 h-8 text-gray-500" />
                   <Input
                     type="url"
-                    className="w-full text-gray-500" 
+                    className="w-full text-gray-500"
                     placeholder="https://exemplo.com"
-                    value={item.url}
+                    value={item.url || ""}
                     onChange={(e) => updateContent(item.id, item.content, e.target.value)}
                     required
                   />
@@ -216,7 +249,6 @@ const BioEditor = () => {
                   />
                 </>
               )}
-
 
               <Button variant="secondary" size="sm" onClick={() => saveContent(item)}>
                 <Save className="w-4 h-4" /> Salvar
