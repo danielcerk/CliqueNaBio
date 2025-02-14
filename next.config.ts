@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
   experimental: {
     optimizePackageImports: ["@chakra-ui/react"],
   },
@@ -39,11 +40,6 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "br.pinterest.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: 'reqres.in',
         pathname: "/**",
       },
       {

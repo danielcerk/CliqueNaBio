@@ -4,6 +4,20 @@ import "../assets/styles/variables.css";
 import React from "react";
 import Script from 'next/script';
 
+import { Poppins, DM_Serif_Text } from "next/font/google";
+
+// Importando fontes via next/font/google para melhor performance
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
+
+const dmSerif = DM_Serif_Text({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+});
+
 export const metadata = {
   title: "CliqueNaBio | Guarde memórias e experiências em um link na bio",
 };
@@ -74,7 +88,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}
         </Script>
       </head>
-      <body>
+      <body className={`${poppins.className} ${dmSerif.className}`}>
         <main>
             {children}
         </main>
