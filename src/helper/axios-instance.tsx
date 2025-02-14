@@ -6,7 +6,7 @@ let refresh = false;
 
 const axiosInstance = axios.create({
   baseURL: process.env.NODE_ENV === 'production' 
-    ? 'http://api-cliquenabio.vercel.app/'
+    ? 'https://api-cliquenabio.vercel.app/'
     : 'http://127.0.0.1:8000',
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true
