@@ -38,8 +38,17 @@ export default function useAxios<T = unknown>(configRequest: ConfigRequest<T>) {
         setError(null);
       } catch (err: unknown) {
         if (err instanceof AxiosError) {
+          if (err.code === 'ERR_CANCELED') {
+            // A requisição foi abortada, podemos ignorar esse erro
+            return;
+          }
           console.error('Erro na resposta:', err.response);
-          setError(err.response?.data?.message || 'Erro ao processar a resposta da API.');
+          const errorMessage = err.response && err.response.data
+          ? (typeof err.response.data === 'string'
+              ? err.response.data
+              : JSON.stringify(err.response.data))
+          : err.message;
+          setError(errorMessage || 'Erro ao processar a resposta da API.');
         } else if (err instanceof Error) {
           console.error('Erro desconhecido:', err.message);
           setError(err.message);
