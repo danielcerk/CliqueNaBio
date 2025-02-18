@@ -42,7 +42,6 @@ interface LinkData {
   url: string;
   social_network: string;
   username: string;
-  created_by: string;  // Ajuste aqui para 'created_by'
 }
 
 
@@ -62,7 +61,6 @@ const BioEditor = () => {
   });
 
   const username = userData?.name || '';
-  const userId = userData?.id || '';
 
   const [bioData, setBioData] = useState<BioData>({
     name: "",
@@ -76,19 +74,7 @@ const BioEditor = () => {
   const [planLimits, setPlanLimits] = useState({ maxLinks: 0, maxSnaps: 0 });
   const [showErrorModal, setShowErrorModal] = useState(false);
 
-  // useEffect(() => {
-  //   if (userData && typeof userData === "object" && "plan" in userData) {
-  //     const plan = userData.plan ?? "GRÁTIS";
-  //     const limits = {
-  //       GRÁTIS: { maxLinks: 3, maxSnaps: 10 },
-  //       CONEXÃO: { maxLinks: 6, maxSnaps: 50 },
-  //       INFLUÊNCIA: { maxLinks: Infinity, maxSnaps: Infinity },
-  //     };
-  //     setPlanLimits(limits[plan] || limits['GRÁTIS']);
-  //   }
-  // }, [userData]);
-  
-    // Verifique se userData existe antes de acessar suas propriedades
+
     useEffect(() => {
       if (userData && typeof userData === "object" && "plan" in userData) {
         const plan = userData.plan ?? "GRÁTIS";
@@ -152,11 +138,15 @@ const BioEditor = () => {
         const linkData = {
           url: item.url || "",
           social_network: "Facebook",
-          username: username,
-          create_by: userId,
+          username: username
         };
-  
-        // Exibe os dados no console antes de chamar a API
+
+        if (!isValidUrl(linkData.url)) {
+          console.error("URL inválido:", linkData.url);
+          alert("Por favor, insira um URL válido.");
+          return; 
+        }
+      
         console.log("Dados do link que serão enviados:", linkData);
   
         await createLink(axiosInstance, linkData);
@@ -169,15 +159,26 @@ const BioEditor = () => {
     } catch (error) {
       console.error("Erro ao salvar conteúdo:", error);
     } finally {
-      setLoadingSave(false); // Remove o estado de carregamento
+      setLoadingSave(false); 
     }
   };
+
+  function isValidUrl(url: string): boolean {
+    try {
+      new URL(url); 
+      return true; 
+    } catch (error) {
+      console.log(error)
+      return false; 
+    }
+  }
   
 
   if (loadingUser) {
     return <Loading />;
   }
 
+ 
   if (errorUser) {
     return (
       <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
@@ -251,7 +252,7 @@ const BioEditor = () => {
               )}
 
               <Button variant="secondary" size="sm" onClick={() => saveContent(item)}>
-                <Save className="w-4 h-4" /> Salvar
+                <Save className="w-4 h-4" /> {loadingSave ? 'Salvando...' : 'Salvar'}
               </Button>
               <Button
                 variant="destructive"

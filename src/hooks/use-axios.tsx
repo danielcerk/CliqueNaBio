@@ -23,7 +23,7 @@ export default function useAxios<T = unknown>(configRequest: ConfigRequest<T>) {
     const controller = new AbortController();
 
     const fetchData = async () => {
-      if (!url) { // Verifica se `url` é `null` ou `undefined`
+      if (!url) { 
         setError('URL não fornecida.');
         setLoading(false);
         return;

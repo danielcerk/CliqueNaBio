@@ -22,7 +22,7 @@ interface ApiResponse {
 interface BioData {
   name: string
   biografy: string
-  profilePicture: string
+  image: string
   content: ContentItem[]
   location: string
 }
@@ -30,7 +30,7 @@ interface BioData {
 interface UserData {
   name: string
   biografy: string
-  profilePicture: string
+  image: string
   location: string
 }
 
@@ -62,7 +62,7 @@ export default function View() {
   const [bioData, setBioData] = useState<BioData>({
     name: "",
     biografy: "",
-    profilePicture: "",
+    image: "",
     content: [],
     location: "",
   })
@@ -73,7 +73,7 @@ export default function View() {
         ...prev,
         name: userData.name || "",
         biografy: userData?.biografy || "",
-        profilePicture: userData.profilePicture || "",
+        image: userData?.image || "",
         location: userData.location || "Serrinha-BA",
       }))
     }
@@ -108,7 +108,7 @@ export default function View() {
 
   return (
     <div className="flex flex-col lg:flex-row">
-      <div className="mx-auto">
+      <div className="lg:mx-auto">
         <MobileScreen bioData={bioData} />
       </div>
     </div>
