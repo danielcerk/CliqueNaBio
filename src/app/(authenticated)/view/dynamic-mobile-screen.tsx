@@ -148,19 +148,30 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                 )}
 
               
-
-              
                 {item.type === "photo" && (
-                  <div className="relative w-full h-48">
-                    <Image
-                      src={item.content || "/placeholder.svg"}
-                      alt="User uploaded image"
-                      layout="fill"
-                      objectFit="cover"
-                      className="rounded-md"
-                    />
-                  </div>
-                )}
+                    <div className="w-full">
+                      <div className="flex flex-col items-center gap-2">
+                        {/* Exibe a imagem do Snap */}
+                        <div className="relative w-full h-64 border rounded bg-gray-200 shadow-md">
+                          <Image
+                            src={item.url || "/placeholder.svg"}
+                            alt={item.content}
+                            layout="fill"
+                            objectFit="cover"
+                            className="rounded-md"
+                          />
+                        </div>
+
+                        {/* Exibe o nome e a descrição do Snap */}
+                        <div className="mt-3 text-center">
+                          <p className="font-medium text-gray-700">{item.content}</p>
+                          <p className="text-sm text-gray-500">Snap</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+              
+    
                 {item.type === "text" && <p className="text-sm">{item.content}</p>}
               </div>
             ))}

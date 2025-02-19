@@ -10,7 +10,7 @@ import Cookie from "js-cookie";
 import Loading from "./loading";
 import axiosInstance from "@/helper/axios-instance";
 import useAxios from "@/hooks/use-axios";
-
+import { cloudinaryUpload } from "@/hooks/cloudinaryUpload";
 // Supondo que você já tenha essas funções importadas
 import { createLink } from "@/hooks/use-links";
 import { createSnap } from "@/hooks/use-snaps";
@@ -20,6 +20,8 @@ interface ContentItem {
   type: "link" | "photo";
   content: string;
   url?: string;
+  name?: string;
+  small_description?: string;
 }
 
 interface BioData {
@@ -101,11 +103,11 @@ const BioEditor = () => {
     setBioData((prev) => ({ ...prev, content: [...prev.content, newContent] }));
   };
 
-  const updateContent = (id: string, content: string, url?: string) => {
+  const updateContent = (id: string, content: string, url?: string, name?: string, small_description?: string) => {
     setBioData((prev) => ({
       ...prev,
       content: prev.content.map((item) =>
-        item.id === id ? { ...item, content, url: url || item.url } : item
+        item.id === id ? { ...item, content, url: url || item.url, name: name || item.name, small_description: small_description || item.small_description } : item
       ),
     }));
   };
@@ -117,18 +119,21 @@ const BioEditor = () => {
     }));
   };
 
-  const handlePhotoUpload = (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
+
+
+  const handlePhotoUpload = async (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target) {
-          updateContent(id, event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(e.target.files[0]);
+      const file = e.target.files[0];
+  
+      try {
+        const imageUrl = await cloudinaryUpload(file); // Faz o upload da imagem
+        updateContent(id, imageUrl); // Armazena a URL da imagem no estado
+      } catch (error) {
+        console.error("Erro ao fazer upload da imagem:", error);
+        alert("Erro ao fazer upload da imagem. Tente novamente.");
+      }
     }
   };
-
   const [loadingSave, setLoadingSave] = useState(false);
 
   const saveContent = async (item: ContentItem) => {
@@ -138,28 +143,30 @@ const BioEditor = () => {
         const linkData = {
           url: item.url || "",
           social_network: "Facebook",
-          username: username
+          username: username,
         };
-
+  
         if (!isValidUrl(linkData.url)) {
           console.error("URL inválido:", linkData.url);
           alert("Por favor, insira um URL válido.");
-          return; 
+          return;
         }
-      
-        console.log("Dados do link que serão enviados:", linkData);
   
+        console.log("Dados do link que serão enviados:", linkData);
         await createLink(axiosInstance, linkData);
       } else if (item.type === "photo") {
-        await createSnap({
-          name: "My Snap",
-          image: item.content,
-        });
+        const snapData = {
+          name: item.name || "My Snap",
+          small_description: item.small_description || "",
+          image: item.content || "https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg", // Aqui, item.content deve ser a URL da imagem
+        };
+  
+        await createSnap(axiosInstance, snapData);
       }
     } catch (error) {
       console.error("Erro ao salvar conteúdo:", error);
     } finally {
-      setLoadingSave(false); 
+      setLoadingSave(false);
     }
   };
 
@@ -226,8 +233,8 @@ const BioEditor = () => {
                 <>
                   {item.content ? (
                     <Image
-                      key={item.id} // Garante re-renderização ao mudar a imagem
-                      src={item.content} // Base64 ou URL remota
+                      key={item.id}
+                      src={item.content} // URL da imagem
                       alt="Uploaded"
                       width={100}
                       height={100}
@@ -246,6 +253,22 @@ const BioEditor = () => {
                     className="hidden"
                     accept="image/*"
                     onChange={(e) => handlePhotoUpload(item.id, e)}
+                    required
+                  />
+                  <Input
+                    type="text"
+                    className="w-full text-gray-500"
+                    placeholder="Nome do Snap"
+                    value={item.name || ""}
+                    onChange={(e) => updateContent(item.id, item.content, item.url, e.target.value, item.small_description)}
+                    required
+                  />
+                  <Input
+                    type="text"
+                    className="w-full text-gray-500"
+                    placeholder="Descrição pequena do Snap"
+                    value={item.small_description || ""}
+                    onChange={(e) => updateContent(item.id, item.content, item.url, item.name, e.target.value)}
                     required
                   />
                 </>

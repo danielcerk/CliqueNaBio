@@ -1,20 +1,36 @@
-// Função para criar um novo Snap
-export const createSnap = async (snapData: { name: string, small_description?: string, image?: string }) => {
-  const response = await fetch(`/api/v1/account/me/snap/`, {
-      method: 'POST',
+import { AxiosInstance, AxiosError } from 'axios';
+import Cookies from 'js-cookie';
+
+export const createSnap = async ( api: AxiosInstance, snapData: { name: string, small_description?: string, image?: string }) => {
+
+try {
+    const token = Cookies.get("access_token"); // Obtém o token do cookie
+
+    // Adicionando log para verificar os dados antes de enviar
+    console.log("Dados que estão sendo enviados:", snapData);
+
+    const response = await api.post("/api/v1/account/me/snap/", snapData, {
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
       headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(snapData)
-  });
+    });
 
-  if (!response.ok) {
-      throw new Error('Erro ao criar snap');
+    // Exibe os dados recebidos da resposta da API
+    console.log("Dados recebidos da API:", response.data);
+
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      console.error("Erro na requisição:", error.response?.data || error.message);
+    } else {
+      console.error("Erro desconhecido:", error);
+    }
+    throw error;
   }
-
-  return response.json();
 };
+
 
 
 
