@@ -22,8 +22,9 @@ interface ContentItem {
   type: "link" | "photo" | "text"
   content: string
   url?: string
+  small_description?: string
+  updated_at?: string
 }
-
 interface BioData {
   name: string
   biografy: string
@@ -79,102 +80,124 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
             ))}
           </section>
 
-          <div className="mt-10 space-y-4 ">
-            {bioData.content.map((item) => (
-              <div key={item.id} className="border-b pb-4">
-           
-              {item.type === "link" && (
-                  <div className="w-full ">
-                    <Link href={item.url || ""} target="_blank" className="flex flex-col items-center gap-2">
-                      {/* Placeholder para o iframe */}
-                      <div className="w-full h-64 border rounded bg-gray-200 flex items-center justify-center shadow-md">
-                        <span className="text-gray-500">Visualização não disponível</span>
-                      </div>
+          <div className="mt-10">
 
-                      {/* Ícone e nome da plataforma */}
-                      {item.url?.includes("instagram.com") ? (
-                        <div className="flex items-center gap-2 mt-3">
-                          <Image
-                            src="https://i.pinimg.com/236x/ae/a3/35/aea335fd233887bd3057d9a01b111828.jpg"
-                            alt="Instagram"
-                            className="w-5 h-5 rounded-xl object-cover"
-                            width={24} height={24}
-                          />
-                          <span className="text-gray-700">Instagram</span>
-                        </div>
-                      ) : item.url?.includes("facebook.com") ? (
-                        <div className="flex items-center gap-2 mt-3">
-                          <Image
-                            src="https://i.pinimg.com/236x/25/ea/59/25ea5941311b06c6cec08f99bf5d72a5.jpg"
-                            alt="Facebook"
-                            className="w-5 h-5 rounded-xl object-cover"
-                            width={24} height={24}
-                          />
-                          <span className="text-gray-700">Facebook</span>
-                        </div>
-                      ) : item.url?.includes("twitter.com") ? (
-                        <div className="flex items-center gap-2 mt-3">
-                          <Image
-                            src="/caminho/para/twitter-placeholder.jpg"
-                            alt="Twitter"
-                            className="w-5 h-5 rounded-xl object-cover"
-                            width={24} height={24}
-                          />
-                          <span className="text-gray-700">Twitter</span>
-                        </div>
-                      ) : item.url?.includes("youtube.com") ? (
-                        <div className="flex items-center gap-2 mt-3">
-                          <Image
-                            src="https://i.pinimg.com/236x/ca/d6/03/cad6039c053896e2719e664ff6b16705.jpg"
-                            alt="Youtube"
-                            className="w-5 h-5 rounded-xl object-cover"
-                            width={24} height={24}
-                          />
-                          <span className="text-gray-700">Youtube</span>
-                        </div>
-                      ) : item.url?.includes("linkedin.com") ? (
-                        <div className="flex items-center gap-2 mt-3">
-                          <Image
-                            src="/caminho/para/linkedin-placeholder.jpg"
-                            alt="LinkedIn"
-                            className="w-5 h-5 rounded-xl object-cover"
-                            width={24} height={24}
-                          />
-                          <span className="text-gray-700">LinkedIn</span>
-                        </div>
-                      ) : null}
+          <div className="columns-1 gap-6">
+            {bioData.content.map((item) => (
+              <div key={item.id} className=" overflow-hidden flex flex-col items-center">
+                {item.type === "link" && (
+                  <div className="w-full max-w-[90%] mt-5 py-2 transition-transform transform hover:scale-105">
+                    <Link
+                      href={item.url || ""}
+                      target="_blank"
+                      className="flex flex-col items-center gap-2 w-full h-full justify-center "
+                    >
+                      <div className="w-full h-8 border rounded bg-gray-200 flex items-center justify-center shadow">
+                        <span className="text-gray-500 text-sm">Visualização não disponível</span>
+                      </div>
+                      
+                      <div className="flex flex-col items-center gap-2">
+        
+                          {item.url?.includes("instagram.com") && (
+                            <div className="flex items-center gap-2">
+                              <Image
+                                src="https://i.pinimg.com/236x/ae/a3/35/aea335fd233887bd3057d9a01b111828.jpg"
+                                alt="Instagram"
+                                className="w-8 h-8 rounded-xl object-cover"
+                                width={32}
+                                height={32}
+                              />
+                              <span className="text-gray-700 text-sm">Instagram</span>
+                            </div>
+                          )}
+
+                          {item.url?.includes("facebook.com") && (
+                            <div className="flex items-center gap-2">
+                              <Image
+                                src="https://i.pinimg.com/236x/25/ea/59/25ea5941311b06c6cec08f99bf5d72a5.jpg"
+                                alt="Facebook"
+                                className="w-8 h-8 rounded-xl object-cover"
+                                width={32}
+                                height={32}
+                              />
+                              <span className="text-gray-700 text-sm">Facebook</span>
+                            </div>
+                          )}
+
+                          {item.url?.includes("twitter.com") && (
+                            <div className="flex items-center gap-2">
+                              <Image
+                                src="/caminho/para/twitter-placeholder.jpg"
+                                alt="Twitter"
+                                className="w-8 h-8 rounded-xl object-cover"
+                                width={32}
+                                height={32}
+                              />
+                              <span className="text-gray-700 text-sm">Twitter</span>
+                            </div>
+                          )}
+
+                          {item.url?.includes("youtube.com") && (
+                            <div className="flex items-center gap-2">
+                              <Image
+                                src="https://i.pinimg.com/236x/ca/d6/03/cad6039c053896e2719e664ff6b16705.jpg"
+                                alt="Youtube"
+                                className="w-8 h-8 rounded-xl object-cover"
+                                width={32}
+                                height={32}
+                              />
+                              <span className="text-gray-700 text-sm">Youtube</span>
+                            </div>
+                          )}
+
+                          {item.url?.includes("linkedin.com") && (
+                            <div className="flex items-center gap-2">
+                              <Image
+                                src="/caminho/para/linkedin-placeholder.jpg"
+                                alt="LinkedIn"
+                                className="w-8 h-8 rounded-xl object-cover"
+                                width={32}
+                                height={32}
+                              />
+                              <span className="text-gray-700 text-sm">LinkedIn</span>
+                            </div>
+                          )}
+                      </div>
                     </Link>
                   </div>
                 )}
 
-              
-                {item.type === "photo" && (
-                    <div className="w-full">
-                      <div className="flex flex-col items-center gap-2">
-                        {/* Exibe a imagem do Snap */}
-                        <div className="relative w-full h-64 border rounded bg-gray-200 shadow-md">
-                          <Image
-                            src={item.url || "/placeholder.svg"}
-                            alt={item.content}
-                            layout="fill"
-                            objectFit="cover"
-                            className="rounded-md"
-                          />
-                        </div>
-
-                        {/* Exibe o nome e a descrição do Snap */}
-                        <div className="mt-3 text-center">
-                          <p className="font-medium text-gray-700">{item.content}</p>
-                          <p className="text-sm text-gray-500">Snap</p>
-                        </div>
-                      </div>
+                {item.type === "photo" && item.url && (
+                  <div className="w-full rounded-xl max-w-[90%]">
+                    <div className="relative mt-5 w-full aspect-square rounded-lg overflow-hidden transition-transform transform hover:scale-90 cursor-pointer">
+                      <Image
+                        src={item.url}
+                        alt={item.content}
+                        layout="fill"
+                        objectFit="cover"
+                        className="rounded-t-lg"
+                      />
                     </div>
-                  )}
-              
-    
-                {item.type === "text" && <p className="text-sm">{item.content}</p>}
+                    <div className="p-4">
+                      <p className="text-gray-800 font-medium">{item.content}</p>
+                      {item.small_description && (
+                        <p className="text-gray-600 text-sm">{item.small_description}</p>
+                      )}
+                      {item.updated_at && (
+                        <p className="text-gray-500 text-end text-xs">{new Date(item.updated_at).toLocaleDateString()}</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {item.type === "text" && (
+                  <p className="text-sm bg-gray-100 p-4 rounded-lg shadow-inner w-full text-center">{item.content}</p>
+                )}
               </div>
             ))}
+          </div>
+
+
           </div>
         </ScrollArea>
       </Card>
