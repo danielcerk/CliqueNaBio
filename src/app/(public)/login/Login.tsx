@@ -161,7 +161,7 @@ export default function Login() {
 
             {/* Links para cadastro e login com Google */}
             <div className="w-full text-center mt-5">
-              <Link href="/Register">
+              <Link href="/register">
                 <span className="block text-yellow-500 text-lg mb-5">Cadastre-se</span>
               </Link>
               {/*<span className="mt-3 text-white">ou</span>

@@ -2,9 +2,6 @@
 
 import Link from "next/link";
 
-
-
-
 export default function Footer(){
   const currentYear = new Date().getFullYear();
   return (
@@ -27,17 +24,17 @@ export default function Footer(){
           </Link>
         </li>
         <li>
-          <Link href="/PrivacyPolicy" className="hover:underline me-4 md:me-6">
+          <Link href="/privacyPolicy" className="hover:underline me-4 md:me-6">
             Política de Privacidade
           </Link>
         </li>
         <li>
-          <Link href="/TermsOfUse" className="hover:underline me-4 md:me-6">
+          <Link href="/termsOfUse" className="hover:underline me-4 md:me-6">
             Termos de Uso
           </Link>
         </li>
         <li>
-          <Link href="/Status" className="hover:underline me-4 md:me-6">
+          <Link href="/status" className="hover:underline me-4 md:me-6">
             Status
           </Link>
         </li>
