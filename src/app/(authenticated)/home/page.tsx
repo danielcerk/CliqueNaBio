@@ -44,7 +44,7 @@ interface Dashboard {
 export default function Home() {
   const token = Cookie.get('access_token')
 
-  const [dashboard, setDashboard, errorDashboard] = useAxios<Dashboard>({
+  const [dashboard, loadingDashboard, errorDashboard] = useAxios<Dashboard>({
     axiosInstance, 
     method: 'get',
     url: `/api/v1/account/dashboard/`,
@@ -66,7 +66,7 @@ export default function Home() {
       }
     });
 
-  if (setDashboard || loadingUser) {
+  if (loadingDashboard || loadingUser) {
     return <Loading />
   }
 
