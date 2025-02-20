@@ -8,6 +8,7 @@ import { Facebook, Instagram, Twitter, Linkedin, Youtube } from "lucide-react"
 import {  MapPin } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { useState } from "react"
 
 const socialLinks = [
   { href: "https://instagram.com", icon: Instagram, hoverColor: "hover:text-pink-500" },
@@ -18,19 +19,28 @@ const socialLinks = [
 ]
 
 interface ContentItem {
-  id: string
-  type: "link" | "photo" | "text"
-  content: string
-  url?: string
-  small_description?: string
-  updated_at?: string
+  id: string;
+  type: "link" | "photo" | "text";
+  content: string;
+  name: string;
+  small_description: string;
+  image: string;
+  url?: string;
+  owner?: string;
+  title?: string;
+  social_network?: string;
+  username?: string;
+  icon?: string;
+  created_at?: string;
+  updated_at?: string;
 }
+
+
 interface BioData {
   name: string
   biografy: string
   image: string
   content: ContentItem[]
-  location: string
 }
 
 interface MobileScreenProps {
@@ -39,6 +49,13 @@ interface MobileScreenProps {
 
 const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
   console.log("MobileScreen rendering with data:", bioData) // Add this line for debugging
+  const [imageLoaded, setImageLoaded] = useState(true);
+
+  const isImageUrl = (url: string) => {
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
+    return imageExtensions.some((ext) => url.toLowerCase().endsWith(ext));
+  };
+  
 
   return (
     <div className="lg:max-w-6xl mx-auto lg:flex justify-around min-h-screen p-4">
@@ -55,12 +72,6 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
             </Avatar>
             <p className="mt-4 font-medium">{bioData.name}</p>
             <p className="mt-2 text-gray-700 text-sm max-w-[400px] mx-auto">{bioData.biografy}</p>
-            {bioData.location && (
-            <div className="mt-4 flex items-center justify-center text-sm text-gray-500">
-              <MapPin className="w-4 h-4 mr-1" />
-              <span>{bioData.location}</span>
-            </div>
-          )}
           </div>
           
           <section className="flex items-center justify-center gap-6 p-6 rounded-lg ">
@@ -84,90 +95,68 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
           <div className="columns-1 gap-6">
             {bioData.content.map((item) => (
-              <div key={item.id} className=" overflow-hidden flex flex-col items-center">
+              <div key={item.id} className="overflow-hidden flex flex-col items-center">
                 {item.type === "link" && (
                   <div className="w-full max-w-[90%] mt-5 py-2 transition-transform transform hover:scale-105">
                     <Link
                       href={item.url || ""}
                       target="_blank"
-                      className="flex flex-col items-center gap-2 w-full h-full justify-center "
+                      className="flex flex-col items-center gap-2 w-full h-full justify-center"
                     >
-                      <div className="w-full h-8 border rounded bg-gray-200 flex items-center justify-center shadow">
-                        <span className="text-gray-500 text-sm">Visualização não disponível</span>
-                      </div>
-                      
-                      <div className="flex flex-col items-center gap-2">
-        
-                          {item.url?.includes("instagram.com") && (
-                            <div className="flex items-center gap-2">
-                              <Image
-                                src="https://i.pinimg.com/236x/ae/a3/35/aea335fd233887bd3057d9a01b111828.jpg"
-                                alt="Instagram"
-                                className="w-8 h-8 rounded-xl object-cover"
-                                width={32}
-                                height={32}
-                              />
-                              <span className="text-gray-700 text-sm">Instagram</span>
-                            </div>
-                          )}
+                      <div
+                        className={`w-full border rounded p-5 shadow ${
+                          item.url?.includes("instagram.com")
+                            ? "bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 text-white"
+                            : item.url?.includes("facebook.com")
+                            ? "bg-[#1877F2] text-white"
+                            : item.url?.includes("x.com")
+                            ? "bg-[#14171A] text-white"
+                            : item.url?.includes("youtube.com")
+                            ? "bg-[#B31217] text-white"
+                            : item.url?.includes("linkedin.com")
+                            ? "bg-[#0A66C2] text-white"
+                            : "bg-gray-400 text-white"
+                        }`}
+                      >
+                        {isImageUrl(item.url || '') ? (
+                          
+                            <Image
+                              src={item.url || ''}
+                              alt={item.content}
+                              layout="fill"
+                              objectFit="cover"
+                              className="rounded-lg opacity-50"
+                              onLoadingComplete={() => setImageLoaded(true)}
+                              onError={() => setImageLoaded(false)}
+                            />
+                          
+                        ) : null}
 
-                          {item.url?.includes("facebook.com") && (
-                            <div className="flex items-center gap-2">
-                              <Image
-                                src="https://i.pinimg.com/236x/25/ea/59/25ea5941311b06c6cec08f99bf5d72a5.jpg"
-                                alt="Facebook"
-                                className="w-8 h-8 rounded-xl object-cover"
-                                width={32}
-                                height={32}
-                              />
-                              <span className="text-gray-700 text-sm">Facebook</span>
+                        <div className="flex items-center justify-between">
+                          <span className=" max-w-[90%] z-10 text-xl font-semibold">{item.title}</span>
+                          {isImageUrl(item.url || '') ? null : (
+                            <div className="flex flex-col items-center gap-2">
+                              {item.icon && (
+                                <Image
+                                  src={item.icon || ""}
+                                  alt={item.social_network || ""}
+                                  className="w-6 h-6 rounded-xl object-cover"
+                                  width={32}
+                                  height={32}
+                                  objectFit="cover"
+                                  onLoadingComplete={() => setImageLoaded(false)}
+                                  onError={() => setImageLoaded(true)}
+                                />
+                              )}
                             </div>
                           )}
-
-                          {item.url?.includes("twitter.com") && (
-                            <div className="flex items-center gap-2">
-                              <Image
-                                src="/caminho/para/twitter-placeholder.jpg"
-                                alt="Twitter"
-                                className="w-8 h-8 rounded-xl object-cover"
-                                width={32}
-                                height={32}
-                              />
-                              <span className="text-gray-700 text-sm">Twitter</span>
-                            </div>
-                          )}
-
-                          {item.url?.includes("youtube.com") && (
-                            <div className="flex items-center gap-2">
-                              <Image
-                                src="https://i.pinimg.com/236x/ca/d6/03/cad6039c053896e2719e664ff6b16705.jpg"
-                                alt="Youtube"
-                                className="w-8 h-8 rounded-xl object-cover"
-                                width={32}
-                                height={32}
-                              />
-                              <span className="text-gray-700 text-sm">Youtube</span>
-                            </div>
-                          )}
-
-                          {item.url?.includes("linkedin.com") && (
-                            <div className="flex items-center gap-2">
-                              <Image
-                                src="/caminho/para/linkedin-placeholder.jpg"
-                                alt="LinkedIn"
-                                className="w-8 h-8 rounded-xl object-cover"
-                                width={32}
-                                height={32}
-                              />
-                              <span className="text-gray-700 text-sm">LinkedIn</span>
-                            </div>
-                          )}
+                        </div>
                       </div>
                     </Link>
                   </div>
                 )}
 
-                {item.type === "photo" && item.url && (
+                {item.type === "photo" && item.url && isImageUrl(item.url) && (
                   <div className="w-full rounded-xl max-w-[90%]">
                     <div className="relative mt-5 w-full aspect-square rounded-lg overflow-hidden transition-transform transform hover:scale-90 cursor-pointer">
                       <Image
@@ -184,7 +173,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                         <p className="text-gray-600 text-sm">{item.small_description}</p>
                       )}
                       {item.updated_at && (
-                        <p className="text-gray-500 text-end text-xs">{new Date(item.updated_at).toLocaleDateString()}</p>
+                        <p className="text-gray-500 text-end text-xs">Publicado: {new Date(item.updated_at).toLocaleDateString()}</p>
                       )}
                     </div>
                   </div>

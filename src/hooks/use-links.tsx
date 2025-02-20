@@ -1,7 +1,7 @@
 import { AxiosInstance, AxiosError } from 'axios';
 import Cookies from 'js-cookie';
 
-export const createLink = async (api: AxiosInstance, linkData: { url: string; social_network: string; username: string; }) => {
+export const createLink = async (api: AxiosInstance, linkData: { url: string; title: string, social_network: string; username: string; }) => {
   try {
     const token = Cookies.get("access_token"); // Obtém o token do cookie
 
@@ -11,6 +11,7 @@ export const createLink = async (api: AxiosInstance, linkData: { url: string; so
     const response = await api.post("/api/v1/account/me/link/", linkData, {
       headers: {
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
       },
     });
 
