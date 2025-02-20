@@ -16,6 +16,8 @@ interface ContentItem {
   url?: string;
   owner?: string;
   title?: string;
+  og_image?: string;
+  is_profile_link?: boolean;
   social_network?: string;
   username?: string;
   icon?: string;
@@ -84,6 +86,8 @@ export default function View() {
           url: link.url || "",
           owner: link.owner || "",
           title: link.title || "",
+          og_image: link.og_image || "",
+          is_profile_link: link.is_profile_link || false,
           social_network: link.social_network || "",
           username: link.username || "",
           icon: link.icon || "",

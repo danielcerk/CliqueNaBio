@@ -4,19 +4,58 @@ import type React from "react"
 import { Card } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Facebook, Instagram, Twitter, Linkedin, Youtube } from "lucide-react"
+import { 
+  Facebook, Instagram, Twitter, Linkedin, Youtube, Globe, 
+  Github, Twitch, Figma, Dribbble
+} from "lucide-react";
 import {  MapPin } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
 
-const socialLinks = [
-  { href: "https://instagram.com", icon: Instagram, hoverColor: "hover:text-pink-500" },
-  { href: "https://facebook.com", icon: Facebook, hoverColor: "hover:text-blue-600" },
-  { href: "https://twitter.com", icon: Twitter, hoverColor: "hover:text-blue-400" },
-  { href: "https://linkedin.com", icon: Linkedin, hoverColor: "hover:text-blue-700" },
-  { href: "https://youtube.com", icon: Youtube, hoverColor: "hover:text-red-600" },
-]
+const socialIcons = {
+  Facebook: Facebook,
+  Instagram: Instagram,
+  Twitter: Twitter,
+  LinkedIn: Linkedin,
+  TikTok: Globe,
+  YouTube: Youtube,
+  Figma: Figma,
+  Dribbble: Dribbble,
+  Medium: Globe,
+  Behance: Globe,
+  Twitch: Twitch,
+  Reddit: Globe,
+  Bluesky: Globe,
+  GitHub: Github,
+};
+
+const socialPatterns = {
+  Facebook: /facebook\.com\/(?:profile\.php\?id=)?([^\/?&]+)/,
+  Instagram: /instagram\.com\/([^\/?&]+)/,
+  Twitter: /twitter\.com\/([^\/?&]+)/,
+  LinkedIn: /linkedin\.com\/in\/([^\/?&]+)/,
+  TikTok: /tiktok\.com\/@([^\/?&]+)/,
+  YouTube: /youtube\.com\/(?:user|channel)\/([^\/?&]+)/,
+  Figma: /figma\.com\/([^\/?&]+)/,
+  Dribbble: /dribbble\.com\/([^\/?&]+)/,
+  Medium: /medium\.com\/@([^\/?&]+)/,
+  Behance: /behance\.net\/([^\/?&]+)/,
+  Twitch: /twitch\.tv\/([^\/?&]+)/,
+  Reddit: /reddit\.com\/user\/([^\/?&]+)/,
+  Bluesky: /bsky\.app\/profile\/([^\/?&]+)/,
+  GitHub: /github\.com\/([^\/?&]+)/,
+};
+
+const getSocialIcon = (url) => {
+  for (const [name, pattern] of Object.entries(socialPatterns)) {
+    if (pattern.test(url)) {
+      return socialIcons[name] || Globe;
+    }
+  }
+  return Globe;
+};
+
 
 interface ContentItem {
   id: string;
@@ -28,6 +67,8 @@ interface ContentItem {
   url?: string;
   owner?: string;
   title?: string;
+  og_image?: string;
+  is_profile_link?: boolean;
   social_network?: string;
   username?: string;
   icon?: string;
@@ -55,7 +96,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
     const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
     return imageExtensions.some((ext) => url.toLowerCase().endsWith(ext));
   };
-  
+
 
   return (
     <div className="lg:max-w-6xl mx-auto lg:flex justify-around min-h-screen p-4">
@@ -75,20 +116,22 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
           </div>
           
           <section className="flex items-center justify-center gap-6 p-6 rounded-lg ">
-            {socialLinks.map(({ href, icon: Icon, hoverColor }) => (
-              <a
-                key={href}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group"
-                aria-label={`Visit our ${Icon.name} page`}
-              >
-                <Icon
-                  className={`w-7 h-7 text-gray-600 ${hoverColor} transition-all duration-300 transform group-hover:scale-110`}
-                />
-              </a>
-            ))}
+            {bioData.content.map((item) =>
+              item.type === "link" && item.is_profile_link ? (
+                  <a
+                    key={item.url}
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group"
+                  >
+                    {(() => {
+                      const Icon = getSocialIcon(item.url);
+                      return <Icon className="w-6 h-6 text-gray-600" />;
+                    })()}
+                  </a>
+              ) : null
+            )}
           </section>
 
           <div className="mt-10">
@@ -96,13 +139,20 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
           <div className="columns-1 gap-6">
             {bioData.content.map((item) => (
               <div key={item.id} className="overflow-hidden flex flex-col items-center">
-                {item.type === "link" && (
-                  <div className="w-full max-w-[90%] mt-5 py-2 transition-transform transform hover:scale-105">
+                {item.type === "link" && !item.is_profile_link  && (
+                  <div className="w-full max-w-[90%] py-2 transition-transform transform hover:scale-105">
+                    {item.og_image && (
+                        <img 
+                          src={item.og_image} 
+                          alt={`Imagem de Capa do Link de ${item.url} na CliqueNaBio`}
+                          className="w-full h-40 object-cover rounded-t-lg"
+                        />
+                    )}
                     <Link
                       href={item.url || ""}
                       target="_blank"
                       className="flex flex-col items-center gap-2 w-full h-full justify-center"
-                    >
+                    > 
                       <div
                         className={`w-full border rounded p-5 shadow ${
                           item.url?.includes("instagram.com")
@@ -161,7 +211,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                     <div className="relative mt-5 w-full aspect-square rounded-lg overflow-hidden transition-transform transform hover:scale-90 cursor-pointer">
                       <Image
                         src={item.url}
-                        alt={item.content}
+                        alt="Imagem de Capa na CliqueNaBio"
                         layout="fill"
                         objectFit="cover"
                         className="rounded-t-lg"
