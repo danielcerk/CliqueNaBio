@@ -110,7 +110,7 @@ const BioEditor = () => {
       ]);
   
       const links = linkResponse.data.results.map((link: any) => ({
-        id: link?.id || generateUniqueId(), // Garante que o ID exista
+        id: link?.id, 
         type: "link",
         content: link?.url || "",
         url: link?.url || "",
@@ -120,7 +120,7 @@ const BioEditor = () => {
       }));
   
       const snaps = snapResponse.data.results.map((snap: SnapItem) => ({
-        id: snap?.id || generateUniqueId(), // Garante que o ID exista
+        id: snap?.id, 
         type: "photo",
         content: snap?.image || "",
         url: snap?.image || "",
