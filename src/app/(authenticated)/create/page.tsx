@@ -13,6 +13,7 @@ import useAxios from "@/hooks/use-axios";
 import { cloudinaryUpload } from "@/hooks/cloudinaryUpload";
 import { createLink } from "@/hooks/use-links";
 import { createSnap } from "@/hooks/use-snaps";
+import { nanoid } from "nanoid";
 
 interface ContentItem {
   id: string;
@@ -20,17 +21,14 @@ interface ContentItem {
   content: string;
   url?: string;
   name?: string;
-  title?: string; 
+  title?: string;
+  is_profile_link?: boolean;
   small_description?: string;
+  created?: boolean;
 }
 
 interface BioData {
-  name: string;
-  username: string;
-  bio: string;
-  profilePicture: string;
   content: ContentItem[];
-  location: string;
 }
 
 interface UserData {
@@ -39,10 +37,17 @@ interface UserData {
   name?: string;
 }
 
-interface LinkData {
-  url: string;
-  social_network: string;
-  username: string;
+interface SnapItem {
+  id: string;
+  name: string;
+  small_description: string;
+  image: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface SnapApiResponse {
+  results: SnapItem[];
 }
 
 const BioEditor = () => {
@@ -51,7 +56,7 @@ const BioEditor = () => {
   const [userData, loadingUser, errorUser] = useAxios<UserData | null>({
     axiosInstance,
     method: "get",
-    url: `/api/v1/account/me/`,
+    url: "/api/v1/account/me/",
     othersConfig: {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -59,19 +64,19 @@ const BioEditor = () => {
     },
   });
 
-  const username = userData?.name || '';
+  const username = userData?.name || "";
 
   const [bioData, setBioData] = useState<BioData>({
-    name: "",
-    username: "",
-    bio: "",
-    profilePicture: "",
     content: [],
-    location: "",
   });
 
   const [planLimits, setPlanLimits] = useState({ maxLinks: 0, maxSnaps: 0 });
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [loadingSave, setLoadingSave] = useState(false);
+
+  const generateUniqueId = () => `${Date.now()}-${nanoid()}`;
 
   useEffect(() => {
     if (userData && typeof userData === "object" && "plan" in userData) {
@@ -81,29 +86,96 @@ const BioEditor = () => {
         CONEXÃO: { maxLinks: 6, maxSnaps: 50 },
         INFLUÊNCIA: { maxLinks: Infinity, maxSnaps: Infinity },
       };
-      setPlanLimits(limits[plan] || limits['GRÁTIS']);
+      setPlanLimits(limits[plan] || limits["GRÁTIS"]);
+    } else {
+      setPlanLimits({ maxLinks: 3, maxSnaps: 10 }); // Define um valor padrão
     }
   }, [userData]);
 
+  const fetchContent = async () => {
+    try {
+      setLoading(true);
+      const userResponse = await axiosInstance.get("/api/v1/account/me/", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      const userData = userResponse.data;
+      const [linkResponse, snapResponse] = await Promise.all([
+        axiosInstance.get("/api/v1/account/me/link/", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axiosInstance.get("/api/v1/account/me/snap/", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+  
+      const links = linkResponse.data.results.map((link: any) => ({
+        id: link?.id, 
+        type: "link",
+        content: link?.url || "",
+        url: link?.url || "",
+        title: link?.title || "",
+        is_profile_link: link?.is_profile_link || false,
+        created: true,
+      }));
+  
+      const snaps = snapResponse.data.results.map((snap: SnapItem) => ({
+        id: snap?.id, 
+        type: "photo",
+        content: snap?.image || "",
+        url: snap?.image || "",
+        name: snap?.name || "",
+        small_description: snap?.small_description || "",
+        created: true,
+      }));
+  
+      setBioData({
+        content: [...links, ...snaps],
+      });
+    } catch (err) {
+      console.error("Erro ao carregar dados:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchContent();
+  }, [token]);
+
   const addContent = (type: "link" | "photo") => {
-    console.log(planLimits)
     const linksCount = bioData.content.filter((item) => item.type === "link").length;
     const snapsCount = bioData.content.filter((item) => item.type === "photo").length;
-
+  
     if ((type === "link" && linksCount >= planLimits.maxLinks) || (type === "photo" && snapsCount >= planLimits.maxSnaps)) {
       setShowErrorModal(true);
       return;
     }
-
-    const newContent: ContentItem = { id: Date.now().toString(), type, content: "" };
+  
+    const newContent: ContentItem = {
+      id: generateUniqueId(), // Garante que o novo item tenha um ID
+      type,
+      content: "",
+      created: false,
+    };
     setBioData((prev) => ({ ...prev, content: [...prev.content, newContent] }));
   };
 
-  const updateContent = (id: string, content: string, url?:  string, name?: string, title?: string, small_description?: string) => {
+  const updateContent = (
+    id: string,
+    content: string,
+    url?: string,
+    name?: string,
+    title?: string,
+    small_description?: string
+  ) => {
     setBioData((prev) => ({
       ...prev,
       content: prev.content.map((item) =>
-        item.id === id ? { ...item, content, url: url || item.url, name: name ||  item.name, title: title || item.title, small_description: small_description || item.small_description } : item
+        item.id === id
+          ? { ...item, content, url: url || item.url, name: name || item.name, title: title || item.title, small_description: small_description || item.small_description }
+          : item
       ),
     }));
   };
@@ -129,8 +201,6 @@ const BioEditor = () => {
     }
   };
 
-  const [loadingSave, setLoadingSave] = useState(false);
-
   const saveContent = async (item: ContentItem) => {
     setLoadingSave(true);
     try {
@@ -141,14 +211,14 @@ const BioEditor = () => {
           social_network: "",
           username: username,
         };
-
+  
         if (!isValidUrl(linkData.url)) {
           console.error("URL inválido:", linkData.url);
           alert("Por favor, insira um URL válido.");
           return;
         }
-
-        console.log("Dados do link que serão enviados:", linkData);
+  
+        // Salva o link no backend
         await createLink(axiosInstance, linkData);
       } else if (item.type === "photo") {
         const snapData = {
@@ -156,25 +226,100 @@ const BioEditor = () => {
           small_description: item.small_description || "",
           image: item.content || "",
         };
-
+  
+        // Salva o snap no backend
         await createSnap(axiosInstance, snapData);
       }
+  
+      // Recarrega os dados do backend após salvar com sucesso
+      await fetchContent(); // Chama a função que busca os dados do backend
     } catch (error) {
       console.error("Erro ao salvar conteúdo:", error);
+      alert("Erro ao salvar conteúdo. Tente novamente.");
+    } finally {
+      setLoadingSave(false);
+    }
+  };
+  
+  const isValidUrl = (url: string): boolean => {
+    try {
+      new URL(url);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
+
+  const updateItem = async (item: ContentItem) => {
+    setLoadingSave(true);
+    try {
+      if (item.type === "link") {
+        const linkData = {
+          url: item.url || "",
+          title: item.title || "",
+          social_network: "",
+          username: username,
+        };
+  
+        if (!isValidUrl(linkData.url)) {
+          console.error("URL inválido:", linkData.url);
+          alert("Por favor, insira um URL válido.");
+          return;
+        }
+  
+        const numericId = item.id.split("-")[0]; // Extrai a parte numérica do ID
+          await axiosInstance.put(`/api/v1/account/me/link/${numericId}/`, linkData, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+      } else if (item.type === "photo") {
+        const snapData = {
+          name: item.name || "My Snap",
+          small_description: item.small_description || "",
+          image: item.content || "",
+        };
+  
+        await axiosInstance.put(`/api/v1/account/me/snap/${item.id}/`, snapData, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+      alert("Item atualizado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao atualizar conteúdo:", error);
+      alert("Erro ao atualizar conteúdo. Tente novamente.");
     } finally {
       setLoadingSave(false);
     }
   };
 
-  function isValidUrl(url: string): boolean {
-    try {
-      new URL(url);
-      return true;
-    } catch (error) {
-      console.log(error)
-      return false;
-    }
-  }
+
+    const deleteItem = async (id: string | number, type: "link" | "photo") => {
+      const stringId = id.toString(); 
+      const numericId = stringId.split("-")[0];
+      console.log("Tentando excluir item com ID:", numericId);
+      console.log("Endpoint:", type === "link" ? `/api/v1/account/me/link/${numericId}/` : `/api/v1/account/me/snap/${numericId}/`);
+      console.log("Token:", token);
+      try {
+        if (type === "link") {
+          await axiosInstance.delete(`/api/v1/account/me/link/${numericId}/`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+        } else if (type === "photo") {
+          await axiosInstance.delete(`/api/v1/account/me/snap/${numericId}/`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+        }
+        setBioData((prev) => ({
+          ...prev,
+          content: prev.content.filter((item) => item.id !== id), // Mantém o ID original no estado
+        }));
+        alert("Item excluído com sucesso!");
+      } catch (error) {
+        console.error("Erro ao excluir conteúdo:", error);
+        alert("Erro ao excluir conteúdo. Tente novamente.");
+      }
+    };
 
   if (loadingUser) {
     return <Loading />;
@@ -203,92 +348,208 @@ const BioEditor = () => {
         </Button>
       </div>
 
-      <div className="columns-3 gap-6">
-        {bioData.content.map((item) => (
-          <Card key={item.id} className="p-4 shadow-md hover:shadow-lg transition-shadow w-fit max-h-fit card-content">
-            <CardContent className="flex flex-col items-center gap-4">
-              {item.type === "link" && (
-                <>
-                  <Globe className="w-8 h-8 text-gray-500" />
-                  <Input
-                    type="url"
-                    className="w-full text-gray-500"
-                    placeholder="https://exemplo.com"
-                    value={item.url || ""}
-                    onChange={(e) => updateContent(item.id, item.content, e.target.value)}
-                    required
-                  />
-                  <Input
-                    type="text"
-                    className="w-full text-gray-500 mt-2"
-                    placeholder="Título do Link"
-                    value={item.title || ""}
-                    onChange={(e) => updateContent(item.id, item.content, item.url, item.title, e.target.value)}
-                    required
-                  />
-                </>
-              )}
+      <div className="flex flex-col-reverse">
+        {/* Itens Criados (Renderizados) */}
+        <div>
+          <h2 className="text-lg font-semibold mb-4">Itens Criados</h2>
+          <div className="columns-3 gap-6">
+            {bioData.content
+              .filter((item) => item && item.id && item.created && (item.type !== "link" || !item.is_profile_link)) // Filtra itens válidos
+              .map((item) => (
+                <Card key={item.id} className="p-4 shadow-md hover:shadow-lg transition-shadow w-fit max-h-fit card-content">
+                  <CardContent className="flex flex-col items-center gap-4">
+                    {item.type === "link" && (
+                      <>
+                        <Globe className="w-8 h-8 text-gray-500" />
+                        <Input
+                          type="url"
+                          className="w-full text-gray-500"
+                          placeholder="https://exemplo.com"
+                          value={item.url || ""}
+                          onChange={(e) => updateContent(item.id, item.content, e.target.value)}
+                          required
+                        />
+                        <Input
+                          type="text"
+                          className="w-full text-gray-500 mt-2"
+                          placeholder="Título do Link"
+                          value={item.title || ""}
+                          onChange={(e) =>
+                            updateContent(item.id, item.content, item.url, item.title, e.target.value)
+                          }
+                          required
+                        />
+                      </>
+                    )}
+                    {item.type === "photo" && (
+                      <>
+                        {item.content ? (
+                          <Image
+                            key={item.id}
+                            src={item.content}
+                            alt="Uploaded"
+                            width={100}
+                            height={100}
+                            className="rounded-md object-cover"
+                            unoptimized
+                          />
+                        ) : (
+                          <label htmlFor={`file-input-${item.id}`} className="cursor-pointer flex flex-col items-center">
+                            <ImageIcon className="w-10 h-10 text-gray-500" />
+                            <span className="text-gray-600 text-sm">Enviar uma imagem</span>
+                          </label>
+                        )}
+                        <input
+                          id={`file-input-${item.id}`}
+                          type="file"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={(e) => handlePhotoUpload(item.id, e)}
+                          required
+                        />
+                        <Input
+                          type="text"
+                          className="w-full text-gray-500"
+                          placeholder="Nome do Snap"
+                          value={item.name || ""}
+                          onChange={(e) =>
+                            updateContent(item.id, item.content, item.url, e.target.value, item.small_description)
+                          }
+                          required
+                        />
+                        <Input
+                          type="text"
+                          className="w-full text-gray-500"
+                          placeholder="Descrição pequena do Snap"
+                          value={item.small_description || ""}
+                          onChange={(e) =>
+                            updateContent(item.id, item.content, item.url, item.name, item.small_description, e.target.value)
+                          }
+                          required
+                        />
+                      </>
+                    )}
 
-              {item.type === "photo" && (
-                <>
-                  {item.content ? (
-                    <Image
-                      key={item.id}
-                      src={item.content}
-                      alt="Uploaded"
-                      width={100}
-                      height={100}
-                      className="rounded-md object-cover"
-                      unoptimized
-                    />
-                  ) : (
-                    <label htmlFor={`file-input-${item.id}`} className="cursor-pointer flex flex-col items-center">
-                      <ImageIcon className="w-10 h-10 text-gray-500" />
-                      <span className="text-gray-600 text-sm">Enviar uma imagem</span>
-                    </label>
-                  )}
-                  <input
-                    id={`file-input-${item.id}`}
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={(e) => handlePhotoUpload(item.id, e)}
-                    required
-                  />
-                  <Input
-                    type="text"
-                    className="w-full text-gray-500"
-                    placeholder="Nome do Snap"
-                    value={item.name || ""}
-                    onChange={(e) => updateContent(item.id, item.content, item.url, e.target.value, item.small_description)}
-                    required
-                  />
-                  <Input
-                    type="text"
-                    className="w-full text-gray-500"
-                    placeholder="Descrição pequena do Snap"
-                    value={item.small_description || ""}
-                    onChange={(e) => updateContent(item.id, item.content, item.url, item.name, item.small_description, e.target.value)}
-                    required
-                  />
-                </>
-              )}
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => item.created ? updateItem(item) : saveContent(item)}
+                    >
+                      <Save className="w-4 h-4" /> {loadingSave ? "Salvando..." : "Salvar"}
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="w-full flex items-center gap-2"
+                      onClick={() => deleteItem(item.id, item.type)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Remover
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+          </div>
+        </div>
 
-              <Button variant="secondary" size="sm" onClick={() => saveContent(item)}>
-                <Save className="w-4 h-4" /> {loadingSave ? 'Salvando...' : 'Salvar'}
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                className="w-full flex items-center gap-2"
-                onClick={() => removeContent(item.id)}
-              >
-                <Trash2 className="w-4 h-4" />
-                Remover
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
+        {/* Novos Itens */}
+        <div>
+          <h2 className="text-lg font-semibold mb-4">Criar Novo Item</h2>
+          <div className="columns-3 gap-6">
+            {bioData.content
+              .filter((item) => item && item.id && !item.created) // Filtra itens válidos e não criados
+              .map((item) => (
+                <Card key={item.id} className="p-4 shadow-md hover:shadow-lg transition-shadow w-fit max-h-fit card-content">
+                  <CardContent className="flex flex-col items-center gap-4">
+                    {item.type === "link" && (
+                      <>
+                        <Globe className="w-8 h-8 text-gray-500" />
+                        <Input
+                          type="url"
+                          className="w-full text-gray-500"
+                          placeholder="https://exemplo.com"
+                          value={item.url || ""}
+                          onChange={(e) => updateContent(item.id, item.content, e.target.value)}
+                          required
+                        />
+                        <Input
+                          type="text"
+                          className="w-full text-gray-500 mt-2"
+                          placeholder="Título do Link"
+                          value={item.title || ""}
+                          onChange={(e) =>
+                            updateContent(item.id, item.content, item.url, item.title, e.target.value)
+                          }
+                          required
+                        />
+                      </>
+                    )}
+                    {item.type === "photo" && (
+                      <>
+                        {item.content ? (
+                          <Image
+                            key={item.id}
+                            src={item.content}
+                            alt="Uploaded"
+                            width={100}
+                            height={100}
+                            className="rounded-md object-cover"
+                            unoptimized
+                          />
+                        ) : (
+                          <label htmlFor={`file-input-${item.id}`} className="cursor-pointer flex flex-col items-center">
+                            <ImageIcon className="w-10 h-10 text-gray-500" />
+                            <span className="text-gray-600 text-sm">Enviar uma imagem</span>
+                          </label>
+                        )}
+                        <input
+                          id={`file-input-${item.id}`}
+                          type="file"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={(e) => handlePhotoUpload(item.id, e)}
+                          required
+                        />
+                        <Input
+                          type="text"
+                          className="w-full text-gray-500"
+                          placeholder="Nome do Snap"
+                          onChange={(e) =>
+                            updateContent(item.id, item.content, item.url, e.target.value, item.small_description)
+                          }
+                          required
+                        />
+                        <Input
+                          type="text"
+                          className="w-full text-gray-500"
+                          placeholder="Descrição pequena do Snap"
+                          value={item.small_description || ""}
+                          onChange={(e) =>
+                            updateContent(item.id, item.content, item.url, item.name, item.small_description, e.target.value)
+                          }
+                          required
+                        />
+                      </>
+                    )}
+
+                    <Button variant="secondary" size="sm" className="w-full" onClick={() => saveContent(item)}>
+                      <Save className="w-4 h-4" /> {loadingSave ? "Salvando..." : "Salvar"}
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="w-full flex items-center gap-2"
+                      onClick={() => removeContent(item.id)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Remover
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+          </div>
+        </div>
       </div>
 
       {showErrorModal && (
@@ -298,7 +559,9 @@ const BioEditor = () => {
             <p className="text-gray-700 mt-2">
               Você atingiu o limite do seu plano. Considere fazer um upgrade para adicionar mais itens.
             </p>
-            <Button className="mt-4" onClick={() => setShowErrorModal(false)}>Fechar</Button>
+            <Button className="mt-4" onClick={() => setShowErrorModal(false)}>
+              Fechar
+            </Button>
           </div>
         </div>
       )}
@@ -307,3 +570,4 @@ const BioEditor = () => {
 };
 
 export default BioEditor;
+

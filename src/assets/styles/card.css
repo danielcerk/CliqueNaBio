@@ -26,3 +26,17 @@
 }
 
 
+.container {
+  columns: 2;
+  column-gap: 0;
+  max-width: 500px;
+}
+
+.item {
+  break-inside: avoid; /* Evita que o item seja quebrado entre colunas */
+  margin-bottom: 1rem;
+}
+
+.item.large {
+  column-span: all; /* Força o item a ocupar a largura total */
+}
