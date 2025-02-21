@@ -314,7 +314,9 @@ export default function EditAccount() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="username">Nome de usuário</Label>
+                  <Label htmlFor="username">Nome de usuário 
+                    <Label className="text-black opacity-50 text-[13px]">Seu nome de usuário servirá para acessar o seu perfil.</Label>
+                  </Label>
                   <Input
                     className="text-gray-800"
                     type="text"

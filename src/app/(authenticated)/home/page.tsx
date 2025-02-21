@@ -1,6 +1,16 @@
 "use client";
 
-import { Bar, BarChart, ResponsiveContainer, LabelList } from "recharts"
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  LabelList,
+} from 'recharts';
+
 import { Users } from "lucide-react"
 import type React from "react"
 
@@ -131,9 +141,11 @@ export default function Home() {
               {chartData.length > 0 ? (
                 <ResponsiveContainer width="100%" height={350}>
                   <BarChart data={chartData}>
+                    <XAxis dataKey="date" />
                     <Bar dataKey="views" fill="#facc15" radius={[4, 4, 0, 0]}>
-                      <LabelList dataKey="date" position="top" />
+                      <LabelList dataKey="views" position="top" />
                     </Bar>
+                    <Tooltip />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
@@ -141,6 +153,7 @@ export default function Home() {
               )}
             </CardContent>
           </Card>
+
 
           <Card className="col-span-3">
             <CardHeader>
