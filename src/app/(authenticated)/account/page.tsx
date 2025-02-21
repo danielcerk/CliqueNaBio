@@ -188,14 +188,13 @@ export default function Account() {
             />
           </div>
           <div className="text-center sm:text-left">
-            <CardTitle className="text-2xl uppercase font-semibold">{user?.name}</CardTitle>
+            <CardTitle className="text-2xl capitalize font-semibold">{user?.name}</CardTitle>
             <CardDescription className="text-lg">{user?.email}</CardDescription>
-            <CardDescription className="text-lg">{user?.phone}</CardDescription>
           </div>
         </CardHeader>
         <CardContent className="pb-1">
           <p className="font-semibold text-xl">Biografia:</p>
-          <p className="text-muted-foreground mt-3">{user?.biografy}</p>
+          <p className="text-muted-foreground mt-3 capitalize">{user?.biografy}</p>
         </CardContent>
         { user?.plan !== 'GRÁTIS' ? ( 
           <CardContent className="space-y-4">
