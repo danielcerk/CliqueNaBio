@@ -1,3 +1,4 @@
+
 import { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios';
 import { useEffect, useState, useMemo } from "react";
 
@@ -69,4 +70,5 @@ export default function useAxios<T = unknown>(configRequest: ConfigRequest<T>) {
   }, [axiosInstance, method, url, memoizedOthersConfig]); // Use memoizedOthersConfig here
 
   return [data, loading, error] as const;
+
 }
