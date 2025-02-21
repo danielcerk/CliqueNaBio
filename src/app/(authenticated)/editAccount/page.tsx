@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { AlertModal } from '@/components/common/AlertModal';
 import Loading from "./loading";
 import Link from "next/link";
+import { createLink } from "@/hooks/use-links";
 
 import { Button } from "@/components/ui/button";
 
@@ -40,7 +41,7 @@ export default function EditAccount() {
     first_name: string;
     last_name: string;
     email: string;
-    biografy?: string; // 'biografy' é opcional
+    biografy?: string;
   }
 
   interface FormData {
@@ -73,9 +74,7 @@ export default function EditAccount() {
     biografy: user?.biografy || '',
   });
 
-  // const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  // const [confirmPassword, setConfirmPassword] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"success" | "error" | "info">("success");
   const [modalMessage, setModalMessage] = useState("");
@@ -113,13 +112,11 @@ export default function EditAccount() {
         console.error("Token não encontrado.");
         return;
       }
-
       await axiosInstance.delete("/api/v1/account/me/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
       Cookie.remove("access_token");
       router.push("/");
       console.log("Conta excluída com sucesso.");
@@ -130,13 +127,10 @@ export default function EditAccount() {
 
   const handleAccountSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    // Verifica se os campos essenciais não estão vazios
     if (!formData.name || !formData.email) {
       showAlert("error", "O nome e o e-mail não podem estar em branco.");
       return;
     }
-  
     const data = {
       name: formData.name,
       first_name: formData.first_name,
@@ -153,7 +147,6 @@ export default function EditAccount() {
             'Content-Type': 'application/json',
           },
         });
-  
         console.log("Dados atualizados com sucesso");
         showAlert("success", "Dados atualizados com sucesso.");
       }
@@ -163,38 +156,22 @@ export default function EditAccount() {
     }
   };
   
-
   const handlePasswordSubmit = async (e: React.FormEvent) => {
-
     e.preventDefault();
-
     setIsSaving(true);
-
     try {
-
       await updateUserPassword(axiosInstance, newPassword);
-
       showAlert("success", "Senha alterada com sucesso!");
       router.push("/Home");
-
     } catch (error) {
-
       if (error instanceof Error) {
-
         showAlert("error", "Erro ao atualizar a senha: " + error.message);
-
       } else {
-
         showAlert("error", "Erro desconhecido");
-
       }
-
     } finally {
-
       setIsSaving(false);
-      
     }
-    
   };
 
 
@@ -219,6 +196,64 @@ export default function EditAccount() {
       }
     }
   };
+
+
+  
+    // Definição dos valores pré-definidos para as redes sociais
+    const socialNetworks = {
+      Facebook: "Facebook",
+      Instagram: "Instagram",
+      Twitter: "Twitter",
+      LinkedIn: "Linkedin",
+      TikTok: "Globe",
+      YouTube: "Youtube",
+      Figma: "Figma",
+      Dribbble: "Dribbble",
+      Medium: "Globe",
+      Behance: "Globe",
+      Twitch: "Twitch",
+      Reddit: "Globe",
+      Bluesky: "Globe",
+      GitHub: "Github",
+      Pinterest: "Pinterest", // Adicione o Pinterest aqui
+    };
+
+    interface LinkFormProps {
+      api: AxiosInstance; // Passando a instância do Axios como prop
+    }
+
+
+    const [url, setUrl] = useState("");
+    const [username, setUsername] = useState("");
+    const [socialNetwork, setSocialNetwork] = useState("Facebook"); // Valor padrão
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+
+      // Dados do link
+      const linkData = {
+        url,
+        title: socialNetworks[socialNetwork as keyof typeof socialNetworks], // Título baseado na rede social
+        social_network: socialNetwork,
+        username,
+        is_profile_link: true, // Definido como true para todos os links criados
+      };
+
+      try {
+        const response = await createLink(axiosInstance, linkData);
+        console.log("Link criado com sucesso:", response);
+        alert("Link criado com sucesso!");
+        // Limpar o formulário após a criação
+        setUrl("");
+        setUsername("");
+        setSocialNetwork("Facebook");
+      } catch (error) {
+        console.error("Erro ao criar o link:", error);
+        alert("Erro ao criar o link. Verifique o console para mais detalhes.");
+      }
+    };
+  
+
   
 
   if (loadingUser) {
@@ -247,8 +282,9 @@ export default function EditAccount() {
       </div>
 
       <Tabs defaultValue="account" className="w-[400px]">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="account">Conta</TabsTrigger>
+          <TabsTrigger value="social_media">Redes Sociais</TabsTrigger>
           <TabsTrigger value="password">Senha</TabsTrigger>
         </TabsList>
 
@@ -316,6 +352,57 @@ export default function EditAccount() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="social_media">
+          <Card>
+            <CardHeader>
+              <CardDescription>Inclua e altere suas Redes Sociais aqui.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <div className="space-y-1">
+                  <Label htmlFor="socialNetwork">Rede Social:</Label>
+                  <select
+                    id="socialNetwork"
+                    value={socialNetwork}
+                    onChange={(e) => setSocialNetwork(e.target.value)}
+                    className="text-gray-800 p-2"
+                  >
+                    {Object.entries(socialNetworks).map(([key, value]) => (
+                      <option key={key} value={key}>
+                        {key}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="url">URL:</Label>
+                  <Input
+                    className="text-gray-800"
+                    type="url"
+                    id="url"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="username">Nome</Label>
+                  <Input
+                    className="text-gray-800"
+                    type="text"
+                    id="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                  />
+                </div>
+                
+                <Button type="submit">Criar Link</Button>
+              </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="password">
           <Card>
             <CardHeader>
@@ -323,16 +410,6 @@ export default function EditAccount() {
             </CardHeader>
             <CardContent className="space-y-2">
               <form onSubmit={handlePasswordSubmit}>
-                {/*<div className="space-y-1">
-                  <Label htmlFor="current">Senha atual</Label>
-                  <Input
-                    className="text-gray-800"
-                    id="current"
-                    type="password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                  />
-                </div>*/}
                 <div className="space-y-1">
                   <Label htmlFor="new">Nova senha</Label>
                   <Input
@@ -343,16 +420,6 @@ export default function EditAccount() {
                     onChange={(e) => setNewPassword(e.target.value)}
                   />
                 </div>
-                {/*<div className="space-y-1">
-                  <Label htmlFor="confirm">Confirmar senha</Label>
-                  <Input
-                    className="text-gray-800"
-                    id="confirm"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                  />
-                </div>*/}
 
                 <CardFooter className="mt-4 p-0">
                   <Button type="submit" disabled={isSaving}>

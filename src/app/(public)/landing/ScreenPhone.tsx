@@ -35,7 +35,7 @@ export default function ScreenPhone() {
   <div className={`transition-all duration-500 max-h-[450px] relative ${
       scrolling > 0 ? "bg-yellow-400" : "bg-[#F8F8F8]"
     }`}>
-      <video 
+      {/* <video 
         className="absolute top-0 left-0 w-full h-full object-cover z-[-1]" 
         autoPlay 
         loop 
@@ -44,7 +44,7 @@ export default function ScreenPhone() {
       >
         <source src="/videos/banner.mp4" type="video/mp4" />
         Seu navegador não suporta o formato de vídeo.
-      </video>
+      </video> */}
       
       <div className={`flex flex-col lg:flex-row gap-5 lg:gap-0 justify-center items-center max-w-6xl mx-auto text-left transition-all duration-500 ${
         scrolling > 0 ? "animate-screen-phone" : "animate-screen-phone-off"
