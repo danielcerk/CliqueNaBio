@@ -1,14 +1,29 @@
 import { AxiosInstance, AxiosError } from 'axios';
 import Cookies from 'js-cookie';
 
-export const createLink = async (api: AxiosInstance, linkData: { url: string; title: string, social_network: string; username: string; }) => {
+export const createLink = async (
+  api: AxiosInstance,
+  linkData: {
+    url: string;
+    title: string;
+    social_network: string;
+    username: string;
+    is_profile_link?: boolean; // Atributo opcional
+  }
+) => {
   try {
     const token = Cookies.get("access_token"); // Obtém o token do cookie
 
     // Adicionando log para verificar os dados antes de enviar
     console.log("Dados que estão sendo enviados:", linkData);
 
-    const response = await api.post("/api/v1/account/me/link/", linkData, {
+    // Definindo valores padrão para atributos opcionais
+    const payload = {
+      ...linkData,
+      is_profile_link: linkData.is_profile_link || false, // Valor padrão caso não seja fornecido
+    };
+
+    const response = await api.post("/api/v1/account/me/link/", payload, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -27,8 +42,7 @@ export const createLink = async (api: AxiosInstance, linkData: { url: string; ti
     }
     throw error;
   }
-}
-
+};
 
 
 

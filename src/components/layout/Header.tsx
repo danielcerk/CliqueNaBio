@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -73,7 +74,7 @@ const Header = ({ openModalLogin }: HeaderProps) => {
                   className="py-2 px-4 font-medium bg-yellow-400 text-gray-900 rounded-xl transition-all hover:bg-yellow-300"
                   onClick={openModalLogin}
                 >
-                  Entrar <i className="fa-solid fa-door-open"></i>
+                  Quero criar <i className="fa-solid fa-door-open"></i>
                 </button>
               )}
             </div>

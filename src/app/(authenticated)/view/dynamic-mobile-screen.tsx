@@ -8,10 +8,10 @@ import {
   Facebook, Instagram, Twitter, Linkedin, Youtube, Globe, 
   Github, Twitch, Figma, Dribbble
 } from "lucide-react";
-import {  MapPin } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
+import type { LucideProps } from 'lucide-react';
 
 const socialIcons = {
   Facebook: Facebook,
@@ -30,7 +30,7 @@ const socialIcons = {
   GitHub: Github,
 };
 
-const socialPatterns = {
+const socialPatterns: Record<SocialIconKey, RegExp> = {
   Facebook: /facebook\.com\/(?:profile\.php\?id=)?([^\/?&]+)/,
   Instagram: /instagram\.com\/([^\/?&]+)/,
   Twitter: /twitter\.com\/([^\/?&]+)/,
@@ -47,10 +47,12 @@ const socialPatterns = {
   GitHub: /github\.com\/([^\/?&]+)/,
 };
 
-const getSocialIcon = (url) => {
+type SocialIconKey = keyof typeof socialIcons;
+
+const getSocialIcon = (url: string): React.ComponentType<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>> => {
   for (const [name, pattern] of Object.entries(socialPatterns)) {
     if (pattern.test(url)) {
-      return socialIcons[name] || Globe;
+      return socialIcons[name as SocialIconKey] || Globe;
     }
   }
   return Globe;
@@ -126,7 +128,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                     className="group"
                   >
                     {(() => {
-                      const Icon = getSocialIcon(item.url);
+                      const Icon = getSocialIcon(item.url || "");
                       return <Icon className="w-6 h-6 text-gray-600" />;
                     })()}
                   </a>
@@ -136,16 +138,18 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
           <div className="mt-10">
 
-          <div className="columns-1 gap-6">
+          <div className="columns-1 gap-6 max-w-[500px]">
             {bioData.content.map((item) => (
               <div key={item.id} className="overflow-hidden flex flex-col items-center">
                 {item.type === "link" && !item.is_profile_link  && (
-                  <div className="w-full max-w-[90%] py-2 transition-transform transform hover:scale-105">
+                  <div className="w-full mt-5 cursor-pointer max-w-[90%] py-2 transition-transform transform hover:scale-105">
                     {item.og_image && (
-                        <img 
+                        <Image
                           src={item.og_image} 
+                          layout="fill"
+                          objectFit="cover"
                           alt={`Imagem de Capa do Link de ${item.url} na CliqueNaBio`}
-                          className="w-full h-40 object-cover rounded-t-lg"
+                          className="w-full h-40 object-cover rounded-lg"
                         />
                     )}
                     <Link
@@ -190,7 +194,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                                 <Image
                                   src={item.icon || ""}
                                   alt={item.social_network || ""}
-                                  className="w-6 h-6 rounded-xl object-cover"
+                                  className="w-6 h-6 rounded-xl object-cover z-10"
                                   width={32}
                                   height={32}
                                   objectFit="cover"

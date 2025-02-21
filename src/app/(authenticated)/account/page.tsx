@@ -10,6 +10,7 @@ import axiosInstance from "@/helper/axios-instance";
 import useAxios from "@/hooks/use-axios";
 import Cookie from "js-cookie";
 import Loading from "./loading";
+import Image from "next/image";
 
 interface User {
   name?: string;
@@ -25,6 +26,22 @@ interface FormEmail {
   is_activate: boolean;
 }
 
+interface ApiResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Link[];
+}
+
+interface Link {
+  owner: string;
+  url: string;
+  title: string;
+  social_network: string;
+  username: string;
+  is_profile_link: boolean; 
+  icon: string
+}
 
 export default function Account() {
   const token = Cookie.get("access_token");
@@ -52,6 +69,24 @@ export default function Account() {
       },
     },
   });
+
+  const [links, loadingLinks, errorLinks] = useAxios<ApiResponse>({
+    axiosInstance,
+    method: "get",
+    url: `/api/v1/account/me/link/`,
+    othersConfig: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const filteredLinks = links?.results.filter((link) => link.is_profile_link);
+  useEffect(()=>{
+    if(links){
+      console.log("Links carregados:", links)
+    }
+  }, [links])
 
   const [user, setUser] = useState<User | null>(userData || null);
   const [showForm, setShowForm] = useState<boolean>(formEmail?.is_activate || false);
@@ -153,13 +188,14 @@ export default function Account() {
             />
           </div>
           <div className="text-center sm:text-left">
-            <CardTitle className="text-2xl sm:text-3xl">{user?.name}</CardTitle>
+            <CardTitle className="text-2xl uppercase font-semibold">{user?.name}</CardTitle>
             <CardDescription className="text-lg">{user?.email}</CardDescription>
             <CardDescription className="text-lg">{user?.phone}</CardDescription>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-muted-foreground">{user?.biografy}</p>
+        <CardContent className="pb-1">
+          <p className="font-semibold text-xl">Biografia:</p>
+          <p className="text-muted-foreground mt-3">{user?.biografy}</p>
         </CardContent>
         { user?.plan !== 'GRÁTIS' ? ( 
           <CardContent className="space-y-4">
@@ -173,6 +209,33 @@ export default function Account() {
               />
             </div>
           </CardContent> ) : null}
+
+          <div className="p-4 flex flex-wrap gap-4">
+            {filteredLinks && filteredLinks.length > 0 ? (
+              filteredLinks.map((link) => (
+                <div key={link.url} className="p-4 text-gray-700 hover:text-white bg-white transition-all duration-300 hover:transition-all hover:duration-300 hover:bg-black rounded-lg shadow-sm">
+                  <Link href={link.url} target="_blank" className=" flex items-center gap-4">
+                    <Image
+                      src={link.icon}
+                      alt={`Ícone da rede social ${link.social_network}`}
+                      className="w-6 h-6 rounded-full"
+                      width={32}
+                      height={32}
+                    />
+                    <div>
+                      <p>
+                        {link.title}
+                      </p>
+                    </div>
+                  </Link>
+                </div>
+              ))
+            ) : (
+              <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">
+                <p className="text-muted-foreground">Nenhum link de perfil cadastrado.</p>
+              </div>
+            )}
+          </div>
         <CardFooter className="flex flex-col sm:flex-row gap-4 sm:gap-2 items-stretch sm:items-center justify-between">
           <Button className="flex-1 sm:flex-initial btn-hover">
             <Share className="mr-2 h-4 w-4" /> Compartilhar
