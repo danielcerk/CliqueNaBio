@@ -104,6 +104,8 @@ interface BioData {
   biografy: string
   image: string
   content: ContentItem[]
+  form_contact: boolean
+  copyright: boolean
 }
 
 interface MobileScreenProps {
@@ -260,13 +262,13 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
                       {item.type === "photo" && item.url && isImageUrl(item.url) && (
                         <div className="w-full max-w-[90%] bg-white mt-5 transition-transform transform hover:scale-90 cursor-pointer">
-                      <Image
-                        src={item.url}
-                        alt="Imagem de Capa na CliqueNaBio"
-                        width={800}
-                        height={600}
-                        objectFit="cover"
-                      />
+                          <Image
+                            src={item.url}
+                            alt="Imagem de Capa na CliqueNaBio"
+                            width={800}
+                            height={600}
+                            objectFit="cover"
+                          />
 
 
                           {/* <div className="p-4">
@@ -292,7 +294,15 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                  );
               })}
             </div>
-
+            
+            { bioData?.copyright ? ( 
+              <footer className="text-center p-4 mt-6">
+                <p className="text-gray-600 font-medium">
+                  Feito com ❤️ por <span className="font-bold">
+                    <a target="_blank" href="https://cliquenabio.vercel.app/">CliqueNaBio</a></span>
+                </p>
+              </footer> ) : null
+            }
 
           </div>
         </ScrollArea>

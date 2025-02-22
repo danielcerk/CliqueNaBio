@@ -39,6 +39,8 @@ interface BioData {
   biografy: string;
   image: string;
   content: ContentItem[];
+  form_contact: boolean;
+  copyright: boolean;
 }
 
 export default function View() {
@@ -47,6 +49,8 @@ export default function View() {
     biografy: "",
     image: "",
     content: [],
+    form_contact: false,
+    copyright: false,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -70,8 +74,8 @@ export default function View() {
         // Verifica se o slug está presente nos dados do usuário
         if (userData.slug) {
           const URL = process.env.NODE_ENV === 'production' 
-            ? 'https://api-cliquenabio.vercel.app/' 
-            : 'http://127.0.0.1:3000/';
+            ? 'https://cliquenabio.vercel.app/' 
+            : 'http://localhost:3000/';
 
           // Gera o link público com base no slug
           const link = `${URL}profile/${userData.slug}`;
@@ -122,6 +126,8 @@ export default function View() {
           biografy: userData.biografy,
           image: userData.image,
           content: [...links, ...snaps],
+          form_contact: userData.form_contact,
+          copyright: userData.copyright,
         });
       } catch (err) {
         console.error("Erro ao carregar dados:", err);
@@ -147,9 +153,7 @@ export default function View() {
   return (
     <div className="flex flex-col lg:flex-row">
       <div className="lg:mx-auto">
-        <MobileScreen bioData={bioData} />
 
-        {/* Seção do link público */}
         {publicLink && (
           <div className="mt-4 p-4 bg-gray-100 rounded-lg">
             <p className="text-sm font-medium text-gray-700">Seu link público:</p>
@@ -169,6 +173,8 @@ export default function View() {
             </div>
           </div>
         )}
+
+        <MobileScreen bioData={bioData} />
       </div>
     </div>
   );

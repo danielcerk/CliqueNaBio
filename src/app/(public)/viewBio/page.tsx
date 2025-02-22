@@ -39,6 +39,8 @@ interface BioData {
   biografy: string;
   image: string;
   content: ContentItem[];
+  form_contact: boolean;
+  copyright: boolean;
 }
 
 export default function ViewBio() {
@@ -48,6 +50,8 @@ export default function ViewBio() {
     biografy: "",
     image: "",
     content: [],
+    form_contact: false,
+    copyright: false,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -64,7 +68,7 @@ export default function ViewBio() {
 
   
         // Busca os dados públicos do perfil
-        const profileResponse = await axiosInstance.get(`/profile/${slug}/`);
+        const profileResponse = await axiosInstance.get(`/api/v1/profile/${slug}/`);
         const profileData = profileResponse.data;
   
         console.log("Profile data:", profileData);
@@ -100,6 +104,8 @@ export default function ViewBio() {
           biografy: profileData.biografy,
           image: profileData.image,
           content: [...links, ...snaps],
+          form_contact: profileData.form_contact,
+          copyright: profileData.copyright,
         });
       } catch (err) {
         console.error("Erro ao carregar dados:", err);

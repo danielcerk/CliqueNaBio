@@ -104,6 +104,8 @@ interface BioData {
   biografy: string
   image: string
   content: ContentItem[]
+  form_contact: boolean
+  copyright: boolean
 }
 
 interface MobileScreenProps {
@@ -293,6 +295,14 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
               })}
             </div>
 
+            { bioData?.copyright ? ( 
+              <footer className="text-center p-4 mt-6">
+                <p className="text-gray-600 font-medium">
+                  Feito com ❤️ por <span className="font-bold">
+                    <a target="_blank" href="https://cliquenabio.vercel.app/">CliqueNaBio</a></span>
+                </p>
+              </footer> ) : null
+            }
 
           </div>
         </ScrollArea>
