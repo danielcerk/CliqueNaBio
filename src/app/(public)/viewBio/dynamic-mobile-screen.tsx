@@ -125,7 +125,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
   return (
     <div className="lg:max-w-6xl mx-auto lg:flex justify-around">
-      <Card className="relative min-w-full lg:min-w-[500px] min-h-screen bg-white rounded-3xl overflow-hidden">
+      <Card className="relative min-w-full lg:min-w-[500px] min-h-screen rounded-none bg-white overflow-hidden">
 
         <ScrollArea className="h-[calc(100%-4rem)] p-4">
           <div className="bg-white p-2 py-20 rounded-xl">
@@ -262,13 +262,13 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
                       {item.type === "photo" && item.url && isImageUrl(item.url) && (
                         <div className="w-full max-w-[90%] bg-white mt-5 transition-transform transform hover:scale-90 cursor-pointer">
-                          <Image
-                            src={item.url}
-                            alt="Imagem de Capa na CliqueNaBio"
-                            width={800}
-                            height={600}
-                            objectFit="cover"
-                          />
+                      <Image
+                        src={item.url}
+                        alt="Imagem de Capa na CliqueNaBio"
+                        width={800}
+                        height={600}
+                        objectFit="cover"
+                      />
 
 
                           {/* <div className="p-4">
@@ -294,7 +294,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                  );
               })}
             </div>
-            
+
             { bioData?.copyright ? ( 
               <footer className="text-center p-4 mt-6">
                 <p className="text-gray-600 font-medium">
