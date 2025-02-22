@@ -174,7 +174,14 @@ const BioEditor = () => {
       ...prev,
       content: prev.content.map((item) =>
         item.id === id
-          ? { ...item, content, url: url || item.url, name: name || item.name, title: title || item.title, small_description: small_description || item.small_description }
+          ? {
+              ...item,
+              content,
+              url: url !== undefined ? url : item.url, // Mantém o valor anterior se url for undefined
+              name: name !== undefined ? name : item.name, // Mantém o valor anterior se name for undefined
+              title: title !== undefined ? title : item.title, // Mantém o valor anterior se title for undefined
+              small_description: small_description !== undefined ? small_description : item.small_description, // Mantém o valor anterior se small_description for undefined
+            }
           : item
       ),
     }));
@@ -268,8 +275,8 @@ const BioEditor = () => {
           alert("Por favor, insira um URL válido.");
           return;
         }
-  
-        const numericId = item.id.split("-")[0]; // Extrai a parte numérica do ID
+        const stringId = item.id.toString(); 
+        const numericId = stringId.split("-")[0]; 
           await axiosInstance.put(`/api/v1/account/me/link/${numericId}/`, linkData, {
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -351,7 +358,7 @@ const BioEditor = () => {
       <div className="flex flex-col-reverse">
         {/* Itens Criados (Renderizados) */}
         <div>
-          <h2 className="text-lg font-semibold mb-4">Itens Criados</h2>
+          <h2 className="text-lg text-gray-700 font-medium mb-4">Meu Conteúdo</h2>
           <div className="columns-3 gap-6">
             {bioData.content
               .filter((item) => item && item.id && item.created && (item.type !== "link" || !item.is_profile_link)) // Filtra itens válidos
@@ -421,7 +428,7 @@ const BioEditor = () => {
                           type="text"
                           className="w-full text-gray-500"
                           placeholder="Descrição pequena do Snap"
-                          value={item.small_description || ""}
+                          value={item.small_description || "" }
                           onChange={(e) =>
                             updateContent(item.id, item.content, item.url, item.name, item.small_description, e.target.value)
                           }
@@ -455,7 +462,6 @@ const BioEditor = () => {
 
         {/* Novos Itens */}
         <div>
-          <h2 className="text-lg font-semibold mb-4">Criar Novo Item</h2>
           <div className="columns-3 gap-6">
             {bioData.content
               .filter((item) => item && item.id && !item.created) // Filtra itens válidos e não criados
@@ -469,7 +475,6 @@ const BioEditor = () => {
                           type="url"
                           className="w-full text-gray-500"
                           placeholder="https://exemplo.com"
-                          value={item.url || ""}
                           onChange={(e) => updateContent(item.id, item.content, e.target.value)}
                           required
                         />
@@ -477,7 +482,6 @@ const BioEditor = () => {
                           type="text"
                           className="w-full text-gray-500 mt-2"
                           placeholder="Título do Link"
-                          value={item.title || ""}
                           onChange={(e) =>
                             updateContent(item.id, item.content, item.url, item.title, e.target.value)
                           }
@@ -524,7 +528,6 @@ const BioEditor = () => {
                           type="text"
                           className="w-full text-gray-500"
                           placeholder="Descrição pequena do Snap"
-                          value={item.small_description || ""}
                           onChange={(e) =>
                             updateContent(item.id, item.content, item.url, item.name, item.small_description, e.target.value)
                           }
