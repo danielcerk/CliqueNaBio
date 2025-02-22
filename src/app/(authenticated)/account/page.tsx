@@ -94,6 +94,8 @@ export default function Account() {
   useEffect(() => {
     if (userData) setUser(userData);
     if (formEmail) setShowForm(formEmail.is_activate);
+
+    console.log(userData)
   }, [userData, formEmail]);
 
   const usrName = user?.name || "";
