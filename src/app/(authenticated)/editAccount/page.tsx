@@ -112,12 +112,19 @@ export default function EditAccount() {
         console.error("Token não encontrado.");
         return;
       }
+      
       await axiosInstance.delete("/api/v1/account/me/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      Cookie.remove("access_token");
+  
+      // Remover todos os cookies
+      document.cookie.split(";").forEach((cookie) => {
+        const [name] = cookie.split("=");
+        Cookie.remove(name.trim());
+      });
+  
       router.push("/");
       console.log("Conta excluída com sucesso.");
     } catch (error) {
