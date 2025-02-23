@@ -87,29 +87,31 @@ export const login = async (
 
   } catch (error) {
     const axiosError = error as AxiosError<LoginError>;
-    console.error('Erro ao fazer login:', axiosError.response?.data || axiosError.message);
+
     throw axiosError.response?.data || axiosError;
   }
 };
 
 
 export const logout = async (apiBase: AxiosInstance): Promise<void> => {
+
   try {
-    // Remove os tokens do cookie
+
     Cookies.remove('access_token', { path: '/' });
     Cookies.remove('refresh_token', { path: '/' });
 
-    // Remove a autenticação do Axios
     delete apiBase.defaults.headers.common["Authorization"];
 
-    console.log('Usuário deslogado com sucesso');
   } catch (error: unknown) {
+
     if (error instanceof Error) {
-      console.error('Erro ao fazer logout:', error.message);
+
       throw error;
+
     } else {
-      console.error('Erro desconhecido ao fazer logout');
+
       throw new Error('Erro desconhecido ao fazer logout');
+
     }
   }
 };
@@ -133,14 +135,17 @@ export const updateUserPassword = async (
       }
     );
 
-    console.log("Senha do usuário atualizada com sucesso:", response.data);
   } catch (error: unknown) {
+
     if (error instanceof AxiosError) {
-      console.error("Erro ao atualizar a senha:", error.response?.data || error.message);
+
       throw error.response?.data || error;
+
     } else {
-      console.error("Erro desconhecido:", error);
+
       throw error;
     }
+
   }
+
 };

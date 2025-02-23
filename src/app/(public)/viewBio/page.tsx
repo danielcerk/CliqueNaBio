@@ -71,8 +71,6 @@ export default function ViewBio() {
         const profileResponse = await axiosInstance.get(`/api/v1/profile/${slug}/`);
         const profileData = profileResponse.data;
   
-        console.log("Profile data:", profileData);
-  
         // Mapeia os links e snaps para o formato esperado
         const links = profileData.links.map((link: any) => ({
           id: nanoid(),
@@ -108,7 +106,6 @@ export default function ViewBio() {
           copyright: profileData.copyright,
         });
       } catch (err) {
-        console.error("Erro ao carregar dados:", err);
         setError(true);
       } finally {
         setLoading(false);

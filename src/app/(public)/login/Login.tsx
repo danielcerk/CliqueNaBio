@@ -41,8 +41,6 @@ export default function Login() {
 
     } catch (error) {
 
-      console.error('Erro no login:', error);
-
       setError('Email ou senha inválidos. Tente novamente.');
       showAlert('error', 'Erro! Senha ou email incorretos');
 
@@ -73,8 +71,6 @@ export default function Login() {
 
           const jwtData = response.data;
 
-          console.log('Google login sucesso:', jwtData);
-
           if (jwtData.access && jwtData.refresh) {
 
             Cookie.set('access_token', jwtData.access, { expires: 1, secure: true });
@@ -88,7 +84,7 @@ export default function Login() {
           }
 
         } catch (err) {
-          console.error('Erro ao autenticar com Google:', err);
+
           showAlert('error', 'Erro ao autenticar com Google');
         }
       })();

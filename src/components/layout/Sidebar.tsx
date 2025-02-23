@@ -42,9 +42,7 @@ export default function SideBar() {
   const handleLogout = async ()=>{
     try {
       const response = await logout(axiosInstance);
-      console.log('Logout bem-sucedido:', response);
-      
-      // Redirecionamento após login bem-sucedido
+
       router.push('/');
     } catch (error) {
       console.error('Erro no logout:', error);

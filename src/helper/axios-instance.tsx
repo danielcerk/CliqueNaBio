@@ -39,7 +39,7 @@ axiosInstance.interceptors.response.use(
           return axiosInstance(originalRequest);
         }
       } catch (refreshError) {
-        console.error("Erro ao tentar fazer refresh do token", refreshError);
+
         refresh = false;
         return Promise.reject(refreshError);
       }
