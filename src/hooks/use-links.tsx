@@ -8,19 +8,15 @@ export const createLink = async (
     title: string;
     social_network: string;
     username: string;
-    is_profile_link?: boolean; // Atributo opcional
+    is_profile_link?: boolean;
   }
 ) => {
   try {
-    const token = Cookies.get("access_token"); // Obtém o token do cookie
+    const token = Cookies.get("access_token");
 
-    // Adicionando log para verificar os dados antes de enviar
-    console.log("Dados que estão sendo enviados:", linkData);
-
-    // Definindo valores padrão para atributos opcionais
     const payload = {
       ...linkData,
-      is_profile_link: linkData.is_profile_link || false, // Valor padrão caso não seja fornecido
+      is_profile_link: linkData.is_profile_link || false, 
     };
 
     const response = await api.post("/api/v1/account/me/link/", payload, {
@@ -29,9 +25,6 @@ export const createLink = async (
         'Content-Type': 'application/json'
       },
     });
-
-    // Exibe os dados recebidos da resposta da API
-    console.log("Dados recebidos da API:", response.data);
 
     return response.data;
   } catch (error) {

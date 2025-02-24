@@ -43,7 +43,7 @@ export default function useAxios<T = unknown>(configRequest: ConfigRequest<T>) {
             // A requisição foi abortada, podemos ignorar esse erro
             return;
           }
-          console.error('Erro na resposta:', err.response);
+
           const errorMessage = err.response && err.response.data
           ? (typeof err.response.data === 'string'
               ? err.response.data
@@ -51,10 +51,10 @@ export default function useAxios<T = unknown>(configRequest: ConfigRequest<T>) {
           : err.message;
           setError(errorMessage || 'Erro ao processar a resposta da API.');
         } else if (err instanceof Error) {
-          console.error('Erro desconhecido:', err.message);
+
           setError(err.message);
         } else {
-          console.error('Erro inesperado');
+
           setError('Erro inesperado.');
         }
       } finally {

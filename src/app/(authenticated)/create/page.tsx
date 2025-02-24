@@ -133,7 +133,7 @@ const BioEditor = () => {
         content: [...links, ...snaps],
       });
     } catch (err) {
-      console.error("Erro ao carregar dados:", err);
+
       setError(true);
     } finally {
       setLoading(false);
@@ -202,7 +202,7 @@ const BioEditor = () => {
         const imageUrl = await cloudinaryUpload(file);
         updateContent(id, imageUrl);
       } catch (error) {
-        console.error("Erro ao fazer upload da imagem:", error);
+
         alert("Erro ao fazer upload da imagem. Tente novamente.");
       }
     }
@@ -220,7 +220,7 @@ const BioEditor = () => {
         };
   
         if (!isValidUrl(linkData.url)) {
-          console.error("URL inválido:", linkData.url);
+
           alert("Por favor, insira um URL válido.");
           return;
         }
@@ -241,7 +241,7 @@ const BioEditor = () => {
       // Recarrega os dados do backend após salvar com sucesso
       await fetchContent(); // Chama a função que busca os dados do backend
     } catch (error) {
-      console.error("Erro ao salvar conteúdo:", error);
+
       alert("Erro ao salvar conteúdo. Tente novamente.");
     } finally {
       setLoadingSave(false);
@@ -253,7 +253,7 @@ const BioEditor = () => {
       new URL(url);
       return true;
     } catch (error) {
-      console.log(error);
+
       return false;
     }
   };
@@ -271,7 +271,7 @@ const BioEditor = () => {
         };
   
         if (!isValidUrl(linkData.url)) {
-          console.error("URL inválido:", linkData.url);
+
           alert("Por favor, insira um URL válido.");
           return;
         }
@@ -293,7 +293,7 @@ const BioEditor = () => {
       }
       alert("Item atualizado com sucesso!");
     } catch (error) {
-      console.error("Erro ao atualizar conteúdo:", error);
+
       alert("Erro ao atualizar conteúdo. Tente novamente.");
     } finally {
       setLoadingSave(false);
@@ -304,9 +304,6 @@ const BioEditor = () => {
     const deleteItem = async (id: string | number, type: "link" | "photo") => {
       const stringId = id.toString(); 
       const numericId = stringId.split("-")[0];
-      console.log("Tentando excluir item com ID:", numericId);
-      console.log("Endpoint:", type === "link" ? `/api/v1/account/me/link/${numericId}/` : `/api/v1/account/me/snap/${numericId}/`);
-      console.log("Token:", token);
       try {
         if (type === "link") {
           await axiosInstance.delete(`/api/v1/account/me/link/${numericId}/`, {
@@ -323,7 +320,7 @@ const BioEditor = () => {
         }));
         alert("Item excluído com sucesso!");
       } catch (error) {
-        console.error("Erro ao excluir conteúdo:", error);
+
         alert("Erro ao excluir conteúdo. Tente novamente.");
       }
     };

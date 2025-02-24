@@ -128,7 +128,7 @@ export default function EditAccount() {
       router.push("/");
       console.log("Conta excluída com sucesso.");
     } catch (error) {
-      console.error("Erro ao excluir a conta:", error);
+      console.error("Erro ao excluir a conta");
     }
   };
 
@@ -154,11 +154,10 @@ export default function EditAccount() {
             'Content-Type': 'application/json',
           },
         });
-        console.log("Dados atualizados com sucesso");
+
         showAlert("success", "Dados atualizados com sucesso.");
       }
     } catch (error) {
-      console.error("Erro ao atualizar os dados:", error);
       showAlert("error", "Erro ao atualizar os dados.");
     }
   };
@@ -199,7 +198,7 @@ export default function EditAccount() {
       if (axios.isCancel(error)) {
         console.log("Requisição cancelada pelo usuário");
       } else {
-        console.error("Erro ao atualizar a senha:", error);
+        console.error("Erro ao atualizar a senha");
       }
     }
   };
@@ -248,15 +247,16 @@ export default function EditAccount() {
 
       try {
         const response = await createLink(axiosInstance, linkData);
-        console.log("Link criado com sucesso:", response);
+
         alert("Link criado com sucesso!");
-        // Limpar o formulário após a criação
+
         setUrl("");
         setUsername("");
         setSocialNetwork("Facebook");
+
       } catch (error) {
-        console.error("Erro ao criar o link:", error);
-        alert("Erro ao criar o link. Verifique o console para mais detalhes.");
+
+        alert("Erro ao criar o link.");
       }
     };
   
@@ -321,9 +321,7 @@ export default function EditAccount() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="username">Nome de usuário 
-                    <Label className="text-black opacity-50 text-[13px]">Seu nome de usuário servirá para acessar o seu perfil.</Label>
-                  </Label>
+                  <Label htmlFor="username">Nome de usuário </Label>
                   <Input
                     className="text-gray-800"
                     type="text"

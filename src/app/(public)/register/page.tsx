@@ -72,11 +72,11 @@ export default function Register() {
     } catch (error) {
 
       if (error instanceof Error) {
-        console.error('Erro ao criar conta:', error);
+
         setError('Erro ao criar conta');
         showAlert("error", "Erro ao criar conta!")
       } else {
-        console.error('Erro desconhecido', error);
+
         setError('Erro desconhecido');
         showAlert("error", "Erro desconhecido!")
       }

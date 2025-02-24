@@ -83,9 +83,6 @@ export default function Account() {
 
   const filteredLinks = links?.results.filter((link) => link.is_profile_link);
   useEffect(()=>{
-    if(links){
-      console.log("Links carregados:", links)
-    }
   }, [links])
 
   const [user, setUser] = useState<User | null>(userData || null);
@@ -95,7 +92,6 @@ export default function Account() {
     if (userData) setUser(userData);
     if (formEmail) setShowForm(formEmail.is_activate);
 
-    console.log(userData)
   }, [userData, formEmail]);
 
   const usrName = user?.name || "";
@@ -128,7 +124,7 @@ export default function Account() {
           : { image: response.data.image }
       );
     } catch (error) {
-      console.error("Erro ao enviar imagem:", error);
+      console.error("Erro ao enviar imagem");
     }
   };
 
@@ -148,7 +144,7 @@ export default function Account() {
 
       setShowForm(newValue); // Atualiza diretamente o estado showForm
     } catch (error) {
-      console.error("Erro ao atualizar visibilidade:", error);
+      console.error("Erro ao atualizar visibilidade");
     }
   };
 

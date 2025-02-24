@@ -114,7 +114,7 @@ interface MobileScreenProps {
 
 
 const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
-  console.log("MobileScreen rendering with data:", bioData) // Add this line for debugging
+
   const [imageLoaded, setImageLoaded] = useState(true);
 
   const isImageUrl = (url: string) => {

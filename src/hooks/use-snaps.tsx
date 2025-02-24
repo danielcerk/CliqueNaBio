@@ -6,10 +6,7 @@ export const createSnap = async (
   snapData: { name: string; small_description?: string; image?: string }
 ) => {
   try {
-    const token = Cookies.get("access_token"); // Obtém o token do cookie
-
-    // Adicionando log para verificar os dados antes de enviar
-    console.log("Dados que estão sendo enviados:", snapData);
+    const token = Cookies.get("access_token");
 
     const response = await api.post("/api/v1/account/me/snap/", snapData, {
       maxContentLength: Infinity,
@@ -18,9 +15,6 @@ export const createSnap = async (
         Authorization: `Bearer ${token}`,
       },
     });
-
-    // Exibe os dados recebidos da resposta da API
-    console.log("Dados recebidos da API:", response.data);
 
     // Garante que a resposta contenha um ID
     if (!response.data.id) {
