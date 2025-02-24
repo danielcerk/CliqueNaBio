@@ -95,7 +95,7 @@ export default function ViewBio() {
           copyright: profileData.copyright,
         });
       } catch (err) {
-        setError("Erro ao carregar dados.");
+        setError(`Erro ao carregar dados: ${err}`);
       } finally {
         setLoading(false);
       }
