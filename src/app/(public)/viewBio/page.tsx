@@ -95,7 +95,21 @@ export default function ViewBio() {
           copyright: profileData.copyright,
         });
       } catch (err) {
-        setError(`Erro ao carregar dados: ${err.response?.data?.message || err.message}`);
+        
+          let errorMessage = "Erro ao carregar dados.";
+        
+          if (axios.isAxiosError(err)) {
+              // Se o erro for do Axios, você pode acessar suas propriedades
+              errorMessage += ` ${err.response?.data?.message || err.message}`;
+          } else if (err instanceof Error) {
+              // Se for um erro padrão, você pode acessar a mensagem
+              errorMessage += ` ${err.message}`;
+          } else {
+              // Para outros tipos de erros desconhecidos
+              errorMessage += " Erro desconhecido.";
+          }
+        
+          setError(errorMessage); 
       } finally {
         setLoading(false);
       }
