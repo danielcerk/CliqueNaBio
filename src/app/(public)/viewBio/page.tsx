@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import MobileScreen from "./dynamic-mobile-screen";
 import axiosInstance from "@/helper/axios-instance";
-import { useParams } from "next/navigation"; // Importe useParams para pegar o slug da URL
+import { useParams } from "next/navigation"; 
 import { nanoid } from "nanoid";
 
 interface ContentItem {
@@ -25,15 +25,6 @@ interface ContentItem {
   updated_at?: string;
 }
 
-interface SnapItem {
-  id: string;
-  name: string;
-  small_description: string;
-  image: string;
-  created_at: string;
-  updated_at: string;
-}
-
 interface BioData {
   name: string;
   biografy: string;
@@ -44,34 +35,32 @@ interface BioData {
 }
 
 export default function ViewBio() {
-  const { slug } = useParams(); // Pegue o slug da URL
-  const [bioData, setBioData] = useState<BioData>({
-    name: "",
-    biografy: "",
-    image: "",
-    content: [],
-    form_contact: false,
-    copyright: false,
-  });
+  const { slug } = useParams();
+  const [bioData, setBioData] = useState<BioData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!slug) {
+        setError("Slug não encontrado na URL.");
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
-  
-        // Verifique se o slug está presente
-        if (!slug) {
-          throw new Error("Slug não encontrado na URL.");
-        }
 
-  
-        // Busca os dados públicos do perfil
-        const profileResponse = await axiosInstance.get(`/api/v1/profile/${slug}/`);
-        const profileData = profileResponse.data;
-  
-        // Mapeia os links e snaps para o formato esperado
+        // Define um User-Agent customizado para evitar bloqueios
+        const headers = {
+          "User-Agent": navigator.userAgent.includes("Instagram") 
+            ? "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)"
+            : navigator.userAgent,
+        };
+
+        const response = await axiosInstance.get(`/api/v1/profile/${slug}/`, { headers });
+        const profileData = response.data;
+
         const links = profileData.links.map((link: any) => ({
           id: nanoid(),
           type: "link" as const,
@@ -87,7 +76,7 @@ export default function ViewBio() {
           created_at: link.created_at || "",
           updated_at: link.updated_at || "",
         }));
-  
+
         const snaps = profileData.snaps.map((snap: any) => ({
           id: nanoid(),
           type: "photo" as const,
@@ -96,7 +85,7 @@ export default function ViewBio() {
           small_description: snap.small_description || "",
           updated_at: snap.updated_at || snap.created_at || "",
         }));
-  
+
         setBioData({
           name: profileData.name,
           biografy: profileData.biografy,
@@ -106,22 +95,22 @@ export default function ViewBio() {
           copyright: profileData.copyright,
         });
       } catch (err) {
-        setError(true);
+        setError("Erro ao carregar dados.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [slug]); // Execute o efeito sempre que o slug mudar
+  }, [slug]);
 
   if (loading) return <div>Carregando...</div>;
-  if (error) return <div>Erro ao carregar dados.</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="flex flex-col lg:flex-row">
       <div className="lg:mx-auto">
-        <MobileScreen bioData={bioData} />
+        {bioData && <MobileScreen bioData={bioData} />}
       </div>
     </div>
   );
