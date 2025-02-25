@@ -4,6 +4,9 @@ import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import axiosInstance from "@/helper/axios-instance";
 import Image from "next/image";
+import LoadingSkeleton from "./loading-skeleton";
+import { AlertModal } from '@/components/common/AlertModal';
+import ContributorsSkeleton from "./contributors-skeleton";
 import { Bar, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -15,7 +18,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import Loading from "./loading";
 
 // Registrar os componentes do Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Tooltip, Legend);
@@ -33,19 +35,45 @@ interface AppStatusData {
 function StatusPage() {
   const [data, setData] = useState<AppStatusData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingContributors, setLoadingContributors]  = useState(true);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
+  const [modalMessage, setModalMessage] = useState('');
+
+  // Função para mostrar o alerta
+  const showAlert = (type: 'success' | 'error' | 'info', message: string) => {
+    setModalType(type);
+    setModalMessage(message);
+    setIsModalOpen(true);
+  };
 
   useEffect(() => {
     document.title = "CliqueNaBio | Status";
 
     axiosInstance
       .get("/api/v1/status/")
-      .then((response) => setData(response.data))
-      .catch((error) => console.error("Erro ao buscar dados:", error))
+      .then((response) => {
+        setData(response.data) 
+        console.log(response.data)})
+      .catch((error) => showAlert('error', `Erro ao buscar dados:${error}`))
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <Loading />;
-  if (!data) return <p className="text-center text-red-500">Erro ao carregar os dados.</p>;
+  if (loading) return <LoadingSkeleton></LoadingSkeleton>;
+  if (!data) return <p className="text-center text-red-500">Erro ao carregar os dados.</p> ;
+
+  // Função para validar URLs
+  function isValidUrl(url: string): boolean {
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
+    } finally{
+      setLoadingContributors(false)
+    }
+  }
 
   // Função para formatar dados de gráfico
   const formatChartData = (rawData: { [key: string]: number }) => {
@@ -64,10 +92,10 @@ function StatusPage() {
         ],
       };
     }
-  
+
     const sortedDates = allDates.sort();
     const dataValues = sortedDates.map((date) => rawData[date] || 0);
-  
+
     return {
       labels: sortedDates,
       datasets: [
@@ -81,11 +109,10 @@ function StatusPage() {
       ],
     };
   };
-  
 
   return (
-    <div className="container mx-auto my-8 p-4">
-      <h1 className="text-3xl font-bold text-center mb-8">Status do Aplicativo</h1>
+    <div className="mx-auto my-8 p-4">
+      <h1 className="text-3xl font-bold text-center mb-8 grid">Status do Aplicativo</h1>
 
       {/* Status geral */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
@@ -124,23 +151,37 @@ function StatusPage() {
       </div>
 
       {/* Contribuidores */}
-      <div className="mt-12">
-        <h3 className="text-2xl font-bold mb-6">Contribuidores</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {Object.entries(data.contribuitors).map(([username, avatarUrl]) => (
-            <div className="text-center" key={username}>
-              <Image
-                src={avatarUrl}
-                alt={username}
-                width={80}
-                height={80}
-                className="rounded-full mx-auto"
-              />
-              <p className="mt-2 text-lg font-medium">{username}</p>
-            </div>
-          ))}
+      {loadingContributors ? (
+        <ContributorsSkeleton />
+      ) : (
+
+        <div className="mt-12">
+          <h3 className="text-2xl font-bold mb-6">Contribuidores</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {Object.entries(data.contribuitors).map(([username, avatarUrl]) => {
+              // Verifica se a URL é válida
+              const validUrl = isValidUrl(avatarUrl) ? avatarUrl : "/placeholder.svg"
+
+              // Garante que URLs relativas comecem com uma barra
+              const finalUrl = validUrl.startsWith("/") || validUrl.startsWith("http") ? validUrl : `/${validUrl}`
+
+              return (
+                <div className="text-center" key={username}>
+                  <Image
+                    src={finalUrl || "/placeholder.svg"}
+                    alt={username}
+                    width={80}
+                    height={80}
+                    className="rounded-full mx-auto"
+                  />
+                  <p className="mt-2 text-lg font-medium">{username}</p>
+                </div>
+              )
+            })}
+          </div>
         </div>
-      </div>
+      )}
+      <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

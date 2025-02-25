@@ -5,10 +5,9 @@ import useAxios from "@/hooks/use-axios"
 import axios, { AxiosInstance } from 'axios';
 import Cookie from "js-cookie"
 import { useState, useEffect } from "react"
-// import { updateUserPassword } from "@/hooks/use-auth"
 import { useRouter } from 'next/navigation';
 import { AlertModal } from '@/components/common/AlertModal';
-import Loading from "./loading";
+import LoadingSkeleton from "./loading-skeleton";
 import Link from "next/link";
 import { createLink } from "@/hooks/use-links";
 
@@ -32,27 +31,27 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 
 
+interface User {
+  name: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  biografy?: string;
+}
+
+interface FormData {
+  name: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  biografy?: string;
+}
+
+
 export default function EditAccount() {
   const token = Cookie.get('access_token');
   const router = useRouter();
-
-  interface User {
-    name: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    biografy?: string;
-  }
-
-  interface FormData {
-    name: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    password: string;
-    biografy?: string;
-  }
-  
 
   const [user, loadingUser, errorUser] = useAxios<User | null>({
     axiosInstance,
@@ -109,7 +108,7 @@ export default function EditAccount() {
   const handleDelete = async () => {
     try {
       if (!token) {
-        console.error("Token não encontrado.");
+        showAlert('error', 'Token não encontrado.');
         return;
       }
       
@@ -126,9 +125,9 @@ export default function EditAccount() {
       });
   
       router.push("/");
-      console.log("Conta excluída com sucesso.");
+      showAlert('success', 'Conta excluída com sucesso.');
     } catch (error) {
-      console.error("Erro ao excluir a conta");
+      showAlert('error', 'Erro ao excluir a conta');
     }
   };
 
@@ -196,9 +195,9 @@ export default function EditAccount() {
       });
     } catch (error) {
       if (axios.isCancel(error)) {
-        console.log("Requisição cancelada pelo usuário");
+        showAlert('error', 'Requisição cancelada pelo usuário');
       } else {
-        console.error("Erro ao atualizar a senha");
+        showAlert('error', 'Erro ao atualizar a senha');
       }
     }
   };
@@ -224,39 +223,46 @@ export default function EditAccount() {
       Pinterest: "Pinterest", // Adicione o Pinterest aqui
     };
 
-    interface LinkFormProps {
-      api: AxiosInstance; // Passando a instância do Axios como prop
-    }
-
 
     const [url, setUrl] = useState("");
     const [username, setUsername] = useState("");
-    const [socialNetwork, setSocialNetwork] = useState("Facebook"); // Valor padrão
+    const [socialNetwork, setSocialNetwork] = useState(""); 
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-
-      // Dados do link
+        // Dados do link
       const linkData = {
         url,
-        title: socialNetworks[socialNetwork as keyof typeof socialNetworks], // Título baseado na rede social
+        title: socialNetworks[socialNetwork as keyof typeof socialNetworks], 
         social_network: socialNetwork,
         username,
         is_profile_link: true, // Definido como true para todos os links criados
       };
 
-      try {
-        const response = await createLink(axiosInstance, linkData);
 
-        alert("Link criado com sucesso!");
+      try {
+        const response = await axiosInstance.get("/api/v1/account/me/link/", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const existingLinks = response.data.results || response.data;
+        const linkExists = existingLinks?.some(
+          (link: any ) =>
+            link.social_network === socialNetwork && link.url === url
+        );
+
+        if (linkExists) {
+          showAlert("info", "Esse link de rede social já foi criado.");
+          return;
+        }
+
+        await createLink(axiosInstance, linkData);
+        showAlert('success', 'Link criado com sucesso!');
 
         setUrl("");
         setUsername("");
-        setSocialNetwork("Facebook");
-
+        setSocialNetwork("");
       } catch (error) {
-
-        alert("Erro ao criar o link.");
+        showAlert('error', 'Erro ao criar o link.');
       }
     };
   
@@ -264,17 +270,11 @@ export default function EditAccount() {
   
 
   if (loadingUser) {
-    return <Loading />;
+    return <LoadingSkeleton/>;
   }
 
   if (errorUser) {
-    return (
-      <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-        <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">
-          <p className="text-red-500">Erro ao carregar os dados. Tente novamente mais tarde.</p>
-        </div>
-      </div>
-    );
+    showAlert('error', 'Erro ao carregar os dados do usuário. Tente novamente mais tarde.');
   }
 
   return (

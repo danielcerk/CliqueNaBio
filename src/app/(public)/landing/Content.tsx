@@ -136,7 +136,7 @@ export default function ContentLanding() {
 
               <div className="flex mt-10 justify-center items-center hover:rotate-6 transition-all duration-500 cursor-pointer">
                 <Image
-                  src="https://cdn.rareblocks.xyz/collection/celebration/images/hero/4/phone-mockup.png"
+                  src={"/celular_acessando_site_do_cliquenabio.png"}
                   alt="Link na bio"
                   className="w-full max-w-md"
                   width={400}
@@ -153,20 +153,20 @@ export default function ContentLanding() {
             <h2 className="text-4xl font-semibold text-gray-900">Gerencie tudo no Dashboard</h2>
             <p className="text-lg text-gray-700 mt-4">Acompanhe métricas de visualizações e interações no seu dashboard.</p>
             <div className="mt-8 flex justify-center">
-              <Image src="https://placehold.co/600x400.png" alt="Dashboard interativo do CliqueNaBio" width={600} height={400} />
+              <Image src={"/dashboard_cliquenabio.png"} alt="Dashboard interativo do CliqueNaBio" width={600} height={400} />
             </div>
           </section>
           <section className="px-6 py-24 bg-white text-center" data-aos="fade-up">
             <h2 className="text-4xl font-semibold text-gray-900">Adicione Snaps e Links na Bio</h2>
             <p className="text-lg text-gray-700 mt-4">Crie um link dinâmico e interativo em poucos cliques.</p>
             <div className="mt-8 flex justify-center">
-              <Image src="https://placehold.co/400x600.png" alt="Snaps e links adicionados na CliqueNaBio" width={300} height={600} />
+              <Image src={"/editor_de_bio_do_cliquenabio.png"} alt="Snaps e links adicionados na CliqueNaBio" width={300} height={600} />
             </div>
           </section>
           <section className="px-6 py-24 bg-gray-100 text-center" data-aos="fade-up">
             <h2 className="text-4xl font-semibold text-gray-900">Modelo de Links na Bio</h2>
             <div className="mt-8 flex justify-center">
-              <Image src="https://placehold.co/800x400.png" alt="Modelos de Link Na Bios feitos com o CliqueNaBio" width={900} height={400} />
+              <Image src={"/links_na_bio_com_cliquenabio.png"} alt="Modelos de Link Na Bios feitos com o CliqueNaBio" width={900} height={400} />
             </div>
             <div className="mt-8">
               <a href="/Register" className="inline-block px-8 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">

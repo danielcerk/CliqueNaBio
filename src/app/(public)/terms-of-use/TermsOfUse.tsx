@@ -8,7 +8,7 @@ export default function TermsOfUse() {
 
   return (
     <>
-      <div className="container mx-auto max-w-6xl  my-14 px-4">
+      <div className=" mx-auto max-w-6xl  my-14 px-4">
         <h1 className="text-center text-2xl font-bold mb-4">
           Termos de Uso - CliqueNaBio
         </h1>

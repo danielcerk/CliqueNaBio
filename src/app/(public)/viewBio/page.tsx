@@ -1,10 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import MobileScreen from "./dynamic-mobile-screen";
 import axiosInstance from "@/helper/axios-instance";
 import { useParams } from "next/navigation"; 
 import { nanoid } from "nanoid";
+import { AlertModal } from '@/components/common/AlertModal';
+import UserNotFound from "@/app/user-not-found";
+import LoadingSkeleton from "./loading-skeleton";
+// import { Metadata } from "next";
 
 import axios from 'axios';
 
@@ -36,11 +40,59 @@ interface BioData {
   copyright: boolean;
 }
 
+
+// export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+//   try {
+//     const response = await axiosInstance.get(`/api/v1/profile/${params.slug}/`);
+//     const profile = response.data;
+
+//     return {
+//       title: `${profile.name} | Perfil Público`,
+//       description: profile.biografy,
+//       openGraph: {
+//         title: `${profile.name} | Perfil Público`,
+//         description: profile.biografy,
+//         images: [{ url: profile.image }],
+//       },
+//     };
+//   } catch (error) {
+//     return {
+//       title: "Usuário não encontrado",
+//       description: "O perfil solicitado não foi encontrado.",
+//     };
+//   }
+// }
+
 export default function ViewBio() {
+<<<<<<< HEAD
   const { slug } = useParams();
   const [bioData, setBioData] = useState<BioData | null>(null);
+=======
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
+  const [modalMessage, setModalMessage] = useState('');
+
+  // Função para mostrar o alerta
+  const showAlert = useCallback((type: 'success' | 'error' | 'info', message: string) => {
+    setModalType(type);
+    setModalMessage(message);
+    setIsModalOpen(true);
+  }, []);
+
+  const { slug } = useParams(); // Pegue o slug da URL
+  const [bioData, setBioData] = useState<BioData>({
+    name: "",
+    biografy: "",
+    image: "",
+    content: [],
+    form_contact: false,
+    copyright: false,
+  });
+>>>>>>> 12c0e385c7097909bf85791776ddf5a97866a1a5
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,6 +104,7 @@ export default function ViewBio() {
 
       try {
         setLoading(true);
+<<<<<<< HEAD
 
         // Define um User-Agent customizado para evitar bloqueios
         const headers = {
@@ -63,6 +116,19 @@ export default function ViewBio() {
         const response = await axiosInstance.get(`/api/v1/profile/${slug}/`, { headers });
         const profileData = response.data;
 
+=======
+  
+        // Verifique se o slug está presente
+        if (!slug) {
+          showAlert('error', 'Usuário não encontrado na URL!');
+        }
+  
+        // Busca os dados públicos do perfil
+        const profileResponse = await axiosInstance.get(`/api/v1/profile/${slug}/`);
+        const profileData = profileResponse.data;
+  
+        // Mapeia os links e snaps para o formato esperado
+>>>>>>> 12c0e385c7097909bf85791776ddf5a97866a1a5
         const links = profileData.links.map((link: any) => ({
           id: nanoid(),
           type: "link" as const,
@@ -120,6 +186,7 @@ export default function ViewBio() {
 
     fetchData();
   }, [slug]);
+<<<<<<< HEAD
 
   if (loading) return <div>Carregando...</div>;
   if (error) return <div>{error}</div>;
@@ -130,5 +197,36 @@ export default function ViewBio() {
         {bioData && <MobileScreen bioData={bioData} />}
       </div>
     </div>
+=======
+
+
+
+  return (
+    <>
+      {loading ? (
+          <div className="flex flex-col lg:flex-row">
+          <div className="lg:mx-auto">
+            <LoadingSkeleton />
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col lg:flex-row">
+          {error ? (
+             <UserNotFound></UserNotFound>
+          ) : (
+            <div className="lg:mx-auto">
+              <MobileScreen bioData={bioData} />
+            </div>
+          )}
+          <AlertModal
+            type={modalType}
+            message={modalMessage}
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
+        </div>
+      )}
+    </>
+>>>>>>> 12c0e385c7097909bf85791776ddf5a97866a1a5
   );
 }
