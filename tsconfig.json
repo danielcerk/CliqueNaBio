@@ -26,14 +26,21 @@
       "@/*": [
         "./src/*"
       ]
-    }
+    },
+    "types": [
+      "react",
+      "react-dom",
+      "next"
+    ]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
-, "src/app/(authenticated)/signature/page.jsx"  ],
+    ".next/types/**/*.ts",
+    "**/*.js",
+    "**/*.jsx"
+  ],
   "exclude": [
     "node_modules"
   ]

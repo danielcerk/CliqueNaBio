@@ -5,7 +5,6 @@ import useAxios from "@/hooks/use-axios"
 import axios, { AxiosInstance } from 'axios';
 import Cookie from "js-cookie"
 import { useState, useEffect } from "react"
-// import { updateUserPassword } from "@/hooks/use-auth"
 import { useRouter } from 'next/navigation';
 import { AlertModal } from '@/components/common/AlertModal';
 import LoadingSkeleton from "./loading-skeleton";
@@ -48,7 +47,6 @@ interface FormData {
   password: string;
   biografy?: string;
 }
-
 
 
 export default function EditAccount() {
@@ -225,19 +223,14 @@ export default function EditAccount() {
       Pinterest: "Pinterest", // Adicione o Pinterest aqui
     };
 
-    interface LinkFormProps {
-      api: AxiosInstance; // Passando a instância do Axios como prop
-    }
-
 
     const [url, setUrl] = useState("");
     const [username, setUsername] = useState("");
-    const [socialNetwork, setSocialNetwork] = useState("Facebook"); // Valor padrão
+    const [socialNetwork, setSocialNetwork] = useState(""); 
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-
-      // Dados do link
+        // Dados do link
       const linkData = {
         url,
         title: socialNetworks[socialNetwork as keyof typeof socialNetworks], 
@@ -246,7 +239,22 @@ export default function EditAccount() {
         is_profile_link: true, // Definido como true para todos os links criados
       };
 
+
       try {
+        const response = await axiosInstance.get("/api/v1/account/me/link/", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const existingLinks = response.data.results || response.data;
+        const linkExists = existingLinks?.some(
+          (link: any ) =>
+            link.social_network === socialNetwork && link.url === url
+        );
+
+        if (linkExists) {
+          showAlert("info", "Esse link de rede social já foi criado.");
+          return;
+        }
+
         await createLink(axiosInstance, linkData);
         showAlert('success', 'Link criado com sucesso!');
 

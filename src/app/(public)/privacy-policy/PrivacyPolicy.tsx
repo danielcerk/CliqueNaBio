@@ -5,7 +5,7 @@ export default function PrivacyPolicy() {
 
   return (  
 <>
-  <div className="container mx-auto my-14 max-w-6xl px-4">
+  <div className=" mx-auto my-14 max-w-6xl px-4">
     <h1 className="text-center text-3xl font-semibold mb-6">Política de Privacidade - CliqueNaBio</h1>
     <p className="text-center text-gray-600 mb-8">
       Última atualização: 28 de Janeiro de 2025

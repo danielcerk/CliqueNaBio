@@ -5,22 +5,10 @@ import axiosInstance from "@/helper/axios-instance";
 import useAxios from "@/hooks/use-axios";
 import Cookie from "js-cookie";
 import { FaCheckCircle } from 'react-icons/fa';
-import LoadingSkeleton from "./loading"
-import { AlertModal } from '@/components/common/AlertModal';
+import Loading from "./loading"
 
 const PricingTable = () => {
   const token = Cookie.get('access_token');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
-  const [modalMessage, setModalMessage] = useState('');
-
-  // Função para mostrar o alerta
-  const showAlert = (type, message) => {
-    setModalType(type);
-    setModalMessage(message);
-    setIsModalOpen(true);
-  };
-  
 
   const [user, loadingUser, errorUser] = useAxios({
     axiosInstance,
@@ -81,17 +69,26 @@ const PricingTable = () => {
     ));
   };
 
-
+  // Verificar o valor de user.plan no console para entender o que está sendo retornado
   useEffect(() => {
-
+    // eslint-disable-next-line no-console
+    console.log('Plano do usuário:', user?.plan);
   }, [user]);
 
 
   if (loadingUser) {
-    return <LoadingSkeleton />
+    return <Loading />
   }
 
-  if (errorUser) {showAlert('error', 'Erro ao carregar os dados. Tente novamente mais tarde.');}
+  if (errorUser) {
+    return (
+      <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+        <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">
+          <p className="text-red-500">Erro ao carregar os dados. Tente novamente mais tarde.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
 
@@ -159,7 +156,6 @@ const PricingTable = () => {
           <h3 className="text-lg text-gray-500">Carregando informações do plano...</h3>
         )}
       </div>
-      <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };

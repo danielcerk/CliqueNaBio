@@ -8,6 +8,7 @@ import { nanoid } from "nanoid";
 import { AlertModal } from '@/components/common/AlertModal';
 import UserNotFound from "@/app/user-not-found";
 import LoadingSkeleton from "./loading-skeleton";
+// import { Metadata } from "next";
 
 interface ContentItem {
   id: string;
@@ -45,6 +46,29 @@ interface BioData {
   form_contact: boolean;
   copyright: boolean;
 }
+
+
+// export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+//   try {
+//     const response = await axiosInstance.get(`/api/v1/profile/${params.slug}/`);
+//     const profile = response.data;
+
+//     return {
+//       title: `${profile.name} | Perfil Público`,
+//       description: profile.biografy,
+//       openGraph: {
+//         title: `${profile.name} | Perfil Público`,
+//         description: profile.biografy,
+//         images: [{ url: profile.image }],
+//       },
+//     };
+//   } catch (error) {
+//     return {
+//       title: "Usuário não encontrado",
+//       description: "O perfil solicitado não foi encontrado.",
+//     };
+//   }
+// }
 
 export default function ViewBio() {
 
