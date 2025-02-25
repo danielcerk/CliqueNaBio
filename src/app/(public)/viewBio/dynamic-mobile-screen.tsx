@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { LucideProps } from 'lucide-react';
 
 const socialIcons = {
@@ -122,6 +122,24 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
     return imageExtensions.some((ext) => url.toLowerCase().endsWith(ext));
   };
 
+  useEffect(() => {
+    if (bioData) {
+      document.title = `CliqueNaBio | @${bioData.name}` || "Meu App";
+  
+      if (bioData.image) {
+        const favicon = document.querySelector("link[rel='icon']") as HTMLLinkElement | null;
+        if (favicon) {
+          favicon.href = bioData.image;
+        } else {
+          const newFavicon = document.createElement("link");
+          newFavicon.rel = "icon";
+          newFavicon.href = bioData.image;
+          document.head.appendChild(newFavicon);
+        }
+      }
+    }
+  }, [bioData]);
+  
 
   return (
     <div className="lg:max-w-6xl mx-auto lg:flex justify-around">
@@ -132,9 +150,9 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
             <div className="text-center">
               <Avatar className="w-32 h-32 mx-auto mt-5 shadow">
                 <AvatarImage src={bioData.image} alt={bioData.name} />
-                <AvatarFallback>{bioData.name.charAt(0)}</AvatarFallback>
+                <AvatarFallback>@{bioData.name}</AvatarFallback>
               </Avatar>
-              <p className="mt-4 font-medium capitalize">{bioData.name}</p>
+              <p className="mt-4 font-medium capitalize">@{bioData.name}</p>
               <p className="mt-2 text-gray-700 text-sm max-w-[400px] mx-auto">{bioData.biografy}</p>
             </div>
             

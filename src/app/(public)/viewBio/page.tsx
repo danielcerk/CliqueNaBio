@@ -40,34 +40,7 @@ interface BioData {
   copyright: boolean;
 }
 
-
-// export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-//   try {
-//     const response = await axiosInstance.get(`/api/v1/profile/${params.slug}/`);
-//     const profile = response.data;
-
-//     return {
-//       title: `${profile.name} | Perfil Público`,
-//       description: profile.biografy,
-//       openGraph: {
-//         title: `${profile.name} | Perfil Público`,
-//         description: profile.biografy,
-//         images: [{ url: profile.image }],
-//       },
-//     };
-//   } catch (error) {
-//     return {
-//       title: "Usuário não encontrado",
-//       description: "O perfil solicitado não foi encontrado.",
-//     };
-//   }
-// }
-
 export default function ViewBio() {
-<<<<<<< HEAD
-  const { slug } = useParams();
-  const [bioData, setBioData] = useState<BioData | null>(null);
-=======
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
@@ -89,7 +62,7 @@ export default function ViewBio() {
     form_contact: false,
     copyright: false,
   });
->>>>>>> 12c0e385c7097909bf85791776ddf5a97866a1a5
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -104,19 +77,7 @@ export default function ViewBio() {
 
       try {
         setLoading(true);
-<<<<<<< HEAD
 
-        // Define um User-Agent customizado para evitar bloqueios
-        const headers = {
-          "User-Agent": navigator.userAgent.includes("Instagram") 
-            ? "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)"
-            : navigator.userAgent,
-        };
-
-        const response = await axiosInstance.get(`/api/v1/profile/${slug}/`, { headers });
-        const profileData = response.data;
-
-=======
   
         // Verifique se o slug está presente
         if (!slug) {
@@ -128,7 +89,7 @@ export default function ViewBio() {
         const profileData = profileResponse.data;
   
         // Mapeia os links e snaps para o formato esperado
->>>>>>> 12c0e385c7097909bf85791776ddf5a97866a1a5
+
         const links = profileData.links.map((link: any) => ({
           id: nanoid(),
           type: "link" as const,
@@ -186,20 +147,6 @@ export default function ViewBio() {
 
     fetchData();
   }, [slug]);
-<<<<<<< HEAD
-
-  if (loading) return <div>Carregando...</div>;
-  if (error) return <div>{error}</div>;
-
-  return (
-    <div className="flex flex-col lg:flex-row">
-      <div className="lg:mx-auto">
-        {bioData && <MobileScreen bioData={bioData} />}
-      </div>
-    </div>
-=======
-
-
 
   return (
     <>
@@ -227,6 +174,6 @@ export default function ViewBio() {
         </div>
       )}
     </>
->>>>>>> 12c0e385c7097909bf85791776ddf5a97866a1a5
+
   );
 }
