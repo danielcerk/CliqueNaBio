@@ -5,6 +5,8 @@ import MobileScreen from "./dynamic-mobile-screen";
 import axiosInstance from "@/helper/axios-instance";
 import { nanoid } from "nanoid";
 import Cookie from "js-cookie";
+import LoadingSkeleton from "./loading-skeleton";
+import { AlertModal } from '@/components/common/AlertModal';
 
 interface ContentItem {
   id: string;
@@ -56,6 +58,18 @@ export default function View() {
   const [error, setError] = useState(false);
   const [publicLink, setPublicLink] = useState(""); // Estado para armazenar o link público
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
+  const [modalMessage, setModalMessage] = useState('');
+
+  // Função para mostrar o alerta
+  const showAlert = (type: 'success' | 'error' | 'info', message: string) => {
+    setModalType(type);
+    setModalMessage(message);
+    setIsModalOpen(true);
+  };
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -63,7 +77,7 @@ export default function View() {
 
         // Busca os dados do usuário autenticado
         const token = Cookie.get("access_token");
-        if (!token) throw new Error("Token não encontrado");
+        if (!token) showAlert('error', 'Token não encontrado');
 
         const userResponse = await axiosInstance.get("/api/v1/account/me/profile/", {
           headers: { Authorization: `Bearer ${token}` },
@@ -82,7 +96,7 @@ export default function View() {
           setPublicLink(link);
 
         } else {
-          console.error("Slug não encontrado nos dados do usuário.");
+          showAlert('error', 'Slug não encontrado nos dados do usuário.')
         }
 
         // Busca os links e snaps do usuário
@@ -129,7 +143,6 @@ export default function View() {
           copyright: userData.copyright,
         });
       } catch (err) {
-
         setError(true);
       } finally {
         setLoading(false);
@@ -142,12 +155,12 @@ export default function View() {
   // Função para copiar o link público
   const handleCopyLink = () => {
     navigator.clipboard.writeText(publicLink)
-      .then(() => alert("Link copiado para a área de transferência!"))
-      .catch(() => alert("Erro ao copiar o link."));
+      .then(() => showAlert('success', 'Link copiado para a área de transferência!'))
+      .catch(() => showAlert('error', 'Erro ao copiar o link.'));
   };
 
-  if (loading) return <div>Carregando...</div>;
-  if (error) return <div>Erro ao carregar dados.</div>;
+  if (loading) return <LoadingSkeleton></LoadingSkeleton>;
+  if (error) return showAlert('error', 'Erro ao carregar dados.');
 
   return (
     <div className="flex flex-col lg:flex-row">
@@ -175,6 +188,7 @@ export default function View() {
 
         <MobileScreen bioData={bioData} />
       </div>
+      <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

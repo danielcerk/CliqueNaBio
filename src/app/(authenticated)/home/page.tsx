@@ -12,9 +12,11 @@ import {
 import { Users } from "lucide-react";
 import axiosInstance from "@/helper/axios-instance";
 import useAxios from "@/hooks/use-axios";
+import { useState } from 'react';
 import Cookie from "js-cookie";
-import Loading from "./loading";
+import LoadingSkeleton from "./loading-skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AlertModal } from '@/components/common/AlertModal';
 
 interface Dashboard {
   count_views_per_date: Record<string, number>;
@@ -38,6 +40,18 @@ interface User {
 
 export default function Home() {
   const token = Cookie.get('access_token');
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
+    const [modalMessage, setModalMessage] = useState('');
+  
+    // Função para mostrar o alerta
+    const showAlert = (type: 'success' | 'error' | 'info', message: string) => {
+      setModalType(type);
+      setModalMessage(message);
+      setIsModalOpen(true);
+    };
+
   const [dashboard, loadingDashboard, errorDashboard] = useAxios<Dashboard>({
     axiosInstance,
     method: 'get',
@@ -56,14 +70,9 @@ export default function Home() {
     }
   });
 
-  if (loadingDashboard) return <Loading />;
-  if (errorDashboard) return (
-    <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-      <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">
-        <p className="text-red-500">Erro ao carregar os dados. Tente novamente mais tarde.</p>
-      </div>
-    </div>
-  );
+  if (loadingDashboard) return <LoadingSkeleton/>;
+  if (errorDashboard) return showAlert('error', 'Erro ao carregar os dados. Tente novamente mais tarde.');
+  
 
   const formatChartData = (data: Record<string, number>) => 
     Object.entries(data).map(([key, value]) => ({ key, value }));
@@ -75,7 +84,7 @@ export default function Home() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card><CardHeader><CardTitle>Visitas totais</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">{dashboard?.views ?? 0}</div></CardContent></Card>
         <Card><CardHeader><CardTitle>Snaps Criados</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">{dashboard?.snaps_count}</div></CardContent></Card>
-        <Card><CardHeader><CardTitle>Links Criados</CardTitle><Users className="h-4 w-4 text-muted-foreground" /></CardHeader><CardContent><div className="text-2xl font-bold">{dashboard?.links_count}</div></CardContent></Card>
+        <Card><CardHeader className='flex-row items-center gap-2'><CardTitle>Links Criados</CardTitle><Users className="h-4 w-4 text-muted-foreground" /></CardHeader><CardContent><div className="text-2xl font-bold">{dashboard?.links_count}</div></CardContent></Card>
       </div>
 
       {user?.plan !== 'GRÁTIS' ? (
@@ -101,8 +110,8 @@ export default function Home() {
                     )}
                   >
                     <XAxis dataKey="key" tick={{ fontSize: 12 }} />
-                    <Bar dataKey="value" fill="#facc15" radius={[4, 4, 0, 0]}>
-                      <LabelList dataKey="value" position="top" />
+                    <Bar dataKey="value" fill="#facc15" radius={[4, 4, 0, 0]} maxBarSize={65}>
+                      <LabelList dataKey="value" position="center" />
                     </Bar>
                     <Tooltip />
                   </BarChart>
@@ -118,6 +127,8 @@ export default function Home() {
           </p>
         </div>
       )}
+
+    <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

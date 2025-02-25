@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
+import { AlertModal } from '@/components/common/AlertModal';
 import axiosInstance from '@/helper/axios-instance';
 import { logout } from '@/hooks/use-auth';
 import { useRouter, usePathname } from 'next/navigation';
@@ -10,9 +10,17 @@ import { useRouter, usePathname } from 'next/navigation';
 export default function SideBar() {
   const [isNavbarVisible, setIsNavbarVisible] = useState(false);
   const [activeLink, setActiveLink] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
+  const [modalMessage, setModalMessage] = useState('');
 
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState('')
+  // Função para mostrar o alerta
+  const showAlert = (type: 'success' | 'error' | 'info', message: string) => {
+    setModalType(type);
+    setModalMessage(message);
+    setIsModalOpen(true);
+  };
+
   const router = useRouter();
   const pathname = usePathname() || 'Home'; 
 
@@ -41,11 +49,10 @@ export default function SideBar() {
 
   const handleLogout = async ()=>{
     try {
-      const response = await logout(axiosInstance);
-
+      await logout(axiosInstance);
       router.push('/');
     } catch (error) {
-      console.error('Erro no logout:', error);
+      showAlert('error', `Erro no logout: ${error}`);
     } 
   }
 
@@ -100,6 +107,7 @@ export default function SideBar() {
           </div>
         </nav>
       </div>
+        <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

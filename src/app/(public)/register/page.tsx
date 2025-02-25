@@ -1,9 +1,7 @@
 'use client'
 
-// Importando a função register
 import { register } from '@/hooks/use-auth';
 import axiosInstance from '@/helper/axios-instance';
-// import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -72,11 +70,9 @@ export default function Register() {
     } catch (error) {
 
       if (error instanceof Error) {
-
         setError('Erro ao criar conta');
         showAlert("error", "Erro ao criar conta!")
       } else {
-
         setError('Erro desconhecido');
         showAlert("error", "Erro desconhecido!")
       }

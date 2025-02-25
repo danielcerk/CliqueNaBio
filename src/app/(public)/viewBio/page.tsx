@@ -1,10 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import MobileScreen from "./dynamic-mobile-screen";
 import axiosInstance from "@/helper/axios-instance";
 import { useParams } from "next/navigation"; // Importe useParams para pegar o slug da URL
 import { nanoid } from "nanoid";
+import { AlertModal } from '@/components/common/AlertModal';
+import UserNotFound from "@/app/user-not-found";
+import LoadingSkeleton from "./loading-skeleton";
 
 interface ContentItem {
   id: string;
@@ -44,6 +47,18 @@ interface BioData {
 }
 
 export default function ViewBio() {
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
+  const [modalMessage, setModalMessage] = useState('');
+
+  // Função para mostrar o alerta
+  const showAlert = useCallback((type: 'success' | 'error' | 'info', message: string) => {
+    setModalType(type);
+    setModalMessage(message);
+    setIsModalOpen(true);
+  }, []);
+
   const { slug } = useParams(); // Pegue o slug da URL
   const [bioData, setBioData] = useState<BioData>({
     name: "",
@@ -56,6 +71,7 @@ export default function ViewBio() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -63,9 +79,8 @@ export default function ViewBio() {
   
         // Verifique se o slug está presente
         if (!slug) {
-          throw new Error("Slug não encontrado na URL.");
+          showAlert('error', 'Usuário não encontrado na URL!');
         }
-
   
         // Busca os dados públicos do perfil
         const profileResponse = await axiosInstance.get(`/api/v1/profile/${slug}/`);
@@ -113,16 +128,35 @@ export default function ViewBio() {
     };
 
     fetchData();
-  }, [slug]); // Execute o efeito sempre que o slug mudar
+  }, [slug]);
 
-  if (loading) return <div>Carregando...</div>;
-  if (error) return <div>Erro ao carregar dados.</div>;
+
 
   return (
-    <div className="flex flex-col lg:flex-row">
-      <div className="lg:mx-auto">
-        <MobileScreen bioData={bioData} />
-      </div>
-    </div>
+    <>
+      {loading ? (
+          <div className="flex flex-col lg:flex-row">
+          <div className="lg:mx-auto">
+            <LoadingSkeleton />
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col lg:flex-row">
+          {error ? (
+             <UserNotFound></UserNotFound>
+          ) : (
+            <div className="lg:mx-auto">
+              <MobileScreen bioData={bioData} />
+            </div>
+          )}
+          <AlertModal
+            type={modalType}
+            message={modalMessage}
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
+        </div>
+      )}
+    </>
   );
 }

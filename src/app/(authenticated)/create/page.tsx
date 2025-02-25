@@ -7,13 +7,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Cookie from "js-cookie";
-import Loading from "./loading";
+import LoadingSkeleton from "./loading-skeleton";
 import axiosInstance from "@/helper/axios-instance";
 import useAxios from "@/hooks/use-axios";
 import { cloudinaryUpload } from "@/hooks/cloudinaryUpload";
 import { createLink } from "@/hooks/use-links";
 import { createSnap } from "@/hooks/use-snaps";
 import { nanoid } from "nanoid";
+import { AlertModal } from '@/components/common/AlertModal';
+import Loading from "./loading";
 
 interface ContentItem {
   id: string;
@@ -52,6 +54,18 @@ interface SnapApiResponse {
 
 const BioEditor = () => {
   const token = Cookie.get("access_token");
+
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
+  const [modalMessage, setModalMessage] = useState('');
+
+  // Função para mostrar o alerta
+  const showAlert = (type: 'success' | 'error' | 'info', message: string) => {
+    setModalType(type);
+    setModalMessage(message);
+    setIsModalOpen(true);
+  };
 
   const [userData, loadingUser, errorUser] = useAxios<UserData | null>({
     axiosInstance,
@@ -202,8 +216,7 @@ const BioEditor = () => {
         const imageUrl = await cloudinaryUpload(file);
         updateContent(id, imageUrl);
       } catch (error) {
-
-        alert("Erro ao fazer upload da imagem. Tente novamente.");
+        showAlert('error', 'Erro ao fazer upload da imagem. Tente novamente.');
       }
     }
   };
@@ -220,8 +233,7 @@ const BioEditor = () => {
         };
   
         if (!isValidUrl(linkData.url)) {
-
-          alert("Por favor, insira um URL válido.");
+          showAlert('error', 'Por favor, insira um URL válido.');
           return;
         }
   
@@ -237,12 +249,9 @@ const BioEditor = () => {
         // Salva o snap no backend
         await createSnap(axiosInstance, snapData);
       }
-  
-      // Recarrega os dados do backend após salvar com sucesso
-      await fetchContent(); // Chama a função que busca os dados do backend
+      await fetchContent(); 
     } catch (error) {
-
-      alert("Erro ao salvar conteúdo. Tente novamente.");
+      showAlert('error', 'Erro ao salvar conteúdo. Tente novamente.');
     } finally {
       setLoadingSave(false);
     }
@@ -253,7 +262,7 @@ const BioEditor = () => {
       new URL(url);
       return true;
     } catch (error) {
-
+      showAlert('error', 'Por favor, insira um URL válido.');
       return false;
     }
   };
@@ -271,8 +280,7 @@ const BioEditor = () => {
         };
   
         if (!isValidUrl(linkData.url)) {
-
-          alert("Por favor, insira um URL válido.");
+          showAlert('error', 'Por favor, insira um URL válido.');
           return;
         }
         const stringId = item.id.toString(); 
@@ -291,10 +299,9 @@ const BioEditor = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
       }
-      alert("Item atualizado com sucesso!");
+      showAlert('success', 'Item atualizado com sucesso!');
     } catch (error) {
-
-      alert("Erro ao atualizar conteúdo. Tente novamente.");
+      showAlert('error', 'Erro ao atualizar conteúdo. Tente novamente.');
     } finally {
       setLoadingSave(false);
     }
@@ -318,26 +325,17 @@ const BioEditor = () => {
           ...prev,
           content: prev.content.filter((item) => item.id !== id), // Mantém o ID original no estado
         }));
-        alert("Item excluído com sucesso!");
+        showAlert('success', 'Item excluído com sucesso!');
       } catch (error) {
-
-        alert("Erro ao excluir conteúdo. Tente novamente.");
+        showAlert('error', 'Erro ao excluir conteúdo. Tente novamente.');
       }
     };
 
   if (loadingUser) {
-    return <Loading />;
+    return <LoadingSkeleton />;
   }
 
-  if (errorUser) {
-    return (
-      <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-        <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">
-          <p className="text-red-500">Erro ao carregar os dados. Tente novamente mais tarde.</p>
-        </div>
-      </div>
-    );
-  }
+  if (errorUser) {showAlert('error', 'Erro ao carregar os dados do Usuário. Tente novamente mais tarde.');}
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-10 min-h-screen">
@@ -440,7 +438,7 @@ const BioEditor = () => {
                       className="w-full"
                       onClick={() => item.created ? updateItem(item) : saveContent(item)}
                     >
-                      <Save className="w-4 h-4" /> {loadingSave ? "Salvando..." : "Salvar"}
+                      <Save className="w-4 h-4" /> {loadingSave ? <Loading/> : "Salvar"}
                     </Button>
                     <Button
                       variant="destructive"
@@ -534,7 +532,7 @@ const BioEditor = () => {
                     )}
 
                     <Button variant="secondary" size="sm" className="w-full" onClick={() => saveContent(item)}>
-                      <Save className="w-4 h-4" /> {loadingSave ? "Salvando..." : "Salvar"}
+                      <Save className="w-4 h-4" /> {loadingSave ? <Loading/> : "Salvar"}
                     </Button>
                     <Button
                       variant="destructive"
@@ -565,6 +563,8 @@ const BioEditor = () => {
           </div>
         </div>
       )}
+
+    <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };

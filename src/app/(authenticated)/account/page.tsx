@@ -9,8 +9,9 @@ import Link from "next/link";
 import axiosInstance from "@/helper/axios-instance";
 import useAxios from "@/hooks/use-axios";
 import Cookie from "js-cookie";
-import Loading from "./loading";
+import LoadingSkeleton from "./loading-skeleton";
 import Image from "next/image";
+import { AlertModal } from '@/components/common/AlertModal';
 
 interface User {
   name?: string;
@@ -45,6 +46,16 @@ interface Link {
 
 export default function Account() {
   const token = Cookie.get("access_token");
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
+  const [modalMessage, setModalMessage] = useState('');
+
+  const showAlert = (type: 'success' | 'error' | 'info', message: string) => {
+    setModalType(type);
+    setModalMessage(message);
+    setIsModalOpen(true);
+  };
 
   // Carregando dados do usuário
   const [userData, loadingUser, errorUser] = useAxios({
@@ -124,7 +135,7 @@ export default function Account() {
           : { image: response.data.image }
       );
     } catch (error) {
-      console.error("Erro ao enviar imagem");
+      showAlert('error', 'Erro ao enviar Imagem!');
     }
   };
 
@@ -144,23 +155,15 @@ export default function Account() {
 
       setShowForm(newValue); // Atualiza diretamente o estado showForm
     } catch (error) {
-      console.error("Erro ao atualizar visibilidade");
+      showAlert('error', 'Erro ao atualizar visibilidade!');
     }
   };
 
   if (loadingUser) {
-    return <Loading />;
+    return <LoadingSkeleton/>;
   }
 
-  if (errorUser) {
-    return (
-      <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-        <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">
-          <p className="text-red-500">Erro ao carregar os dados. Tente novamente mais tarde.</p>
-        </div>
-      </div>
-    );
-  }
+  if (errorUser) { showAlert('error', 'Erro ao carregar os dados. Tente novamente mais tarde.');}
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center p-4">
@@ -244,6 +247,8 @@ export default function Account() {
           </Link>
         </CardFooter>
       </Card>
+
+      <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }
