@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import dynamic from 'next/dynamic';
 import { Progress } from "@/components/ui/progress";
 
-// Carregamento dinâmico de componentes
 const NoSSRBanner = dynamic(() => import('@/app/(public)/landing/Banner'), { ssr: false });
 const NoSSRScreenPhone = dynamic(() => import('@/app/(public)/landing/ScreenPhone'), { ssr: false });
 const NoSSRContent = dynamic(() => import('@/app/(public)/landing/Content'), { ssr: false });
@@ -20,8 +19,7 @@ export default function LandingPage() {
       const scrollPosition = window.scrollY;
       const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progressValue = Math.min((scrollPosition / pageHeight) * 100, 100); // Limita a 100%
-
-      setProgress(progressValue); // Atualiza o progresso conforme a rolagem
+      setProgress(progressValue); 
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -32,8 +30,8 @@ export default function LandingPage() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       AOS.init({
-        duration: 1000, // Tempo da animação
-        once: true, // A animação acontece uma vez
+        duration: 1000, 
+        once: true, 
       });
     }
   }, []);
@@ -49,11 +47,10 @@ export default function LandingPage() {
         <NoSSRFAQ />
       </div>
 
-      {/* Progress bar fixada sobre a página */}
       <Progress
         value={progress}
         className="w-[60%] fixed bottom-5 left-1/2 transform -translate-x-1/2 z-50 bg-gray-200"
-        style={{ height: "6px" }} // Ajuste a altura da barra
+        style={{ height: "6px" }} 
       />
     </div>
   );

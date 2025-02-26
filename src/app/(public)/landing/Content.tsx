@@ -56,14 +56,14 @@ export default function ContentLanding() {
           <div className="mx-auto max-w-6xl text-center">
       
               <h2
-                className="text-5xl font-semibold text-black mb-6 uppercase"
+                className="text-6xl font-semibold text-black mb-6 uppercase max-w-[400px] mx-auto"
                 data-aos="fade-up" // Exemplo de animação
               >
                 Conquiste Resultados!
               </h2>
 
               <p
-                className="text-lg sm:text-xl text-gray-700 mb-12 max-w-3xl mx-auto"
+                className="text-lg sm:text-xl text-gray-700 mb-12 max-w-[400px] mx-auto"
                 data-aos="fade-up" // Outra animação
               >
                 Chega de ser invisível com um layout sem personalidade. É hora de dar destaque ao seu trabalho!
@@ -136,7 +136,7 @@ export default function ContentLanding() {
 
               <div className="flex mt-10 justify-center items-center hover:rotate-6 transition-all duration-500 cursor-pointer">
                 <Image
-                  src="https://cdn.rareblocks.xyz/collection/celebration/images/hero/4/phone-mockup.png"
+                  src={"/celular_acessando_site_do_cliquenabio.png"}
                   alt="Link na bio"
                   className="w-full max-w-md"
                   width={400}
@@ -148,31 +148,87 @@ export default function ContentLanding() {
           </div>
         </section>
 
-        <div>
-          <section className="px-6 py-24 bg-gray-100 text-center" data-aos="fade-up">
-            <h2 className="text-4xl font-semibold text-gray-900">Gerencie tudo no Dashboard</h2>
-            <p className="text-lg text-gray-700 mt-4">Acompanhe métricas de visualizações e interações no seu dashboard.</p>
-            <div className="mt-8 flex justify-center">
-              <Image src="https://placehold.co/600x400.png" alt="Dashboard interativo do CliqueNaBio" width={600} height={400} />
+        <div className="max-w-4xl mx-auto bg-gray-900 rounded-3xl">
+          <section className="px-6 py-24  text-center" data-aos="fade-up">
+            <h2 className="text-6xl font-semibold text-yellow-400 max-w-[400px] mx-auto uppercase">Gerencie tudo no Dashboard</h2>
+            <p className="text-lg text-gray-200 mt-4 max-w-[400px] mx-auto">Acompanhe métricas de visualizações e interações no seu dashboard.</p>
+            <div className="mt-8 w-fit mx-auto shadow-2xl border-2 bg-yellow-400 border-yellow-400 rounded-3xl">
+              <Image
+                src="/dashboard_cliquenabio.png"
+                alt="Dashboard interativo do CliqueNaBio"
+                width={1200}
+                height={800}
+                quality={100}  // Qualidade máxima
+                className="rounded-3xl w-full h-full"
+                style={{ objectFit: 'cover' }}
+              />
+            </div>
+
+
+          </section>
+          <section className="px-6 py-24 text-center" data-aos="fade-up">
+            <h2 className="text-6xl font-semibold text-yellow-400  max-w-[400px] mx-auto uppercase">Adicione Snaps e Links na Bio</h2>
+            <p className="text-lg text-gray-200 mt-4 max-w-[400px] mx-auto">Crie um link dinâmico e interativo em poucos cliques.</p>
+            <div className="flex justify-center flex-wrap">
+              <div className="mt-8 w-fit mx-auto shadow-2xl border-2 bg-yellow-400 border-yellow-400 rounded-3xl">
+                <Image
+                  src="/create.png"
+                  alt="Dashboard interativo do CliqueNaBio"
+                  width={1200}
+                  height={800}
+                  quality={100}  // Qualidade máxima
+                  className="rounded-3xl w-full h-full"
+                  style={{ objectFit: 'cover' }}
+                />
+              </div>
+              <div className="mt-8 w-full md:w-fit mx-auto shadow-2xl border-2 bg-yellow-400 border-yellow-400 rounded-3xl">
+                <Image
+                  src="/create_mobile.png"
+                  alt="Dashboard interativo do CliqueNaBio"
+                  width={1200}
+                  height={800}
+                  quality={100}  // Qualidade máxima
+                  className="rounded-3xl w-full h-full"
+                  style={{ objectFit: 'cover' }}
+                />
+              </div>
             </div>
           </section>
-          <section className="px-6 py-24 bg-white text-center" data-aos="fade-up">
-            <h2 className="text-4xl font-semibold text-gray-900">Adicione Snaps e Links na Bio</h2>
-            <p className="text-lg text-gray-700 mt-4">Crie um link dinâmico e interativo em poucos cliques.</p>
-            <div className="mt-8 flex justify-center">
-              <Image src="https://placehold.co/400x600.png" alt="Snaps e links adicionados na CliqueNaBio" width={300} height={600} />
+          <section className="px-6 py-24 text-center" data-aos="fade-up">
+            <h2 className="text-6xl font-semibold text-yellow-400  max-w-[400px] mx-auto uppercase">Modelo de Links na Bio</h2>
+            <div className="flex justify-center flex-wrap">
+              <div className="mt-8 w-fit mx-auto shadow-2xl border-2 bg-yellow-400 border-yellow-400 rounded-3xl">
+                <Image
+                  src="/page_view.png"
+                  alt="Dashboard interativo do CliqueNaBio"
+                  width={1200}
+                  height={800}
+                  quality={100}  // Qualidade máxima
+                  className="rounded-3xl w-full h-full"
+                  style={{ objectFit: 'cover' }}
+                />
+              </div>
+              <div className="mt-8 w-full md:w-fit mx-auto shadow-2xl border-2 bg-yellow-400 border-yellow-400 rounded-3xl">
+                <Image
+                  src="/view_mobile.png"
+                  alt="Dashboard interativo do CliqueNaBio"
+                  width={1200}
+                  height={800}
+                  quality={100}  // Qualidade máxima
+                  className="rounded-3xl w-full h-full"
+                  style={{ objectFit: 'cover' }}
+                />
+              </div>
             </div>
-          </section>
-          <section className="px-6 py-24 bg-gray-100 text-center" data-aos="fade-up">
-            <h2 className="text-4xl font-semibold text-gray-900">Modelo de Links na Bio</h2>
-            <div className="mt-8 flex justify-center">
-              <Image src="https://placehold.co/800x400.png" alt="Modelos de Link Na Bios feitos com o CliqueNaBio" width={900} height={400} />
-            </div>
-            <div className="mt-8">
-              <a href="/Register" className="inline-block px-8 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                Quero um link na bio Grátis
+            <div className="mt-10 text-center">
+              <a
+                href="/Register"
+                className="inline-block px-10 py-4 text-black font-bold bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full shadow-lg hover:from-yellow-500 hover:to-yellow-400 focus:outline-none focus:ring-4 focus:ring-yellow-500 focus:ring-opacity-50 uppercase transition-all duration-500 transform hover:scale-110"
+              >
+                Crie agora seu link na bio 100% Grátis!
               </a>
             </div>
+
           </section>
         </div>
 

@@ -69,9 +69,10 @@ const PricingTable = () => {
     ));
   };
 
-
+  // Verificar o valor de user.plan no console para entender o que está sendo retornado
   useEffect(() => {
-
+    // eslint-disable-next-line no-console
+    console.log('Plano do usuário:', user?.plan);
   }, [user]);
 
 

@@ -54,7 +54,7 @@ export default function ScreenPhone() {
         </h2>
         <div className="lg:w-2/3 flex justify-center">
           <Image
-            src={"/hero-app-screens-800.png"}
+            src={"/iphones_mostrando_links_na_bio_feitos_com_cliquenabio.png"}
             alt="Link na bio de usuários feito com o CliqueNaBio"
             className="w-full max-w-md"
             width={400}

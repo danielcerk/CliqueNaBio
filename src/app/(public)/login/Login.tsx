@@ -3,10 +3,9 @@ import axiosInstance from '@/helper/axios-instance';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-// import Image from 'next/image';
 import { AlertModal } from '@/components/common/AlertModal';
-
 import Cookie from 'js-cookie';
+import Loading from './loading';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -29,42 +28,24 @@ export default function Login() {
 
   // Função para realizar o login
   const handleLogin = async () => {
-
     setLoading(true);
-
     try {
-
       await login(axiosInstance, email, password);
-
       showAlert('success', 'Login bem-sucedido!');
       router.push('/home');
-
     } catch (error) {
-
       setError('Email ou senha inválidos. Tente novamente.');
       showAlert('error', 'Erro! Senha ou email incorretos');
-
     } finally {
-
       setLoading(false);
-
     }
   };
 
   useEffect(() => {
-
-    // const formData = new URLSearchParams();
-    
-
     const code = searchParams.get('code');
-
-    // formData.append('code', code);
-
     if (code) {
-
       (async () => {
         try {
-          
           const response = await axiosInstance.get(`/api/v1/auth/google/callback/?code=${code}`, {
             headers: { 'Content-Type': 'application/json' },
           });
@@ -84,7 +65,6 @@ export default function Login() {
           }
 
         } catch (err) {
-
           showAlert('error', 'Erro ao autenticar com Google');
         }
       })();
@@ -99,7 +79,7 @@ export default function Login() {
             className="w-full"
             onSubmit={(e) => {
               e.preventDefault();
-              handleLogin(); // Chamando a função ao enviar o formulário
+              handleLogin(); 
             }}
           >
             <span className="w-full text-center block mb-5 font-bold text-xl text-yellow-400 leading-[1.2]">
@@ -112,7 +92,6 @@ export default function Login() {
               </div>
             )}
 
-            {/* Campo de email */}
             <div className="w-full relative flex items-center mt-3">
               <span className="absolute left-4 top-4 text-gray-400">
                 <i className="fas fa-credit-card"></i>
@@ -128,7 +107,6 @@ export default function Login() {
               />
             </div>
 
-            {/* Campo de senha */}
             <div className="w-full relative flex items-center mt-3">
               <span className="absolute left-4 top-4 text-gray-400">
                 <i className="fas fa-lock"></i>
@@ -144,14 +122,13 @@ export default function Login() {
               />
             </div>
 
-            {/* Botão de login */}
             <div className="w-full flex justify-center items-center mt-4">
               <button
                 type="submit"
                 className="w-full p-3 bg-yellow-400 rounded-[10px] text-[1rem] text-gray-950 hover:scale-105 transition-all leading-[1.2] duration-500 relative z-1 font-bold"
                 disabled={loading}
               >
-                {loading ? 'Carregando...' : 'Entrar'}
+                {loading ? <Loading></Loading> : 'Entrar'}
               </button>
             </div>
 

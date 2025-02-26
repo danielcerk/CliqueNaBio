@@ -5,6 +5,22 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["@chakra-ui/react"],
   },
+  async redirects() {
+    return [
+      {
+        source: '/:path*', // Captura todas as rotas
+        has: [
+          {
+            type: 'header',
+            key: 'referer',
+            value: '.*[A-Z].*', // Verifica se há letras maiúsculas na URL
+          },
+        ],
+        destination: '/:path*', // Redireciona para a mesma rota em minúsculas
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
@@ -37,7 +53,6 @@ const nextConfig: NextConfig = {
         hostname: 'static.cdninstagram.com',
         pathname: "/**"
       },
-  
       {
         protocol: "https",
         hostname: "images.unsplash.com",
@@ -53,7 +68,6 @@ const nextConfig: NextConfig = {
         hostname: "www.amazon.com.br",
         pathname: "/**",
       },
-
       {
         protocol: "https",
         hostname: "placehold.co",

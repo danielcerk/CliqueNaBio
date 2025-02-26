@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { LucideProps } from 'lucide-react';
 
 const socialIcons = {
@@ -115,6 +115,25 @@ interface MobileScreenProps {
 
 const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
+
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    // Função para atualizar a largura da tela
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    // Adiciona o event listener
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup do event listener
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+
   const [imageLoaded, setImageLoaded] = useState(true);
 
   const isImageUrl = (url: string) => {
@@ -124,11 +143,11 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
 
   return (
-    <div className="lg:max-w-6xl mx-auto lg:flex justify-around">
+    <div className="lg:max-w-5xl mx-auto lg:flex justify-around">
       <Card className="relative min-w-full lg:min-w-[500px] min-h-screen bg-white rounded-3xl overflow-hidden">
 
-        <ScrollArea className="h-[calc(100%-4rem)] p-4">
-          <div className="bg-white p-2 py-20 rounded-xl">
+        <div className="p-4 gap-5 lg:flex w-[100%] h-full">
+          <div className="bg-white p-2 py-20 rounded-xl lg:min-w-[40%] ">
             <div className="text-center">
               <Avatar className="w-32 h-32 mx-auto mt-5 shadow">
                 <AvatarImage src={bioData.image} alt={bioData.name} />
@@ -169,10 +188,10 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
             </section>
           </div>
 
-          <hr />
-          <div className="mt-5">
+          {/* <hr /> */}
+          <div className="mt-5 w-full">
 
-          <div className="columns-2 gap-0 max-w-[500px]">
+          <div className="container gap-0 w-full h-full mx-auto">
             {bioData.content
               .sort((a, b) => {
                 const dateA = a.updated_at ? new Date(a.updated_at) : new Date(0);
@@ -180,27 +199,35 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                 return dateB.getTime() - dateA.getTime();
               })
               .map((item) => {
-                const isLarge = item.content.length > 100; // Exemplo: se o conteúdo for muito longo
+                const isImage = item.icon; 
                 return (
                   <div
                     key={item.id}
                     className={`overflow-hidden flex flex-col items-center ${
-                      isLarge ? "col-span-full" : "break-inside-avoid"
+                      item.type === "link" && isImage === "/icons/image.ico" && screenWidth < 1024
+                        ? "col-span-full container-item " 
+                        : "break-inside-avoid"
                     }`}
                   >
                       {item.type === "link" && !item.is_profile_link && (
                         <Link
                         href={item.url || ""}
-                        target="_blank" className="w-full mt-5 cursor-pointer max-w-[90%] py-2 transition-transform transform hover:scale-105">
+                        target="_blank" className={`w-full mt-4 cursor-pointer  transition-transform transform hover:scale-95  ${
+                          item.type === "link" && isImage === "/icons/image.ico" 
+                            ? "py-0 max-w-[95%] " 
+                            : "py-2 max-w-[90%] "
+                        }`}>
                           {item.og_image && (
                             <Image
                               src={item.og_image}
                               layout="fill"
                               objectFit="cover"
                               alt={`Imagem de Capa do Link de ${item.url} na CliqueNaBio`}
-                              className="w-full h-40 object-cover rounded-lg"
+                              className="w-full h-40 object-cover rounded-lg "
                             />
                           )}
+
+                          <div className="absolute inset-0 bg-black opacity-35 rounded-lg"></div>
                           <div
                             className="flex flex-col items-center gap-2 w-full h-full justify-center"
                           >
@@ -225,15 +252,19 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                                   alt={item.content}
                                   layout="fill"
                                   objectFit="cover"
-                                  className="rounded-lg opacity-50"
+                                  className="rounded-lg opacity-50 "
                                   onLoadingComplete={() => setImageLoaded(true)}
                                   onError={() => setImageLoaded(false)}
                                 />
                               ) : null}
 
-                              <div className="flex flex-col items-start">
+                              <div className={`flex items-start  ${
+                                item.type === "link" && isImage === "/icons/image.ico" 
+                                  ? "flex-row justify-between" 
+                                  : "flex-col justify-end"
+                                }`}>
                                 <span
-                                  className="z-10 text-xl font-semibold capitalize inline-block whitespace-wrap"
+                                  className="z-10 text-lg font-semibold capitalize inline-block whitespace-wrap"
                                   style={{ minWidth: "50%" }}
                                 >
                                   {item.title}
@@ -259,6 +290,8 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                           </div>
                         </Link>
                       )}
+
+                   
 
                       {item.type === "photo" && item.url && isImageUrl(item.url) && (
                         <div className="w-full max-w-[90%] bg-white mt-5 transition-transform transform hover:scale-90 cursor-pointer">
@@ -305,7 +338,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
             }
 
           </div>
-        </ScrollArea>
+        </div>
       </Card>
     </div>
   )

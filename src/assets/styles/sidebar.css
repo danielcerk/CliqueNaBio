@@ -155,7 +155,7 @@
 
 /* Responsividade */
 
-@media screen and (min-width: 768px) { /* Armengue para mostrar os nomes das categorias no mobile */
+@media screen and (min-width: 1200px) { /* Armengue para mostrar os nomes das categorias no mobile */
   /* body {
     margin: calc(var(--header-height) + 1rem) 0 0 0;
   } */
