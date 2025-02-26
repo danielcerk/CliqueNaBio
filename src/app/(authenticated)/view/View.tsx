@@ -173,7 +173,7 @@ const View = (): JSX.Element | null =>{
 
   return (
     <div className="flex flex-col lg:flex-row">
-      <div className="lg:mx-auto">
+      <div className="mx-auto">
 
         {publicLink && (
           <div className="mt-4 p-4 bg-gray-100 rounded-lg">

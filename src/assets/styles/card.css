@@ -26,10 +26,25 @@
 }
 
 
-.container {
-  columns: 2;
-  column-gap: 0;
-  max-width: 500px;
+
+
+@media (min-width: 768px) {
+  .container {
+    column-count: 3;
+    column-fill: balance;  /* Ou você pode deixar sem a propriedade para o comportamento padrão */
+  }
+}
+/* Para telas pequenas (largura máxima de 767px) */
+@media (max-width: 767px) {
+  .container {
+    column-count: 2;
+    column-fill: balance;  /* Ou você pode deixar sem a propriedade para o comportamento padrão */
+  }
+}
+
+
+.container-item {
+  column-span: all;
 }
 
 .item {

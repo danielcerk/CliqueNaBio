@@ -152,7 +152,7 @@ export default function ViewBio() {
     <>
       {loading ? (
           <div className="flex flex-col lg:flex-row">
-          <div className="lg:mx-auto">
+          <div className="mx-auto">
             <LoadingSkeleton />
           </div>
         </div>
