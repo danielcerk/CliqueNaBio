@@ -5,7 +5,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Páginas públicas
-  const publicRoutes = ['/', '/login', '/register', '/privacyPolicy', '/termsOfUse', '/status', '/viewBio'];
+  const publicRoutes = ['/', '/login', '/register', '/privacy-policy', '/terms-of-use', '/status', '/viewBio'];
 
   // Verifica se a URL contém letras maiúsculas e redireciona para minúsculas
   if (pathname !== pathname.toLowerCase()) {

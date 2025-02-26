@@ -11,10 +11,12 @@ import LoadingSkeleton from "./loading-skeleton";
 import axiosInstance from "@/helper/axios-instance";
 import useAxios from "@/hooks/use-axios";
 import { cloudinaryUpload } from "@/hooks/cloudinaryUpload";
+import { deleteImageFromCloudinary } from "@/hooks/cloudinaryUpload";
 import { createLink } from "@/hooks/use-links";
 import { createSnap } from "@/hooks/use-snaps";
 import { nanoid } from "nanoid";
 import { AlertModal } from '@/components/common/AlertModal';
+import { AddContentModal } from "./AddContentModal";
 
 
 interface ContentItem {
@@ -60,6 +62,10 @@ const BioEditor = () => {
   const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
   const [modalMessage, setModalMessage] = useState('');
 
+  // Estados para o modal de criação de conteúdo
+  const [isAddContentModalOpen, setIsAddContentModalOpen] = useState(false);
+  const [contentType, setContentType] = useState<"link" | "photo">("link");
+
   // Função para mostrar o alerta
   const showAlert = (type: 'success' | 'error' | 'info', message: string) => {
     setModalType(type);
@@ -88,7 +94,7 @@ const BioEditor = () => {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [loadingSave, setLoadingSave] = useState(false);
+  const [loadingSave, setLoadingSave] = useState<string | null>(null); 
 
   const generateUniqueId = () => `${Date.now()}-${nanoid()}`;
 
@@ -167,13 +173,29 @@ const BioEditor = () => {
       return;
     }
   
+    setContentType(type);
+    setIsAddContentModalOpen(true);
+  };
+
+  const handleSaveNewContent = async (data: { url?: string; title?: string; name?: string; small_description?: string; image?: string }) => {
     const newContent: ContentItem = {
-      id: generateUniqueId(), // Garante que o novo item tenha um ID
-      type,
-      content: "",
+      id: generateUniqueId(),
+      type: contentType,
+      content: contentType === "link" ? data.url || "" : data.image || "",
+      url: data.url,
+      name: data.name,
+      title: data.title,
+      small_description: data.small_description,
       created: false,
     };
+  
+    // Adiciona o novo item ao estado
     setBioData((prev) => ({ ...prev, content: [...prev.content, newContent] }));
+  
+    // Salva o conteúdo no backend
+    await saveContent(newContent);
+  
+    setIsAddContentModalOpen(false);
   };
 
   const updateContent = (
@@ -191,10 +213,10 @@ const BioEditor = () => {
           ? {
               ...item,
               content,
-              url: url !== undefined ? url : item.url, // Mantém o valor anterior se url for undefined
-              name: name !== undefined ? name : item.name, // Mantém o valor anterior se name for undefined
-              title: title !== undefined ? title : item.title, // Mantém o valor anterior se title for undefined
-              small_description: small_description !== undefined ? small_description : item.small_description, // Mantém o valor anterior se small_description for undefined
+              url: url !== undefined ? url : item.url, 
+              name: name !== undefined ? name : item.name, 
+              title: title !== undefined ? title : item.title, 
+              small_description: small_description !== undefined ? small_description : item.small_description, 
             }
           : item
       ),
@@ -222,7 +244,7 @@ const BioEditor = () => {
   };
 
   const saveContent = async (item: ContentItem) => {
-    setLoadingSave(true);
+    setLoadingSave(item.id); 
     try {
       if (item.type === "link") {
         const linkData = {
@@ -253,7 +275,7 @@ const BioEditor = () => {
     } catch (error) {
       showAlert('error', 'Erro ao salvar conteúdo. Tente novamente.');
     } finally {
-      setLoadingSave(false);
+      setLoadingSave(null);
     }
   };
   
@@ -262,14 +284,14 @@ const BioEditor = () => {
       new URL(url);
       return true;
     } catch (error) {
-      showAlert('error', 'Por favor, insira um URL válido.');
       return false;
     }
   };
 
+  
 
   const updateItem = async (item: ContentItem) => {
-    setLoadingSave(true);
+    setLoadingSave(item.id); 
     try {
       if (item.type === "link") {
         const linkData = {
@@ -303,33 +325,45 @@ const BioEditor = () => {
     } catch (error) {
       showAlert('error', 'Erro ao atualizar conteúdo. Tente novamente.');
     } finally {
-      setLoadingSave(false);
+      setLoadingSave(null); 
     }
   };
 
 
-    const deleteItem = async (id: string | number, type: "link" | "photo") => {
-      const stringId = id.toString(); 
-      const numericId = stringId.split("-")[0];
-      try {
-        if (type === "link") {
-          await axiosInstance.delete(`/api/v1/account/me/link/${numericId}/`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-        } else if (type === "photo") {
-          await axiosInstance.delete(`/api/v1/account/me/snap/${numericId}/`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+  const deleteItem = async (id: string | number, type: "link" | "photo") => {
+    const stringId = id.toString();
+    const numericId = stringId.split("-")[0];
+    try {
+      if (type === "link") {
+        await axiosInstance.delete(`/api/v1/account/me/link/${numericId}/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      } else if (type === "photo") {
+        const snapToDelete = bioData.content.find((item) => item.id === id);
+        if (snapToDelete?.content) {
+          try {
+            await deleteImageFromCloudinary(snapToDelete.content);
+          } catch (error) {
+            showAlert('error', 'Erro ao deletar a imagem. O snap foi removido, mas a imagem pode ainda estar no Cloudinary.');
+          }
         }
-        setBioData((prev) => ({
-          ...prev,
-          content: prev.content.filter((item) => item.id !== id), // Mantém o ID original no estado
-        }));
-        showAlert('success', 'Item excluído com sucesso!');
-      } catch (error) {
-        showAlert('error', 'Erro ao excluir conteúdo. Tente novamente.');
+        await axiosInstance.delete(`/api/v1/account/me/snap/${numericId}/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
       }
-    };
+  
+      setBioData((prev) => ({
+        ...prev,
+        content: prev.content.filter((item) => item.id !== id),
+      }));
+  
+      showAlert('success', 'Item excluído com sucesso!');
+    } catch (error) {
+      showAlert('error', 'Erro ao excluir conteúdo. Tente novamente.');
+    }
+  };
+
+
 
   if (loadingUser) {
     return <LoadingSkeleton />;
@@ -354,11 +388,11 @@ const BioEditor = () => {
         {/* Itens Criados (Renderizados) */}
         <div>
           <h2 className="text-lg text-gray-700 font-medium mb-4">Meu Conteúdo</h2>
-          <div className="columns-3 gap-6">
+          <div className="md:columns-3 gap-6">
             {bioData.content
-              .filter((item) => item && item.id && item.created && (item.type !== "link" || !item.is_profile_link)) // Filtra itens válidos
+              .filter((item) => item && item.id && item.created && (item.type !== "link" || !item.is_profile_link))
               .map((item) => (
-                <Card key={item.id} className="p-4 shadow-md hover:shadow-lg transition-shadow w-fit max-h-fit card-content">
+                <Card key={item.id} className="p-4 shadow-md hover:shadow-lg transition-shadow w-fit max-h-fit card-content w-full">
                   <CardContent className="flex flex-col items-center gap-4">
                     {item.type === "link" && (
                       <>
@@ -423,7 +457,7 @@ const BioEditor = () => {
                           type="text"
                           className="w-full text-gray-500"
                           placeholder="Descrição pequena do Snap"
-                          value={item.small_description || "" }
+                          value={item.small_description || ""}
                           onChange={(e) =>
                             updateContent(item.id, item.content, item.url, item.name, item.small_description, e.target.value)
                           }
@@ -437,108 +471,15 @@ const BioEditor = () => {
                       size="sm"
                       className="w-full"
                       onClick={() => item.created ? updateItem(item) : saveContent(item)}
+                      disabled={loadingSave === item.id}
                     >
-                      <Save className="w-4 h-4" /> {loadingSave ? "Salvando..." : "Salvar"}
+                      <Save className="w-4 h-4" /> {loadingSave === item.id ? "Salvando..." : "Salvar"}
                     </Button>
                     <Button
                       variant="destructive"
                       size="sm"
                       className="w-full flex items-center gap-2"
                       onClick={() => deleteItem(item.id, item.type)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Remover
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-          </div>
-        </div>
-
-        {/* Novos Itens */}
-        <div>
-          <div className="columns-3 gap-6">
-            {bioData.content
-              .filter((item) => item && item.id && !item.created) // Filtra itens válidos e não criados
-              .map((item) => (
-                <Card key={item.id} className="p-4 shadow-md hover:shadow-lg transition-shadow w-fit max-h-fit card-content">
-                  <CardContent className="flex flex-col items-center gap-4">
-                    {item.type === "link" && (
-                      <>
-                        <Globe className="w-8 h-8 text-gray-500" />
-                        <Input
-                          type="url"
-                          className="w-full text-gray-500"
-                          placeholder="https://exemplo.com"
-                          onChange={(e) => updateContent(item.id, item.content, e.target.value)}
-                          required
-                        />
-                        <Input
-                          type="text"
-                          className="w-full text-gray-500 mt-2"
-                          placeholder="Título do Link"
-                          onChange={(e) =>
-                            updateContent(item.id, item.content, item.url, item.title, e.target.value)
-                          }
-                          required
-                        />
-                      </>
-                    )}
-                    {item.type === "photo" && (
-                      <>
-                        {item.content ? (
-                          <Image
-                            key={item.id}
-                            src={item.content}
-                            alt="Uploaded"
-                            width={100}
-                            height={100}
-                            className="rounded-md object-cover"
-                            unoptimized
-                          />
-                        ) : (
-                          <label htmlFor={`file-input-${item.id}`} className="cursor-pointer flex flex-col items-center">
-                            <ImageIcon className="w-10 h-10 text-gray-500" />
-                            <span className="text-gray-600 text-sm">Enviar uma imagem</span>
-                          </label>
-                        )}
-                        <input
-                          id={`file-input-${item.id}`}
-                          type="file"
-                          className="hidden"
-                          accept="image/*"
-                          onChange={(e) => handlePhotoUpload(item.id, e)}
-                          required
-                        />
-                        <Input
-                          type="text"
-                          className="w-full text-gray-500"
-                          placeholder="Nome do Snap"
-                          onChange={(e) =>
-                            updateContent(item.id, item.content, item.url, e.target.value, item.small_description)
-                          }
-                          required
-                        />
-                        <Input
-                          type="text"
-                          className="w-full text-gray-500"
-                          placeholder="Descrição pequena do Snap"
-                          onChange={(e) =>
-                            updateContent(item.id, item.content, item.url, item.name, item.small_description, e.target.value)
-                          }
-                          required
-                        />
-                      </>
-                    )}
-
-                    <Button variant="secondary" size="sm" className="w-full" onClick={() => saveContent(item)}>
-                      <Save className="w-4 h-4" /> {loadingSave ? "Salvando..." : "Salvar"}
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="w-full flex items-center gap-2"
-                      onClick={() => removeContent(item.id)}
                     >
                       <Trash2 className="w-4 h-4" />
                       Remover
@@ -564,7 +505,14 @@ const BioEditor = () => {
         </div>
       )}
 
-    <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <AddContentModal
+        isOpen={isAddContentModalOpen}
+        onClose={() => setIsAddContentModalOpen(false)}
+        type={contentType}
+        onSave={handleSaveNewContent}
+      />
+
+      <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };
