@@ -9,7 +9,20 @@ import { useRouter } from 'next/navigation';
 import { AlertModal } from '@/components/common/AlertModal';
 import LoadingSkeleton from "./loading-skeleton";
 import Link from "next/link";
-import { createLink } from "@/hooks/use-links";
+import { createLink, updateLink, deleteLink } from "@/hooks/use-links";
+
+import {
+  FaFacebook,
+  FaInstagram,
+  FaTwitter,
+  FaLinkedin,
+  FaYoutube,
+  FaTiktok,
+  FaGithub,
+  FaPinterest,
+  FaTwitch,
+  FaGlobe,
+} from 'react-icons/fa';
 
 import { Button } from "@/components/ui/button";
 
@@ -30,7 +43,6 @@ import {
 } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 
-
 interface User {
   name: string;
   first_name: string;
@@ -48,6 +60,13 @@ interface FormData {
   biografy?: string;
 }
 
+interface SocialLink {
+  id: number;
+  url: string;
+  title: string;
+  social_network: string;
+  username: string;
+}
 
 export default function EditAccount() {
   const token = Cookie.get('access_token');
@@ -78,6 +97,8 @@ export default function EditAccount() {
   const [modalType, setModalType] = useState<"success" | "error" | "info">("success");
   const [modalMessage, setModalMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
+  const [editingLink, setEditingLink] = useState<SocialLink | null>(null);
 
   const showAlert = (type: "success" | "error" | "info", message: string) => {
     setModalType(type);
@@ -95,15 +116,36 @@ export default function EditAccount() {
     if (user) {
       setFormData({
         name: user.name,
-        first_name: user.first_name ,
-        last_name: user.last_name ,
-        email: user.email ,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
         password: '',
-        biografy: user.biografy ,
+        biografy: user.biografy,
       });
     }
-
   }, [user]);
+
+  useEffect(() => {
+    fetchSocialLinks();
+  }, []);
+
+  const fetchSocialLinks = async () => {
+    try {
+      const response = await axiosInstance.get("/api/v1/account/me/link/", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Filtra apenas os links com is_profile_link = true
+      const profileLinks = (response.data.results || response.data).filter(
+        (link: any) => link.is_profile_link === true
+      );
+      console.log("Resposta da API:", response.data);
+
+      setSocialLinks(profileLinks);
+    } catch (error) {
+      showAlert('error', 'Erro ao carregar os links de redes sociais.');
+    }
+  };
 
   const handleDelete = async () => {
     try {
@@ -111,19 +153,19 @@ export default function EditAccount() {
         showAlert('error', 'Token não encontrado.');
         return;
       }
-      
+
       await axiosInstance.delete("/api/v1/account/me/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       // Remover todos os cookies
       document.cookie.split(";").forEach((cookie) => {
         const [name] = cookie.split("=");
         Cookie.remove(name.trim());
       });
-  
+
       router.push("/");
       showAlert('success', 'Conta excluída com sucesso.');
     } catch (error) {
@@ -144,7 +186,7 @@ export default function EditAccount() {
       email: formData.email,
       biografy: formData.biografy || '',
     };
-  
+
     try {
       if (user) {
         await axiosInstance.put("/api/v1/account/me/", data, {
@@ -160,7 +202,7 @@ export default function EditAccount() {
       showAlert("error", "Erro ao atualizar os dados.");
     }
   };
-  
+
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
@@ -179,10 +221,9 @@ export default function EditAccount() {
     }
   };
 
-
   const updateUserPassword = async (axiosInstance: AxiosInstance, newPassword: string) => {
     const controller = new AbortController();
-  
+
     try {
       await axiosInstance.put("/api/v1/account/me/", {
         password: newPassword,
@@ -191,7 +232,7 @@ export default function EditAccount() {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        signal: controller.signal, // Adiciona suporte para cancelamento
+        signal: controller.signal,
       });
     } catch (error) {
       if (axios.isCancel(error)) {
@@ -202,75 +243,108 @@ export default function EditAccount() {
     }
   };
 
+  const socialIcons = {
+    Facebook: <FaFacebook className="w-5 h-5" />,
+    Instagram: <FaInstagram className="w-5 h-5" />,
+    X: <FaTwitter className="w-5 h-5" />, // Alterado de Twitter para X
+    LinkedIn: <FaLinkedin className="w-5 h-5" />,
+    YouTube: <FaYoutube className="w-5 h-5" />,
+    TikTok: <FaTiktok className="w-5 h-5" />,
+    GitHub: <FaGithub className="w-5 h-5" />,
+    Pinterest: <FaPinterest className="w-5 h-5" />,
+    Twitch: <FaTwitch className="w-5 h-5" />,
+    Globe: <FaGlobe className="w-5 h-5" />, // Ícone padrão para redes não listadas
+  } as const;
 
-  
-    // Definição dos valores pré-definidos para as redes sociais
-    const socialNetworks = {
-      Facebook: "Facebook",
-      Instagram: "Instagram",
-      Twitter: "Twitter",
-      LinkedIn: "Linkedin",
-      TikTok: "Globe",
-      YouTube: "Youtube",
-      Figma: "Figma",
-      Dribbble: "Dribbble",
-      Medium: "Globe",
-      Behance: "Globe",
-      Twitch: "Twitch",
-      Reddit: "Globe",
-      Bluesky: "Globe",
-      GitHub: "Github",
-      Pinterest: "Pinterest", // Adicione o Pinterest aqui
+  const socialNetworks = {
+    Facebook: "Facebook",
+    Instagram: "Instagram",
+    X: "X", // Alterado de Twitter para X
+    LinkedIn: "Linkedin",
+    TikTok: "Globe",
+    YouTube: "Youtube",
+    Figma: "Figma",
+    Dribbble: "Dribbble",
+    Medium: "Globe",
+    Behance: "Globe",
+    Twitch: "Twitch",
+    Reddit: "Globe",
+    Bluesky: "Globe",
+    GitHub: "Github",
+    Pinterest: "Pinterest",
+  };
+
+  const getSocialIcon = (socialNetwork: string) => {
+    // Normaliza o nome da rede social
+    if (socialNetwork.includes("YouTube")) {
+      return socialIcons.YouTube;
+    }
+    return socialIcons[socialNetwork as keyof typeof socialIcons] || socialIcons.Globe;
+  };
+
+  const [url, setUrl] = useState("");
+  const [username, setUsername] = useState("");
+  const [socialNetwork, setSocialNetwork] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const linkData = {
+      url,
+      title: socialNetworks[socialNetwork as keyof typeof socialNetworks],
+      social_network: socialNetwork,
+      is_profile_link: true,
     };
-
-
-    const [url, setUrl] = useState("");
-    const [username, setUsername] = useState("");
-    const [socialNetwork, setSocialNetwork] = useState(""); 
-
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-        // Dados do link
-      const linkData = {
-        url,
-        title: socialNetworks[socialNetwork as keyof typeof socialNetworks], 
-        social_network: socialNetwork,
-        username,
-        is_profile_link: true, // Definido como true para todos os links criados
-      };
-
-
-      try {
+  
+    try {
+      if (editingLink) {
+        await updateLink(axiosInstance, editingLink.id, linkData);
+        showAlert('success', 'Link atualizado com sucesso!');
+        setEditingLink(null);
+      } else {
         const response = await axiosInstance.get("/api/v1/account/me/link/", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const existingLinks = response.data.results || response.data;
         const linkExists = existingLinks?.some(
-          (link: any ) =>
+          (link: any) =>
             link.social_network === socialNetwork && link.url === url
         );
-
+  
         if (linkExists) {
           showAlert("info", "Esse link de rede social já foi criado.");
           return;
         }
-
-        await createLink(axiosInstance, linkData);
+  
+        await createLink(axiosInstance, linkData, true)
         showAlert('success', 'Link criado com sucesso!');
-
-        setUrl("");
-        setUsername("");
-        setSocialNetwork("");
-      } catch (error) {
-        showAlert('error', 'Erro ao criar o link.');
       }
-    };
   
+      setUrl("");
+      setSocialNetwork("");
+      fetchSocialLinks();
+    } catch (error) {
+      showAlert('error', 'Erro ao criar/atualizar o link.');
+    }
+  };
 
-  
+  const handleEditLink = (link: SocialLink) => {
+    setEditingLink(link);
+    setUrl(link.url);
+    setSocialNetwork(link.social_network);
+  };
+
+  const handleDeleteLink = async (linkId: number) => {
+    try {
+      await deleteLink(axiosInstance, linkId);
+      showAlert('success', 'Link deletado com sucesso!');
+      fetchSocialLinks();
+    } catch (error) {
+      showAlert('error', 'Erro ao deletar o link.');
+    }
+  };
 
   if (loadingUser) {
-    return <LoadingSkeleton/>;
+    return <LoadingSkeleton />;
   }
 
   if (errorUser) {
@@ -392,20 +466,45 @@ export default function EditAccount() {
                     required
                   />
                 </div>
-                <div className="space-y-1">
-                  <Label htmlFor="username">Nome</Label>
-                  <Input
-                    className="text-gray-800"
-                    type="text"
-                    id="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <Button type="submit">Criar Link</Button>
+
+                <Button type="submit">{editingLink ? "Atualizar Link" : "Criar Link"}</Button>
               </form>
+
+              <div className="mt-4">
+                  <h3 className="text-lg font-semibold mb-4">Links Existentes</h3>
+                  <ul className="space-y-3">
+                    {socialLinks.map((link) => (
+                      <li key={link.id} className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                        <div className="flex items-center space-x-3">
+                          {/* Ícone da rede social */}
+                          <span className="text-gray-700">
+                            {getSocialIcon(link.social_network)}
+                          </span>
+                          {/* Nome da rede social */}
+                          <span className="font-medium text-gray-800">
+                            {link.title || link.social_network}
+                          </span>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Button
+                            variant="outline"
+                            onClick={() => handleEditLink(link)}
+                            className="text-sm"
+                          >
+                            Editar
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            onClick={() => handleDeleteLink(link.id)}
+                            className="text-sm"
+                          >
+                            Deletar
+                          </Button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
             </CardContent>
           </Card>
         </TabsContent>

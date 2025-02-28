@@ -161,7 +161,7 @@ export default function ViewBio() {
           {error ? (
              <UserNotFound></UserNotFound>
           ) : (
-            <div className="lg:mx-auto">
+            <div className="lg:mx-auto bg-gray-100 py-5 ">
               <MobileScreen bioData={bioData} />
             </div>
           )}

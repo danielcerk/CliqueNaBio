@@ -2,57 +2,51 @@
 
 import type React from "react"
 import { Card } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { 
-  Facebook, Instagram, Twitter, Linkedin, Youtube, Globe, 
+  Facebook, Instagram, Linkedin, Youtube, Globe, 
   Github, Twitch, Figma, Dribbble
 } from "lucide-react";
+import { 
+  FaTiktok, 
+  FaMedium, 
+  FaBehance, 
+  FaReddit, 
+  FaPinterest,
+  FaTwitter// Ícone do X (Twitter) do FontAwesome
+} from "react-icons/fa"; // Ícones do FontAwesome
+import { SiBluesky } from "react-icons/si"; // Ícone do Bluesky (Simple Icons)
+
 import Image from "next/image"
 import Link from "next/link"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import type { LucideProps } from 'lucide-react';
 
 const socialIcons = {
   Facebook: Facebook,
   Instagram: Instagram,
-  Twitter: Twitter,
+  X: FaTwitter, // Substituído por X
   LinkedIn: Linkedin,
-  TikTok: Globe,
+  TikTok: FaTiktok, 
   YouTube: Youtube,
   Figma: Figma,
   Dribbble: Dribbble,
-  Medium: Globe,
-  Behance: Globe,
+  Medium: FaMedium, 
+  Behance: FaBehance,
   Twitch: Twitch,
-  Reddit: Globe,
-  Bluesky: Globe,
+  Reddit: FaReddit, 
+  Bluesky: SiBluesky, 
   GitHub: Github,
-  Pinterest: Globe,
+  Pinterest: FaPinterest, 
 };
 
-const socialPatterns: Record<SocialIconKey, RegExp> = {
-  Facebook: /facebook\.com\/(?:profile\.php\?id=)?([^\/?&]+)/,
-  Instagram: /instagram\.com\/([^\/?&]+)/,
-  Twitter: /twitter\.com\/([^\/?&]+)/,
-  LinkedIn: /linkedin\.com\/in\/([^\/?&]+)/,
-  TikTok: /tiktok\.com\/@([^\/?&]+)/,
-  YouTube: /youtube\.com\/(?:user|channel)\/([^\/?&]+)/,
-  Figma: /figma\.com\/([^\/?&]+)/,
-  Dribbble: /dribbble\.com\/([^\/?&]+)/,
-  Medium: /medium\.com\/@([^\/?&]+)/,
-  Behance: /behance\.net\/([^\/?&]+)/,
-  Twitch: /twitch\.tv\/([^\/?&]+)/,
-  Reddit: /reddit\.com\/user\/([^\/?&]+)/,
-  Bluesky: /bsky\.app\/profile\/([^\/?&]+)/,
-  GitHub: /github\.com\/([^\/?&]+)/,
-  Pinterest: /pinterest\.com\/([^\/?&]+)/,
-};
+
+
 
 const socialColors: Record<SocialIconKey, string> = {
   Facebook: "text-blue-600", // Azul do Facebook
   Instagram: "text-pink-500", // Rosa do Instagram
-  Twitter: "text-blue-400", // Azul claro do Twitter (X)
+  X: "text-blue-400", // Azul claro do X (antigo Twitter)
   LinkedIn: "text-blue-700", // Azul escuro do LinkedIn
   TikTok: "text-black", // Preto do TikTok
   YouTube: "text-red-600", // Vermelho do YouTube
@@ -67,17 +61,16 @@ const socialColors: Record<SocialIconKey, string> = {
   Pinterest: "text-red-800", // Vermelho escuro do Pinterest
 };
 
+
 type SocialIconKey = keyof typeof socialIcons;
 
-const getSocialIcon = (url: string): React.ComponentType<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>> => {
-  for (const [name, pattern] of Object.entries(socialPatterns)) {
-    if (pattern.test(url)) {
-      return socialIcons[name as SocialIconKey] || Globe;
-    }
-  }
-  return Globe;
-};
+const getSocialIcon = (title: string): React.ComponentType<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>> => {
+  const socialIconKey = Object.keys(socialIcons).find((key) => 
+    title.toLowerCase().includes(key.toLowerCase())
+  ) as SocialIconKey | undefined;
 
+  return socialIconKey ? socialIcons[socialIconKey] : Globe;
+};
 
 interface ContentItem {
   id: string;
@@ -113,26 +106,79 @@ interface MobileScreenProps {
 }
 
 
+
+
 const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
-
+  const [extendedItems, setExtendedItems] = useState<Set<string>>(new Set());
+  const itemRefs = useRef<(HTMLElement | null)[]>([]);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
+  const checkDistanceBetweenElements = (
+    element1: HTMLElement | null,
+    element2: HTMLElement | null,
+    distanceThreshold: number = 300
+  ): boolean => {
+    if (!element1 || !element2) return false;
+
+    // Calcula a distância horizontal entre os elementos
+    const horizontalDistance = Math.abs(
+      element1.getBoundingClientRect().left - element2.getBoundingClientRect().right
+    );
+
+    return horizontalDistance <= distanceThreshold;
+  };
+
+  const updateExtendedItems = () => {
+    const newExtendedItems = new Set<string>();
+  
+    itemRefs.current.forEach((element, index) => {
+      if (element) {
+        let isAlone = true;
+  
+        // Verifica o item anterior
+        if (index > 0 && itemRefs.current[index - 1]) {
+          const previousElement = itemRefs.current[index - 1]!;
+          const isClose = checkDistanceBetweenElements(previousElement, element, 300); 
+  
+          if (isClose) {
+            isAlone = false;
+          }
+        }
+  
+        // Verifica o próximo item
+        if (index < itemRefs.current.length - 1 && itemRefs.current[index + 1]) {
+          const nextElement = itemRefs.current[index + 1]!;
+          const isClose = checkDistanceBetweenElements(element, nextElement, 300); 
+  
+          if (isClose) {
+            isAlone = false;
+          }
+        }
+  
+        // Se o item estiver sozinho, adiciona ao conjunto de itens estendidos
+        if (isAlone) {
+          newExtendedItems.add(bioData.content[index].id);
+        }
+      }
+    });
+  
+    setExtendedItems(newExtendedItems);
+  };
+
   useEffect(() => {
-    // Função para atualizar a largura da tela
+    console.log(extendedItems)
+    updateExtendedItems();
+  }, [bioData, screenWidth]); // Recalcula quando bioData ou screenWidth mudar
+
+  useEffect(() => {
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
     };
 
-    // Adiciona o event listener
-    window.addEventListener('resize', handleResize);
-
-    // Cleanup do event listener
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
-
 
   const [imageLoaded, setImageLoaded] = useState(true);
 
@@ -168,9 +214,9 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                     className="group transition duration-300 ease-in-out transform hover:scale-110"
                   >
                     {(() => {
-                      const Icon = getSocialIcon(item.url || "");
-                      const socialKey = Object.keys(socialPatterns).find((key) =>
-                        socialPatterns[key as SocialIconKey].test(item.url || "")
+                      const Icon = getSocialIcon(item.title || item.social_network ||  "");
+                      const socialKey = Object.keys(socialColors).find((key) =>
+                        item.title?.toLowerCase().includes(key.toLowerCase())
                       ) as SocialIconKey | undefined;
 
                       // Define a cor padrão como cinza se a rede social não for encontrada
@@ -191,21 +237,29 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
           {/* <hr /> */}
           <div className="mt-5 w-full">
 
-          <div className="container gap-0 w-full h-full mx-auto">
+          <div className="container gap-4 w-full h-full mx-auto">
             {bioData.content
               .sort((a, b) => {
                 const dateA = a.updated_at ? new Date(a.updated_at) : new Date(0);
                 const dateB = b.updated_at ? new Date(b.updated_at) : new Date(0);
                 return dateB.getTime() - dateA.getTime();
               })
-              .map((item) => {
+              .map((item, index) => {
                 const isImage = item.icon; 
+      
                 return (
                   <div
                     key={item.id}
+                    ref={(el) => {
+                      if (el) {
+                        itemRefs.current[index] = el;
+                      }
+                    }}
                     className={`overflow-hidden flex flex-col items-center ${
                       item.type === "link" && isImage === "/icons/image.ico" && screenWidth < 1024
-                        ? "col-span-full container-item " 
+                        ? "col-span-full full-column"
+                        : extendedItems.has(item.id) // Verifica se o item deve se estender
+                        ? "col-span-full full-column"
                         : "break-inside-avoid"
                     }`}
                   >
@@ -215,7 +269,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                         target="_blank" className={`w-full mt-4 cursor-pointer  transition-transform transform hover:scale-95  ${
                           item.type === "link" && isImage === "/icons/image.ico" 
                             ? "py-0 max-w-[95%] " 
-                            : "py-2 max-w-[90%] "
+                            : "py-4 max-w-[90%] "
                         }`}>
                           {item.og_image && (
                             <Image
@@ -294,7 +348,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                    
 
                       {item.type === "photo" && item.url && isImageUrl(item.url) && (
-                        <div className="w-full max-w-[90%] bg-white mt-5 transition-transform transform hover:scale-90 cursor-pointer">
+                        <div className="w-full  bg-white mt-5 transition-transform transform hover:scale-90 cursor-pointer">
                           <Image
                             src={item.url}
                             alt="Imagem de Capa na CliqueNaBio"

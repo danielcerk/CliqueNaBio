@@ -21,11 +21,11 @@ interface User {
   image?: string;
   plan?: string;
   showProfileForm?: boolean;
-  slug?: string; // Adicionando slug ao tipo User
+  slug?: string;
 }
 
 interface Profile {
-  slug: string; // Slug está presente no perfil
+  slug: string;
 }
 
 interface FormEmail {
@@ -45,11 +45,24 @@ interface Link {
   title: string;
   social_network: string;
   username: string;
-  is_profile_link: boolean; 
+  is_profile_link: boolean;
   icon: string;
 }
 
 export default function Account() {
+  const socialIcons = {
+    Facebook: "/icons/facebook.svg",
+    Instagram: "/icons/instagram.svg",
+    X: "/icons/x.svg", // Ícone do X
+    LinkedIn: "/icons/linkedin.svg",
+    YouTube: "/icons/youtube.svg",
+    TikTok: "/icons/tiktok.svg",
+    GitHub: "/icons/github.svg",
+    Pinterest: "/icons/pinterest.svg",
+    Twitch: "/icons/twitch.svg",
+    Globe: "/icons/globe.svg", // Ícone padrão para redes não listadas
+  };
+
   const token = Cookie.get("access_token");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,7 +75,6 @@ export default function Account() {
     setIsModalOpen(true);
   };
 
-  // Carregando dados do usuário
   const [userData, loadingUser, errorUser] = useAxios<User>({
     axiosInstance,
     method: "get",
@@ -74,7 +86,6 @@ export default function Account() {
     },
   });
 
-  // Carregando dados do perfil (que inclui o slug)
   const [profileData, loadingProfile, errorProfile] = useAxios<Profile>({
     axiosInstance,
     method: "get",
@@ -86,7 +97,6 @@ export default function Account() {
     },
   });
 
-  // Carregando informações de formulário de email
   const [formEmail] = useAxios<FormEmail>({
     axiosInstance,
     method: "get",
@@ -109,7 +119,6 @@ export default function Account() {
     },
   });
 
-  // Filtra os links para incluir apenas aqueles com is_profile_link true
   const filteredLinks = links?.results.filter((link) => link.is_profile_link);
 
   const [user, setUser] = useState<User | null>(userData || null);
@@ -117,7 +126,6 @@ export default function Account() {
 
   useEffect(() => {
     if (userData && profileData) {
-      // Atualiza o estado do usuário com os dados do perfil (incluindo o slug)
       setUser({ ...userData, slug: profileData.slug });
     }
     if (formEmail) setShowForm(formEmail.is_activate);
@@ -177,7 +185,6 @@ export default function Account() {
     }
   };
 
-  // Função para gerar o link público
   const generatePublicLink = () => {
     if (!user?.slug) {
       showAlert('error', 'Slug não encontrado. Por favor, defina um slug em seu perfil.');
@@ -191,7 +198,6 @@ export default function Account() {
     return `${URL}profile/${user.slug}`;
   };
 
-  // Função para compartilhar o link
   const handleShare = () => {
     const publicLink = generatePublicLink();
     if (!publicLink) return;
@@ -254,24 +260,24 @@ export default function Account() {
 
             <div className="p-4 flex flex-wrap gap-4">
               {filteredLinks && filteredLinks.length > 0 ? (
-                filteredLinks.map((link) => (
-                  <div key={link.url} className="p-4 text-gray-700 hover:text-white bg-white transition-all duration-300 hover:transition-all hover:duration-300 hover:bg-black rounded-lg shadow-sm">
-                    <Link href={link.url} target="_blank" className="flex items-center gap-4">
-                      <Image
-                        src={link.icon}
-                        alt={`Ícone da rede social ${link.social_network}`}
-                        className="w-6 h-6 rounded-full"
-                        width={32}
-                        height={32}
-                      />
-                      <div>
-                        <p>
-                          {link.title}
-                        </p>
-                      </div>
-                    </Link>
-                  </div>
-                ))
+                filteredLinks.map((link) => {
+                  const socialNetworkName = link.social_network === "Twitter" ? "X" : link.social_network;
+                  const icon = link.social_network === "Twitter" ? "/icons/x.svg" : link.icon;
+
+                  return (
+                    <div key={link.url} className="p-4 text-gray-700 flex justify-center hover:text-white bg-white transition-all duration-300 hover:transition-all hover:duration-300 hover:bg-black rounded-lg shadow-sm">
+                      <Link href={link.url} target="_blank" className="flex items-center justify-center">
+                        <Image
+                          src={icon}
+                          alt={`Ícone da rede social ${socialNetworkName}`}
+                          className="w-6 h-6 rounded-full"
+                          width={32}
+                          height={32}
+                        />
+                      </Link>
+                    </div>
+                  );
+                })
               ) : (
                 <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">
                   <p className="text-muted-foreground">Nenhum link de perfil cadastrado.</p>
