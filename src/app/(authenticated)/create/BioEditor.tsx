@@ -129,7 +129,7 @@ const BioEditor = () => {
         }),
       ]);
   
-      const links = linkResponse.data.results.map((link: any) => ({
+      const links = linkResponse.data.map((link: any) => ({
         id: link?.id, 
         type: "link",
         content: link?.url || "",
@@ -139,7 +139,7 @@ const BioEditor = () => {
         created: true,
       }));
   
-      const snaps = snapResponse.data.results.map((snap: SnapItem) => ({
+      const snaps = snapResponse.data.map((snap: SnapItem) => ({
         id: snap?.id, 
         type: "photo",
         content: snap?.image || "",

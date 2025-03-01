@@ -148,7 +148,7 @@ export default function ContentLanding() {
           </div>
         </section>
 
-        <div className="max-w-4xl mx-auto bg-gray-900 rounded-3xl">
+        <div className="max-w-5xl mx-auto bg-gray-900 rounded-3xl">
           <section className="px-6 py-24  text-center" data-aos="fade-up">
             <h2 className="text-6xl font-semibold text-yellow-400 max-w-[400px] mx-auto uppercase">Gerencie tudo no Dashboard</h2>
             <p className="text-lg text-gray-200 mt-4 max-w-[400px] mx-auto">Acompanhe métricas de visualizações e interações no seu dashboard.</p>
@@ -169,7 +169,7 @@ export default function ContentLanding() {
           <section className="px-6 py-24 text-center" data-aos="fade-up">
             <h2 className="text-6xl font-semibold text-yellow-400  max-w-[400px] mx-auto uppercase">Adicione Snaps e Links na Bio</h2>
             <p className="text-lg text-gray-200 mt-4 max-w-[400px] mx-auto">Crie um link dinâmico e interativo em poucos cliques.</p>
-            <div className="flex justify-center flex-wrap">
+            <div className="flex justify-center flex-wrap lg:flex-nowrap lg:gap-2">
               <div className="mt-8 w-fit mx-auto shadow-2xl border-2 bg-yellow-400 border-yellow-400 rounded-3xl">
                 <Image
                   src="/create.png"
@@ -196,7 +196,7 @@ export default function ContentLanding() {
           </section>
           <section className="px-6 py-24 text-center" data-aos="fade-up">
             <h2 className="text-6xl font-semibold text-yellow-400  max-w-[400px] mx-auto uppercase">Modelo de Links na Bio</h2>
-            <div className="flex justify-center flex-wrap">
+            <div className="flex justify-center flex-wrap lg:flex-nowrap lg:gap-2">
               <div className="mt-8 w-fit mx-auto shadow-2xl border-2 bg-yellow-400 border-yellow-400 rounded-3xl">
                 <Image
                   src="/page_view.png"
@@ -281,11 +281,7 @@ export default function ContentLanding() {
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                     </svg> Limite de 50 snaps
                   </li>
-                  {/*<li className="flex items-left gap-3 justify-left">
-                    <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
-                    </svg> Templates para Personalização
-                  </li>*/}
+ 
                   <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
@@ -332,11 +328,7 @@ export default function ContentLanding() {
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
                     </svg> Sem Limite de Snaps
                   </li>
-                  {/*<li className="flex items-left gap-3 justify-left">
-                    <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
-                    </svg> URL personalizada
-                  </li>*/}
+
                   <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />

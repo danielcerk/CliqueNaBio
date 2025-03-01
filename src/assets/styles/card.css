@@ -28,25 +28,32 @@
 
 
 
-@media (min-width: 768px) {
-  .container {
-    column-count: 3;
-    column-fill: balance;  /* Ou você pode deixar sem a propriedade para o comportamento padrão */
-  }
+.container {
+  column-count: 3;
+  column-fill: balance;
 }
+
+
+.container img,
+.container a {
+  max-width: 100%; 
+  height: auto; 
+}
+
 /* Para telas pequenas (largura máxima de 767px) */
 @media (max-width: 767px) {
   .container {
     column-count: 2;
-    column-fill: balance;  /* Ou você pode deixar sem a propriedade para o comportamento padrão */
+    column-fill: balance;
   }
 }
 
 
-.container-item {
-  column-span: all;
+.full-column {
+  width: 100%; /* Ocupa a largura total do contêiner */
+  grid-column: 1 / -1; /* Se estiver usando CSS Grid */
+  column-span: all; /* Se estiver usando column-count */
 }
-
 .item {
   break-inside: avoid; /* Evita que o item seja quebrado entre colunas */
   margin-bottom: 1rem;

@@ -32,6 +32,7 @@ interface ContentItem {
 }
 
 interface BioData {
+  id: 0,
   name: string;
   biografy: string;
   image: string;
@@ -55,6 +56,7 @@ export default function ViewBio() {
 
   const { slug } = useParams(); // Pegue o slug da URL
   const [bioData, setBioData] = useState<BioData>({
+    id: 0,
     name: "",
     biografy: "",
     image: "",
@@ -116,6 +118,7 @@ export default function ViewBio() {
         }));
 
         setBioData({
+          id: profileData.id,
           name: profileData.name,
           biografy: profileData.biografy,
           image: profileData.image,
@@ -161,7 +164,7 @@ export default function ViewBio() {
           {error ? (
              <UserNotFound></UserNotFound>
           ) : (
-            <div className="lg:mx-auto">
+            <div className="lg:mx-auto bg-gray-100 py-5 ">
               <MobileScreen bioData={bioData} />
             </div>
           )}
