@@ -114,62 +114,56 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
   const itemRefs = useRef<(HTMLElement | null)[]>([]);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
-  const checkDistanceBetweenElements = (
+  const checkHorizontalDistance = (
     element1: HTMLElement | null,
     element2: HTMLElement | null,
-    distanceThreshold: number = 300
+    distanceThreshold: number = 150
   ): boolean => {
     if (!element1 || !element2) return false;
 
     // Calcula a distância horizontal entre os elementos
     const horizontalDistance = Math.abs(
-      element1.getBoundingClientRect().left - element2.getBoundingClientRect().right
+      element1.getBoundingClientRect().right - element2.getBoundingClientRect().left
     );
 
     return horizontalDistance <= distanceThreshold;
   };
 
-  const updateExtendedItems = () => {
-    const newExtendedItems = new Set<string>();
-  
-    itemRefs.current.forEach((element, index) => {
-      if (element) {
-        let isAlone = true;
-  
-        // Verifica o item anterior
-        if (index > 0 && itemRefs.current[index - 1]) {
-          const previousElement = itemRefs.current[index - 1]!;
-          const isClose = checkDistanceBetweenElements(previousElement, element, 300); 
-  
-          if (isClose) {
-            isAlone = false;
+   useEffect(() => {
+      const updateExtendedItems = () => {
+        const newExtendedItems = new Set<string>();
+    
+        // Verifica o primeiro item
+        const firstElement = itemRefs.current[0];
+        if (firstElement && itemRefs.current.length > 1) {
+          const secondElement = itemRefs.current[1];
+          const isFirstCloseToSecond = checkHorizontalDistance(firstElement, secondElement, 150);
+    
+          // Se o primeiro item não estiver próximo do segundo, ele está sozinho
+          if (!isFirstCloseToSecond) {
+            newExtendedItems.add(bioData.content[0].id);
           }
         }
-  
-        // Verifica o próximo item
-        if (index < itemRefs.current.length - 1 && itemRefs.current[index + 1]) {
-          const nextElement = itemRefs.current[index + 1]!;
-          const isClose = checkDistanceBetweenElements(element, nextElement, 300); 
-  
-          if (isClose) {
-            isAlone = false;
+    
+        // Verifica o último item
+        const lastElement = itemRefs.current[itemRefs.current.length - 1];
+        if (lastElement && itemRefs.current.length > 1) {
+          const secondLastElement = itemRefs.current[itemRefs.current.length - 2];
+          const isLastCloseToSecondLast = checkHorizontalDistance(secondLastElement, lastElement, 150);
+    
+          // Se o último item não estiver próximo do penúltimo, ele está sozinho
+          if (!isLastCloseToSecondLast) {
+            newExtendedItems.add(bioData.content[bioData.content.length - 1].id);
           }
         }
-  
-        // Se o item estiver sozinho, adiciona ao conjunto de itens estendidos
-        if (isAlone) {
-          newExtendedItems.add(bioData.content[index].id);
-        }
-      }
-    });
-  
-    setExtendedItems(newExtendedItems);
-  };
+    
+        setExtendedItems(newExtendedItems);
+      };
+    
+      updateExtendedItems();
+    }, [bioData, screenWidth]); 
 
-  useEffect(() => {
-    console.log(extendedItems)
-    updateExtendedItems();
-  }, [bioData, screenWidth]); // Recalcula quando bioData ou screenWidth mudar
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -257,8 +251,8 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                     }}
                     className={`overflow-hidden flex flex-col items-center ${
                       item.type === "link" && isImage === "/icons/image.ico" && screenWidth < 1024
-                        ? "col-span-full full-column"
-                        : extendedItems.has(item.id) // Verifica se o item deve se estender
+                        ? "col-span-full full-column "
+                        : extendedItems.has(item.id) && screenWidth < 1024// Verifica se o item deve se estender
                         ? "col-span-full full-column"
                         : "break-inside-avoid"
                     }`}
@@ -270,15 +264,16 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                           item.type === "link" && isImage === "/icons/image.ico" 
                             ? "py-0 max-w-[95%] " 
                             : "py-4 max-w-[90%] "
-                        }`}>
+                        }` }>
                           {item.og_image && (
                             <Image
                               src={item.og_image}
                               layout="fill"
                               objectFit="cover"
                               alt={`Imagem de Capa do Link de ${item.url} na CliqueNaBio`}
-                              className="w-full h-40 object-cover rounded-lg "
+                              className={`w-full h-40 object-cover rounded-lg ${ isImage === "/icons/image.ico" ? " opacity-0" : "opacity-100"}`}
                             />
+                            
                           )}
 
                           <div className="absolute inset-0 bg-black opacity-35 rounded-lg"></div>
@@ -297,7 +292,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                                   ? "bg-[#B31217] text-white"
                                   : item.url?.includes("linkedin.com")
                                   ? "bg-[#0A66C2] text-white"
-                                  : "bg-gray-400 text-white"
+                                  : "bg-gray-400 text-white "
                               }`}
                             >
                               {isImageUrl(item.url || "") ? (
@@ -306,7 +301,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                                   alt={item.content}
                                   layout="fill"
                                   objectFit="cover"
-                                  className="rounded-lg opacity-50 "
+                                  className="rounded-lg opacity-50"
                                   onLoadingComplete={() => setImageLoaded(true)}
                                   onError={() => setImageLoaded(false)}
                                 />
@@ -357,18 +352,6 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                             objectFit="cover"
                           />
 
-
-                          {/* <div className="p-4">
-                            <p className="text-gray-800 font-medium capitalize">{item.content}</p>
-                            {item.small_description && (
-                              <p className="text-gray-600 text-sm capitalize">{item.small_description}</p>
-                            )}
-                            {item.updated_at && (
-                              <p className="text-gray-500 text-end text-xs">
-                                Publicado: {new Date(item.updated_at).toLocaleDateString()}
-                              </p>
-                            )}
-                          </div> */}
                         </div>
                       )}
 
