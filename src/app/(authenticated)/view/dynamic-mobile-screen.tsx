@@ -106,8 +106,6 @@ interface MobileScreenProps {
 }
 
 
-
-
 const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
   const [extendedItems, setExtendedItems] = useState<Set<string>>(new Set());

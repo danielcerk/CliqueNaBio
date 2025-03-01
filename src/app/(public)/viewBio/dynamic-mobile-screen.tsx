@@ -23,6 +23,8 @@ import { useState, useEffect, useRef } from "react"
 import type { LucideProps } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
+import axiosInstance from "@/helper/axios-instance";
+
 const socialIcons = {
   Facebook: Facebook,
   Instagram: Instagram,
@@ -93,6 +95,7 @@ interface ContentItem {
 
 
 interface BioData {
+  id: number,
   name: string
   biografy: string
   image: string
@@ -117,6 +120,9 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
+  const [emailContact, setEmailContact] = useState<string>("");
+  const [contentContact, setContentContact] = useState<string>("");
+  const [loading, setLoading] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState<PhotoModalData | null>(null);
 
   const [extendedItems, setExtendedItems] = useState<Set<string>>(new Set());
@@ -136,6 +142,47 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
     );
 
     return horizontalDistance <= distanceThreshold;
+  };
+
+  const SendMessageForm = async (emailContact: string, contentContact: string): Promise<any> => {
+    try {
+      let response = await axiosInstance.post(`/api/v1/account/${bioData.id}/send-email/`, {
+        email: emailContact,
+        content: contentContact,
+      });
+  
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao enviar mensagem:", error);
+      throw error;
+    }
+  };
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await SendMessageForm(emailContact, contentContact);
+      alert("Mensagem enviada com sucesso!");
+      setIsFormModalOpen(false);
+
+    } catch (error) {
+
+      console.error(error);
+      alert("Erro ao enviar mensagem.");
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+    setEmailContact("");
+    setContentContact("");
+    setIsFormModalOpen(false)
+
   };
 
   useEffect(() => {
@@ -273,7 +320,6 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
               })
               .map((item, index) => {
                 const isImage = item.icon; 
-                console.log(extendedItems.has(item.id) )
                 return (
                   <div
                   key={item.id}
@@ -414,24 +460,24 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg w-full max-w-md">
             <h2 className="text-xl font-semibold mb-4">Entre em Contato</h2>
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              // Lógica para enviar o formulário
-              setIsFormModalOpen(false);
-            }}>
+            <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Email</label>
                 <input
                   type="email"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  value={emailContact}
+                  onChange={(e) => setEmailContact(e.target.value)}
                   required
                 />
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Mensagem</label>
                 <textarea
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   rows={4}
+                  value={contentContact}
+                  onChange={(e) => setContentContact(e.target.value)}
                   required
                 />
               </div>
@@ -447,7 +493,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                   type="submit"
                   className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                 >
-                  Enviar
+                  {loading ? "Enviando..." : "Enviar"}
                 </button>
               </div>
             </form>

@@ -32,13 +32,6 @@ interface FormEmail {
   is_activate: boolean;
 }
 
-interface ApiResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: Link[];
-}
-
 interface Link {
   owner: string;
   url: string;
@@ -108,7 +101,7 @@ export default function Account() {
     },
   });
 
-  const [links, loadingLinks, errorLinks] = useAxios<ApiResponse>({
+  const [links, loadingLinks, errorLinks] = useAxios<Link>({
     axiosInstance,
     method: "get",
     url: `/api/v1/account/me/link/`,
@@ -119,7 +112,7 @@ export default function Account() {
     },
   });
 
-  const filteredLinks = links?.results.filter((link) => link.is_profile_link);
+  const filteredLinks = Array.isArray(links) ? links.filter((link) => link.is_profile_link) : [];
 
   const [user, setUser] = useState<User | null>(userData || null);
   const [showForm, setShowForm] = useState<boolean>(formEmail?.is_activate || false);

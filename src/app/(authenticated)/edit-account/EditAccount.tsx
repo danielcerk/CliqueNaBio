@@ -136,7 +136,7 @@ export default function EditAccount() {
       });
 
       // Filtra apenas os links com is_profile_link = true
-      const profileLinks = (response.data.results || response.data).filter(
+      const profileLinks = (response.data).filter(
         (link: any) => link.is_profile_link === true
       );
       console.log("Resposta da API:", response.data);
@@ -304,7 +304,7 @@ export default function EditAccount() {
         const response = await axiosInstance.get("/api/v1/account/me/link/", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const existingLinks = response.data.results || response.data;
+        const existingLinks = response.data || response.data;
         const linkExists = existingLinks?.some(
           (link: any) =>
             link.social_network === socialNetwork && link.url === url

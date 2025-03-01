@@ -110,7 +110,7 @@ const View = (): JSX.Element | null =>{
           }),
         ]);
 
-        const links = linkResponse.data.results.map((link: any) => ({
+        const links = linkResponse.data.map((link: any) => ({
           id: nanoid(),
           type: "link" as const,
           content: link.url || "",
@@ -126,7 +126,7 @@ const View = (): JSX.Element | null =>{
           updated_at: link.updated_at || "",
         }));
 
-        const snaps = snapResponse.data.results.map((snap: SnapItem) => ({
+        const snaps = snapResponse.data.map((snap: SnapItem) => ({
           id: nanoid(),
           type: "photo" as const,
           content: snap.name || "",
@@ -143,6 +143,7 @@ const View = (): JSX.Element | null =>{
           form_contact: userData.form_contact,
           copyright: userData.copyright,
         });
+
       } catch (err) {
         setError(true);
       } finally {
