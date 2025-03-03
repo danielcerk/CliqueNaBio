@@ -2,57 +2,52 @@
 
 import type React from "react"
 import { Card } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { 
-  Facebook, Instagram, Twitter, Linkedin, Youtube, Globe, 
+  Facebook, Instagram, Linkedin, Youtube, Globe, 
   Github, Twitch, Figma, Dribbble
 } from "lucide-react";
+import { 
+  FaTiktok, 
+  FaMedium, 
+  FaBehance, 
+  FaReddit, 
+  FaPinterest,
+  FaTwitter// Ícone do X (Twitter) do FontAwesome
+} from "react-icons/fa"; // Ícones do FontAwesome
+import { SiBluesky } from "react-icons/si"; // Ícone do Bluesky (Simple Icons)
+
 import Image from "next/image"
 import Link from "next/link"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import type { LucideProps } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+
+import axiosInstance from "@/helper/axios-instance";
 
 const socialIcons = {
   Facebook: Facebook,
   Instagram: Instagram,
-  Twitter: Twitter,
+  X: FaTwitter, // Substituído por X
   LinkedIn: Linkedin,
-  TikTok: Globe,
+  TikTok: FaTiktok, 
   YouTube: Youtube,
   Figma: Figma,
   Dribbble: Dribbble,
-  Medium: Globe,
-  Behance: Globe,
+  Medium: FaMedium, 
+  Behance: FaBehance,
   Twitch: Twitch,
-  Reddit: Globe,
-  Bluesky: Globe,
+  Reddit: FaReddit, 
+  Bluesky: SiBluesky, 
   GitHub: Github,
-  Pinterest: Globe,
+  Pinterest: FaPinterest, 
 };
 
-const socialPatterns: Record<SocialIconKey, RegExp> = {
-  Facebook: /facebook\.com\/(?:profile\.php\?id=)?([^\/?&]+)/,
-  Instagram: /instagram\.com\/([^\/?&]+)/,
-  Twitter: /twitter\.com\/([^\/?&]+)/,
-  LinkedIn: /linkedin\.com\/in\/([^\/?&]+)/,
-  TikTok: /tiktok\.com\/@([^\/?&]+)/,
-  YouTube: /youtube\.com\/(?:user|channel)\/([^\/?&]+)/,
-  Figma: /figma\.com\/([^\/?&]+)/,
-  Dribbble: /dribbble\.com\/([^\/?&]+)/,
-  Medium: /medium\.com\/@([^\/?&]+)/,
-  Behance: /behance\.net\/([^\/?&]+)/,
-  Twitch: /twitch\.tv\/([^\/?&]+)/,
-  Reddit: /reddit\.com\/user\/([^\/?&]+)/,
-  Bluesky: /bsky\.app\/profile\/([^\/?&]+)/,
-  GitHub: /github\.com\/([^\/?&]+)/,
-  Pinterest: /pinterest\.com\/([^\/?&]+)/,
-};
 
 const socialColors: Record<SocialIconKey, string> = {
   Facebook: "text-blue-600", // Azul do Facebook
   Instagram: "text-pink-500", // Rosa do Instagram
-  Twitter: "text-blue-400", // Azul claro do Twitter (X)
+  X: "text-blue-400", // Azul claro do X (antigo Twitter)
   LinkedIn: "text-blue-700", // Azul escuro do LinkedIn
   TikTok: "text-black", // Preto do TikTok
   YouTube: "text-red-600", // Vermelho do YouTube
@@ -67,15 +62,15 @@ const socialColors: Record<SocialIconKey, string> = {
   Pinterest: "text-red-800", // Vermelho escuro do Pinterest
 };
 
+
 type SocialIconKey = keyof typeof socialIcons;
 
-const getSocialIcon = (url: string): React.ComponentType<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>> => {
-  for (const [name, pattern] of Object.entries(socialPatterns)) {
-    if (pattern.test(url)) {
-      return socialIcons[name as SocialIconKey] || Globe;
-    }
-  }
-  return Globe;
+const getSocialIcon = (title: string): React.ComponentType<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>> => {
+  const socialIconKey = Object.keys(socialIcons).find((key) => 
+    title.toLowerCase().includes(key.toLowerCase())
+  ) as SocialIconKey | undefined;
+
+  return socialIconKey ? socialIcons[socialIconKey] : Globe;
 };
 
 
@@ -100,6 +95,7 @@ interface ContentItem {
 
 
 interface BioData {
+  id: number,
   name: string
   biografy: string
   image: string
@@ -112,27 +108,126 @@ interface MobileScreenProps {
   bioData: BioData
 }
 
+type PhotoModalData = {
+  url: string;
+  title?: string;
+  description?: string;
+};
+
+
 
 const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
+  const [emailContact, setEmailContact] = useState<string>("");
+  const [contentContact, setContentContact] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState<PhotoModalData | null>(null);
+
+  const [extendedItems, setExtendedItems] = useState<Set<string>>(new Set());
+  const itemRefs = useRef<(HTMLElement | null)[]>([]);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
+  const checkHorizontalDistance = (
+    element1: HTMLElement | null,
+    element2: HTMLElement | null,
+    distanceThreshold: number = 150
+  ): boolean => {
+    if (!element1 || !element2) return false;
+
+    // Calcula a distância horizontal entre os elementos
+    const horizontalDistance = Math.abs(
+      element1.getBoundingClientRect().right - element2.getBoundingClientRect().left
+    );
+
+    return horizontalDistance <= distanceThreshold;
+  };
+
+  const SendMessageForm = async (emailContact: string, contentContact: string): Promise<any> => {
+    try {
+      const response = await axiosInstance.post(`/api/v1/account/${bioData.id}/send-email/`, {
+        email: emailContact,
+        content: contentContact,
+      });
+  
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao enviar mensagem:", error);
+      throw error;
+    }
+  };
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await SendMessageForm(emailContact, contentContact);
+      alert("Mensagem enviada com sucesso!");
+      setIsFormModalOpen(false);
+
+    } catch (error) {
+
+      console.error(error);
+      alert("Erro ao enviar mensagem.");
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+    setEmailContact("");
+    setContentContact("");
+    setIsFormModalOpen(false)
+
+  };
+
   useEffect(() => {
-    // Função para atualizar a largura da tela
-    const handleResize = () => {
-      setScreenWidth(window.innerWidth);
+    const updateExtendedItems = () => {
+      const newExtendedItems = new Set<string>();
+  
+      // Verifica o primeiro item
+      const firstElement = itemRefs.current[0];
+      if (firstElement && itemRefs.current.length > 1) {
+        const secondElement = itemRefs.current[1];
+        const isFirstCloseToSecond = checkHorizontalDistance(firstElement, secondElement, 150);
+  
+        // Se o primeiro item não estiver próximo do segundo, ele está sozinho
+        if (!isFirstCloseToSecond) {
+          newExtendedItems.add(bioData.content[0].id);
+        }
+      }
+  
+      // Verifica o último item
+      const lastElement = itemRefs.current[itemRefs.current.length - 1];
+      if (lastElement && itemRefs.current.length > 1) {
+        const secondLastElement = itemRefs.current[itemRefs.current.length - 2];
+        const isLastCloseToSecondLast = checkHorizontalDistance(secondLastElement, lastElement, 150);
+  
+        // Se o último item não estiver próximo do penúltimo, ele está sozinho
+        if (!isLastCloseToSecondLast) {
+          newExtendedItems.add(bioData.content[bioData.content.length - 1].id);
+        }
+      }
+  
+      setExtendedItems(newExtendedItems);
     };
+  
+    updateExtendedItems();
+  }, [bioData, screenWidth]); 
 
-    // Adiciona o event listener
-    window.addEventListener('resize', handleResize);
-
-    // Cleanup do event listener
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-
+   useEffect(() => {
+      const handleResize = () => {
+        setScreenWidth(window.innerWidth);
+      };
+  
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+  
   const [imageLoaded, setImageLoaded] = useState(true);
 
   const isImageUrl = (url: string) => {
@@ -160,8 +255,8 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
   
 
   return (
-    <div className="lg:max-w-[90%] mx-auto lg:flex justify-around">
-      <Card className="relative min-w-full lg:min-w-[500px] min-h-screen rounded-none bg-white overflow-hidden">
+    <div className="lg:max-w-[90%] mx-auto lg:flex justify-around rounded-xl">
+      <Card className="relative min-w-full lg:min-w-[500px] min-h-screen bg-white rounded-xl pb-10 overflow-hidden">
 
         <div className="p-4 gap-5 lg:flex w-[100%] h-full">
           <div className="bg-white p-2 py-20 rounded-xl lg:min-w-[40%] ">
@@ -172,6 +267,14 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
               </Avatar>
               <p className="mt-4 font-medium capitalize">@{bioData.name}</p>
               <p className="mt-2 text-gray-700 text-sm max-w-[400px] mx-auto">{bioData.biografy}</p>
+
+              <Button
+                variant="outline"
+                onClick={() => setIsFormModalOpen(true)}
+                className="text-sm"
+              >
+                 Entrar em Contato
+              </Button>
             </div>
             
             <section className="flex items-center justify-center gap-6 p-6 rounded-lg">
@@ -185,9 +288,10 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                     className="group transition duration-300 ease-in-out transform hover:scale-110"
                   >
                     {(() => {
-                      const Icon = getSocialIcon(item.url || "");
-                      const socialKey = Object.keys(socialPatterns).find((key) =>
-                        socialPatterns[key as SocialIconKey].test(item.url || "")
+                  
+                      const Icon = getSocialIcon(item.title || item.social_network ||  "");
+                      const socialKey = Object.keys(socialColors).find((key) =>
+                        item.title?.toLowerCase().includes(key.toLowerCase())
                       ) as SocialIconKey | undefined;
 
                       // Define a cor padrão como cinza se a rede social não for encontrada
@@ -207,31 +311,38 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
           <div className="mt-5 w-full">
 
-          <div className="container gap-0 w-full h-full mx-auto">
+          <div className="container gap-4 w-full h-full mx-auto">
             {bioData.content
               .sort((a, b) => {
                 const dateA = a.updated_at ? new Date(a.updated_at) : new Date(0);
                 const dateB = b.updated_at ? new Date(b.updated_at) : new Date(0);
                 return dateB.getTime() - dateA.getTime();
               })
-              .map((item) => {
+              .map((item, index) => {
                 const isImage = item.icon; 
                 return (
                   <div
-                    key={item.id}
-                    className={`overflow-hidden flex flex-col items-center mt-4 ${
-                      item.type === "link" && isImage === "/icons/image.ico" && screenWidth < 1024
-                        ? "col-span-full container-item " 
-                        : "break-inside-avoid"
+                  key={item.id}
+                  ref={(el) => {
+                    if (el) {
+                      itemRefs.current[index] = el;
+                    }
+                  }}
+                  className={`overflow-hidden flex flex-col items-center ${
+                    item.type === "link" && isImage === "/icons/image.ico" && screenWidth < 1024
+                      ? "col-span-full full-column"
+                      : extendedItems.has(item.id) && screenWidth < 1024 // Verifica se o item deve se estender
+                      ? "col-span-full full-column"
+                      : "break-inside-avoid"
                     }`}
                   >
                       {item.type === "link" && !item.is_profile_link && (
                         <Link
                         href={item.url || ""}
-                        target="_blank" className={`w-full cursor-pointer  transition-transform transform hover:scale-95  ${
+                        target="_blank" className={`w-full mt-4 cursor-pointer  transition-transform transform hover:scale-95  ${
                           item.type === "link" && isImage === "/icons/image.ico" 
                             ? "py-0 max-w-[95%] " 
-                            : "py-2 max-w-[90%] "
+                            : "py-4 max-w-[90%] "
                         }`}>
                           {item.og_image && (
                             <Image
@@ -239,7 +350,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                               layout="fill"
                               objectFit="cover"
                               alt={`Imagem de Capa do Link de ${item.url} na CliqueNaBio`}
-                              className="w-full h-40 object-cover rounded-lg"
+                              className={`w-full h-40 object-cover rounded-lg ${ isImage === "/icons/image.ico" ? " opacity-0" : "opacity-100"}`}
                             />
                           )}
 
@@ -280,7 +391,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                                   : "flex-col justify-end"
                                 }`}>
                                 <span
-                                  className="z-10 text-xl font-semibold capitalize inline-block whitespace-wrap"
+                                  className="z-10 text-xl font-semibold capitalize inline-block whitespace-wrap "
                                   style={{ minWidth: "50%" }}
                                 >
                                   {item.title}
@@ -308,35 +419,25 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                       )}
 
                       {item.type === "photo" && item.url && isImageUrl(item.url) && (
-                        <div className="w-full max-w-[90%] bg-white transition-transform transform hover:scale-90 cursor-pointer">
-                      <Image
-                        src={item.url}
-                        alt="Imagem de Capa na CliqueNaBio"
-                        width={800}
-                        height={600}
-                        objectFit="cover"
-                      />
-
-
-                          {/* <div className="p-4">
-                            <p className="text-gray-800 font-medium capitalize">{item.content}</p>
-                            {item.small_description && (
-                              <p className="text-gray-600 text-sm capitalize">{item.small_description}</p>
-                            )}
-                            {item.updated_at && (
-                              <p className="text-gray-500 text-end text-xs">
-                                Publicado: {new Date(item.updated_at).toLocaleDateString()}
-                              </p>
-                            )}
-                          </div> */}
+                        <div className="w-full mt-4 bg-white transition-transform transform hover:scale-90 cursor-pointer"
+                        onClick={() => {
+                          setSelectedPhoto({
+                            url: item.url || "", // URL da imagem
+                            title: item.content, // Título da imagem
+                            description: item.small_description, // Descrição da imagem
+                          });
+                          setIsPhotoModalOpen(true);
+                        }}>
+                        <Image
+                          src={item.url}
+                          alt="Imagem de Capa na CliqueNaBio"
+                          width={800}
+                          height={600}
+                          objectFit="cover"
+                        />
                         </div>
                       )}
 
-                      {item.type === "text" && (
-                        <p className="text-sm bg-gray-100 p-4 rounded-lg shadow-inner w-full text-center">
-                          {item.content}
-                        </p>
-                      )}
                   </div>
                  );
               })}
@@ -354,6 +455,79 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
           </div>
         </div>
       </Card>
+
+      {isFormModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md">
+            <h2 className="text-xl font-semibold mb-4">Entre em Contato</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Email</label>
+                <input
+                  type="email"
+                  className="mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  value={emailContact}
+                  onChange={(e) => setEmailContact(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Mensagem</label>
+                <textarea
+                  className="mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  rows={4}
+                  value={contentContact}
+                  onChange={(e) => setContentContact(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setIsFormModalOpen(false)}
+                  className="mr-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  {loading ? "Enviando..." : "Enviar"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      {isPhotoModalOpen && selectedPhoto && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-full max-w-4xl mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">{selectedPhoto.title || "Foto"}</h2>
+              <button
+                onClick={() => setIsPhotoModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                &times;
+              </button>
+            </div>
+            <div className="relative w-full h-[60vh]">
+              <Image
+                src={selectedPhoto.url}
+                alt="Imagem Expandida"
+                layout="fill"
+                objectFit="contain"
+                quality={100}
+                priority
+              />
+            </div>
+            {selectedPhoto.description && (
+              <p className="mt-4 text-gray-700 text-sm">{selectedPhoto.description}</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

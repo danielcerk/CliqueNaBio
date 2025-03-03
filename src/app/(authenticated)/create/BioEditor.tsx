@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Globe, ImageIcon, Trash2, Save } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -112,57 +112,57 @@ const BioEditor = () => {
     }
   }, [userData]);
 
-  const fetchContent = async () => {
+  const fetchContent = useCallback(async () => {
     try {
-      setLoading(true);
-      const userResponse = await axiosInstance.get("/api/v1/account/me/", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-  
-      const userData = userResponse.data;
-      const [linkResponse, snapResponse] = await Promise.all([
-        axiosInstance.get("/api/v1/account/me/link/", {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axiosInstance.get("/api/v1/account/me/snap/", {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-      ]);
-  
-      const links = linkResponse.data.results.map((link: any) => ({
-        id: link?.id, 
-        type: "link",
-        content: link?.url || "",
-        url: link?.url || "",
-        title: link?.title || "",
-        is_profile_link: link?.is_profile_link || false,
-        created: true,
-      }));
-  
-      const snaps = snapResponse.data.results.map((snap: SnapItem) => ({
-        id: snap?.id, 
-        type: "photo",
-        content: snap?.image || "",
-        url: snap?.image || "",
-        name: snap?.name || "",
-        small_description: snap?.small_description || "",
-        created: true,
-      }));
-  
-      setBioData({
-        content: [...links, ...snaps],
-      });
-    } catch (err) {
+        setLoading(true);
+        const userResponse = await axiosInstance.get("/api/v1/account/me/", {
+            headers: { Authorization: `Bearer ${token}` },
+        });
 
-      setError(true);
+        const userData = userResponse.data;
+        const [linkResponse, snapResponse] = await Promise.all([
+            axiosInstance.get("/api/v1/account/me/link/", {
+                headers: { Authorization: `Bearer ${token}` },
+            }),
+            axiosInstance.get("/api/v1/account/me/snap/", {
+                headers: { Authorization: `Bearer ${token}` },
+            }),
+        ]);
+
+        const links = linkResponse.data.map((link: any) => ({
+            id: link?.id,
+            type: "link",
+            content: link?.url || "",
+            url: link?.url || "",
+            title: link?.title || "",
+            is_profile_link: link?.is_profile_link || false,
+            created: true,
+        }));
+
+        const snaps = snapResponse.data.map((snap: SnapItem) => ({
+            id: snap?.id,
+            type: "photo",
+            content: snap?.image || "",
+            url: snap?.image || "",
+            name: snap?.name || "",
+            small_description: snap?.small_description || "",
+            created: true,
+        }));
+
+        setBioData({
+            content: [...links, ...snaps],
+        });
+    } catch (err) {
+        setError(true);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
-    fetchContent();
-  }, [token]);
+      fetchContent();
+  }, [fetchContent]);
+
 
   const addContent = (type: "link" | "photo") => {
     const linksCount = bioData.content.filter((item) => item.type === "link").length;
