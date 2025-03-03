@@ -76,22 +76,17 @@ export default function ViewBio() {
         setLoading(false);
         return;
       }
-
+  
       try {
         setLoading(true);
-
   
-        // Verifique se o slug está presente
         if (!slug) {
           showAlert('error', 'Usuário não encontrado na URL!');
         }
   
-        // Busca os dados públicos do perfil
         const profileResponse = await axiosInstance.get(`/api/v1/profile/${slug}/`);
         const profileData = profileResponse.data;
   
-        // Mapeia os links e snaps para o formato esperado
-
         const links = profileData.links.map((link: any) => ({
           id: nanoid(),
           type: "link" as const,
@@ -107,7 +102,7 @@ export default function ViewBio() {
           created_at: link.created_at || "",
           updated_at: link.updated_at || "",
         }));
-
+  
         const snaps = profileData.snaps.map((snap: any) => ({
           id: nanoid(),
           type: "photo" as const,
@@ -116,7 +111,7 @@ export default function ViewBio() {
           small_description: snap.small_description || "",
           updated_at: snap.updated_at || snap.created_at || "",
         }));
-
+  
         setBioData({
           id: profileData.id,
           name: profileData.name,
@@ -127,29 +122,24 @@ export default function ViewBio() {
           copyright: profileData.copyright,
         });
       } catch (err) {
-
-          let errorMessage = "Erro ao carregar dados.";
-      
-          if (axios.isAxiosError(err)) {
-              // Se o erro for do Axios, você pode acessar suas propriedades
-              errorMessage += ` ${err.response?.data?.message || err.message}`;
-          } else if (err instanceof Error) {
-              // Se for um erro padrão, você pode acessar a mensagem
-              errorMessage += ` ${err.message}`;
-          } else {
-              // Para outros tipos de erros desconhecidos
-              errorMessage += " Erro desconhecido.";
-          }
-      
-          setError(errorMessage);
-    
+        let errorMessage = "Erro ao carregar dados.";
+  
+        if (axios.isAxiosError(err)) {
+          errorMessage += ` ${err.response?.data?.message || err.message}`;
+        } else if (err instanceof Error) {
+          errorMessage += ` ${err.message}`;
+        } else {
+          errorMessage += " Erro desconhecido.";
+        }
+  
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchData();
-  }, [slug]);
+  }, [slug, showAlert]);
 
   return (
     <>

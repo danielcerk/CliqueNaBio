@@ -146,7 +146,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
   const SendMessageForm = async (emailContact: string, contentContact: string): Promise<any> => {
     try {
-      let response = await axiosInstance.post(`/api/v1/account/${bioData.id}/send-email/`, {
+      const response = await axiosInstance.post(`/api/v1/account/${bioData.id}/send-email/`, {
         email: emailContact,
         content: contentContact,
       });

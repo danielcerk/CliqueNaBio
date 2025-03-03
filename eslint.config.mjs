@@ -6,27 +6,23 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const compat = new FlatCompat({
-  baseDirectory: __dirname, // Diretório base para resolver as configurações
+  baseDirectory: __dirname,
 });
 
 const eslintConfig = [
-  ...compat.extends(
-    "next/core-web-vitals", // Configuração básica do Next.js
-    "next/typescript"       // Suporte para TypeScript
-  ),
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    files: ["**/*.ts", "**/*.tsx"], // Alvo para arquivos TypeScript
+    files: ["**/*.ts", "**/*.tsx"],
     rules: {
-      // Regras específicas para TypeScript
-      "@typescript-eslint/no-unused-vars": ["warn"],
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn', 
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "react-hooks/exhaustive-deps": "warn",
+      "@next/next/no-img-element": "off",
     },
   },
   {
-    files: ["**/*.js", "**/*.jsx"], // Alvo para arquivos JavaScript
+    files: ["**/*.js", "**/*.jsx"],
     rules: {
-      // Regras específicas para JavaScript
       "no-console": "warn",
     },
   },

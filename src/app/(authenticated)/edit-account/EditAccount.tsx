@@ -4,7 +4,7 @@ import axiosInstance from "@/helper/axios-instance"
 import useAxios from "@/hooks/use-axios"
 import axios, { AxiosInstance } from 'axios';
 import Cookie from "js-cookie"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useRouter } from 'next/navigation';
 import { AlertModal } from '@/components/common/AlertModal';
 import LoadingSkeleton from "./loading-skeleton";
@@ -125,27 +125,25 @@ export default function EditAccount() {
     }
   }, [user]);
 
-  useEffect(() => {
-    fetchSocialLinks();
-  }, []);
-
-  const fetchSocialLinks = async () => {
+  const fetchSocialLinks = useCallback(async () => {
     try {
       const response = await axiosInstance.get("/api/v1/account/me/link/", {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      // Filtra apenas os links com is_profile_link = true
-      const profileLinks = (response.data).filter(
+  
+      const profileLinks = response.data.filter(
         (link: any) => link.is_profile_link === true
       );
-      console.log("Resposta da API:", response.data);
-
       setSocialLinks(profileLinks);
     } catch (error) {
       showAlert('error', 'Erro ao carregar os links de redes sociais.');
     }
-  };
+  }, [token]);
+  
+  useEffect(() => {
+    fetchSocialLinks();
+  }, [fetchSocialLinks]);
+  
 
   const handleDelete = async () => {
     try {
