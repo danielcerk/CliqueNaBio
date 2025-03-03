@@ -5,22 +5,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["@chakra-ui/react"],
   },
-  async redirects() {
-    return [
-      {
-        source: '/:path*', // Captura todas as rotas
-        has: [
-          {
-            type: 'header',
-            key: 'referer',
-            value: '.*[A-Z].*', // Verifica se há letras maiúsculas na URL
-          },
-        ],
-        destination: '/:path*', // Redireciona para a mesma rota em minúsculas
-        permanent: true,
-      },
-    ];
-  },
+  // Removida a regra de redirecionamento problemática
   images: {
     remotePatterns: [
       {
