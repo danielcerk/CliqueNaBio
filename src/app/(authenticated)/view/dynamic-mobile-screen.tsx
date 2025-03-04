@@ -182,17 +182,17 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
   return (
     <div className="lg:max-w-5xl mx-auto lg:flex justify-around">
-      <Card className="relative min-w-full lg:min-w-[500px] min-h-screen bg-white rounded-3xl overflow-hidden">
+      <Card className="relative min-w-full lg:min-w-[500px] min-h-screen bg-white dark:bg-black mb-5 rounded-3xl overflow-hidden">
 
-        <div className="p-4 gap-5 lg:flex w-[100%] h-full">
-          <div className="bg-white p-2 py-20 rounded-xl lg:min-w-[40%] ">
+        <div className="p-4 gap-5 lg:flex items-start w-[100%]">
+          <div className="bg-white dark:bg-gray-900 p-2 py-20 rounded-xl lg:min-w-[40%] ">
             <div className="text-center">
               <Avatar className="w-32 h-32 mx-auto mt-5 shadow">
                 <AvatarImage src={bioData.image} alt={bioData.name} />
                 <AvatarFallback>{bioData.name.charAt(0)}</AvatarFallback>
               </Avatar>
               <p className="mt-4 font-medium capitalize">{bioData.name}</p>
-              <p className="mt-2 text-gray-700 text-sm max-w-[400px] mx-auto">{bioData.biografy}</p>
+              <p className="mt-2 text-gray-700 text-sm max-w-[400px] mx-auto dark:text-gray-200">{bioData.biografy}</p>
             </div>
             
             <section className="flex items-center justify-center gap-6 p-6 rounded-lg">
@@ -279,7 +279,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                             className="flex flex-col items-center gap-2 w-full h-full justify-center"
                           >
                             <div
-                              className={`w-full border rounded p-5 shadow ${
+                              className={`w-full rounded-lg p-5 shadow ${
                                 item.url?.includes("instagram.com")
                                   ? "bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 text-white"
                                   : item.url?.includes("facebook.com")

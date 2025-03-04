@@ -47,7 +47,7 @@ export default function ContentLanding() {
 
   return (
     <div>
-      <div>
+      <div className="bg-white">
         <section 
           className={`isolate bg-yellow-400 overflow-hidden px-6 py-24 lg:px-8 rounded transition-all duration-500 ${
             scrolling > componentPosition - 300 ? "animate-content " : "animate-content-off"
@@ -148,7 +148,7 @@ export default function ContentLanding() {
           </div>
         </section>
 
-        <div className="max-w-5xl mx-auto bg-gray-900 rounded-3xl">
+        <div className="max-w-5xl mx-auto bg-gray-900 rounded-3xl my-5">
           <section className="px-6 py-24  text-center" data-aos="fade-up">
             <h2 className="text-6xl font-semibold text-yellow-400 max-w-[400px] mx-auto uppercase">Gerencie tudo no Dashboard</h2>
             <p className="text-lg text-gray-200 mt-4 max-w-[400px] mx-auto">Acompanhe métricas de visualizações e interações no seu dashboard.</p>
@@ -249,7 +249,7 @@ export default function ContentLanding() {
                 <p className="mt-4 text-5xl font-semibold text-gray-900">R$0</p>
                 <p className="text-base text-gray-500">/mês</p>
                 <p className="mt-6 text-gray-600">Ideal para quem deseja experimentar e dar os primeiros passos na criação de um perfil interativo.</p>
-                <ul className="mt-6 space-y-3 text-sm">
+                <ul className="mt-6 space-y-3 text-sm text-gray-500">
                   <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
@@ -269,7 +269,7 @@ export default function ContentLanding() {
                 <h3 className="text-base font-semibold text-yellow-400">Plano Conexão</h3>
                 <p className="mt-4 text-5xl font-semibold">R$8.99</p>
                 <p className="text-base text-gray-400">/mês</p>
-                <p className="mt-6 text-gray-600">Ideal para criadores de conteúdo e pequenas empresas que desejam um perfil mais dinâmico e atrativo.</p>
+                <p className="mt-6 text-gray-500">Ideal para criadores de conteúdo e pequenas empresas que desejam um perfil mais dinâmico e atrativo.</p>
                 <ul className="mt-6 space-y-3 text-sm text-gray-300">
                   <li className="flex items-left gap-3 justify-left">
                     <svg className="h-6 w-5 flex-none text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

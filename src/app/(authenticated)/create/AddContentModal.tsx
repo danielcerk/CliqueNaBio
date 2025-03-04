@@ -57,7 +57,7 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+      <div className="bg-white dark:bg-black p-6 rounded-lg shadow-lg w-96 dark:border dark:border-yellow-400">
         <h3 className="text-lg font-bold mb-4">Adicionar {type === "link" ? "Link" : "Snap"}</h3>
         {type === "link" ? (
           <>
@@ -66,14 +66,14 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
               placeholder="https://exemplo.com"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              className="mb-4 text-gray-700"
+              className="mb-4 text-gray-700 dark:bg-gray-200"
             />
             <Input
               type="text"
               placeholder="Título do Link"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="mb-4 text-gray-700"
+              className="mb-4 text-gray-700 dark:bg-gray-200"
             />
           </>
         ) : (
@@ -110,23 +110,23 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
               placeholder="Nome do Snap"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mb-4 text-gray-700"
+              className="mb-4 text-gray-700 dark:bg-gray-200"
             />
             <Input
               type="text"
               placeholder="Descrição pequena do Snap"
               value={smallDescription}
               onChange={(e) => setSmallDescription(e.target.value)}
-              className="mb-4 text-gray-700"
+              className="mb-4 text-gray-700 dark:bg-gray-200"
             />
           
           </>
         )}
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose} className="dark:bg-red-900 font-bold">
             Cancelar
           </Button>
-          <Button onClick={handleSave} disabled={loading}>
+          <Button onClick={handleSave} disabled={loading} className="dark:bg-green-600 dark:text-white font-bold">
             {loading ? "Salvando..." : "Salvar"}
           </Button>
         </div>

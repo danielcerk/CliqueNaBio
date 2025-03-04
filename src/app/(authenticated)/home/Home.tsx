@@ -90,12 +90,13 @@ export default function Home() {
 
   return (
 
+    <div className='dark:bg-gray-900 pt-10'>
     <div className="flex flex-col max-w-6xl mx-auto p-8 pt-6 gap-5 min-h-screen">
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card><CardHeader><CardTitle>Visitas totais</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">{dashboard?.views ?? 0}</div></CardContent></Card>
-        <Card><CardHeader><CardTitle>Snaps Criados</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">{dashboard?.snaps_count}</div></CardContent></Card>
-        <Card><CardHeader className='flex-row items-center gap-2'><CardTitle>Links Criados</CardTitle><Users className="h-4 w-4 text-muted-foreground" /></CardHeader><CardContent><div className="text-2xl font-bold">{dashboard?.links_count}</div></CardContent></Card>
+        <Card><CardHeader><CardTitle>Visitas totais</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold dark:text-[#facc15]">{dashboard?.views ?? 0}</div></CardContent></Card>
+        <Card><CardHeader><CardTitle>Snaps Criados</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold dark:text-[#facc15]">{dashboard?.snaps_count}</div></CardContent></Card>
+        <Card><CardHeader className='flex-row items-center gap-2'><CardTitle>Links Criados</CardTitle><Users className="h-4 w-4 text-muted-foreground" /></CardHeader><CardContent><div className="text-2xl font-bold dark:text-[#facc15]">{dashboard?.links_count}</div></CardContent></Card>
       </div>
 
       {user?.plan !== 'GRÁTIS' ? (
@@ -122,7 +123,7 @@ export default function Home() {
                   >
                     <XAxis dataKey="key" tick={{ fontSize: 12 }} />
                     <Bar dataKey="value" fill="#facc15" radius={[4, 4, 0, 0]} maxBarSize={65}>
-                      <LabelList dataKey="value" position="center" />
+                      <LabelList dataKey="value" position="center" fill='#000' />
                     </Bar>
                     <Tooltip />
                   </BarChart>
@@ -140,6 +141,7 @@ export default function Home() {
       )}
 
     <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </div>
     </div>
   );
 }

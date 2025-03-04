@@ -173,22 +173,22 @@ const View = (): JSX.Element | null =>{
 
 
   return (
-    <div className="flex flex-col lg:flex-row">
+    <div className="flex flex-col lg:flex-row dark:bg-gray-900 pt-10">
       <div className="mx-auto">
 
         {publicLink && (
-          <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-            <p className="text-sm font-medium text-gray-700">Seu link público:</p>
+          <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-3xl mx-auto mb-5 dark:bg-gray-900">
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-100">Seu link público:</p>
             <div className="flex items-center gap-2 mt-2">
               <input
                 type="text"
                 value={publicLink}
                 readOnly
-                className="flex-1 p-2 border text-gray-700 border-gray-300 rounded-lg text-sm"
+                className="flex-1 p-2 border text-gray-700 border-gray-300 rounded-lg text-sm dark:bg-gray-200"
               />
               <button
                 onClick={handleCopyLink}
-                className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                className="p-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-600 transition-colors"
               >
                 Copiar
               </button>

@@ -6,6 +6,7 @@ import Script from 'next/script';
 
 import { Poppins, DM_Serif_Text } from "next/font/google";
 
+
 // Importando fontes via next/font/google para melhor performance
 const poppins = Poppins({
   subsets: ["latin"],
@@ -88,8 +89,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}
         </Script>
       </head>
+
       <body className={`${poppins.className} ${dmSerif.className}`}>
-        <main>
+      
+       
+        <main className="bg-white">
             {children}
         </main>
 

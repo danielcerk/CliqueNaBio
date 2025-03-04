@@ -178,6 +178,30 @@ export default function Account() {
     }
   };
 
+  const handleShowProfileFormChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.checked;
+
+    try {
+      await axiosInstance.put(
+        "/api/v1/account/me/",
+        { showProfileForm: newValue },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setUser((prevUser: User | null) =>
+        prevUser
+          ? { ...prevUser, showProfileForm: newValue }
+          : { showProfileForm: newValue }
+      );
+    } catch (error) {
+      showAlert('error', 'Erro ao atualizar a visibilidade do formulário de perfil!');
+    }
+  };
+
   const generatePublicLink = () => {
     if (!user?.slug) {
       showAlert('error', 'Slug não encontrado. Por favor, defina um slug em seu perfil.');
@@ -210,87 +234,104 @@ export default function Account() {
 
   return (
     <>    
-      <div className="min-h-screen bg-gray-100 flex justify-center p-4">
-        <Card className="w-full max-w-xl h-fit">
-          <CardHeader className="flex flex-col sm:flex-row items-center gap-4">
-            <div className="relative">
-              <Avatar className="w-24 h-24 sm:w-32 sm:h-32 cursor-pointer" onClick={handleAvatarClick}>
-                <AvatarImage
-                  src={user?.image?.trim() ? user.image : "/placeholder.svg?height=128&width=128"}
-                  alt={`Foto de perfil de ${user?.name}`}
-                />
-                <AvatarFallback>{usrNameFirst2Letters}</AvatarFallback>
-              </Avatar>
-              <input
-                type="file"
-                ref={fileInputRef}
-                style={{ display: "none" }}
-                accept="image/*"
-                onChange={handleImageChange}
+    <div className="min-h-screen flex justify-center p-4  pt-10 dark:bg-gray-900">
+      <Card className="w-full max-w-xl h-fit">
+        <CardHeader className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="relative">
+            <Avatar className="w-24 h-24 sm:w-32 sm:h-32 cursor-pointer" onClick={handleAvatarClick}>
+              <AvatarImage
+                src={user?.image?.trim() ? user.image : "/placeholder.svg?height=128&width=128"}
+                alt={`Foto de perfil de ${user?.name}`}
               />
-            </div>
-            <div className="text-center sm:text-left">
-              <CardTitle className="text-2xl capitalize font-semibold">{user?.name}</CardTitle>
-              <CardDescription className="text-lg">{user?.email}</CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent className="pb-1">
-            <p className="font-semibold text-xl">Biografia:</p>
-            <p className="text-muted-foreground mt-3 capitalize">{user?.biografy}</p>
+              <AvatarFallback>{usrNameFirst2Letters}</AvatarFallback>
+            </Avatar>
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </div>
+          <div className="text-center sm:text-left">
+            <CardTitle className="text-2xl capitalize font-semibold">{user?.name}</CardTitle>
+            <CardDescription className="text-lg">{user?.email}</CardDescription>
+          </div>
+        </CardHeader>
+        <CardContent className="pb-1">
+          <p className="font-semibold text-xl">Biografia:</p>
+          <p className="text-muted-foreground mt-3 capitalize">{user?.biografy}</p>
+        </CardContent>
+
+        {user?.plan !== 'GRÁTIS' && (
+          <CardContent className="mt-5" >
+         <div className="flex items-center gap-4">
+          <label className="text-lg font-medium dark:text-gray-300 flex items-center gap-2">
+            <span className="max-w-[200px] py-1 text-sm">
+            Habilitar formulário de contato no perfil
+            </span>
+            <div className="relative w-10">
+            <input
+              type="checkbox"
+              checked={showForm}
+              onChange={handleCheckboxChange}
+              className="checkbox bg-red-400 rounded-full  appearance-none checked:bg-green-500 transition-all duration-300 cursor-pointer "
+            />
+            <i
+              className={`fa-solid ${showForm ? 'fa-toggle-on' : 'fa-toggle-off'} absolute left-2 h-full w-full text-white text-xl transition-all duration-300 cursor-pointer`}
+            ></i>
+          </div>
+          </label>
+        </div>
           </CardContent>
-          { user?.plan !== 'GRÁTIS' ? ( 
-            <CardContent className="space-y-4">
-              <div className="flex items-center gap-2">
-                <label className="text-muted-foreground">Tornar o formulário visível em seu perfil</label>
-                <input
-                  type="checkbox"
-                  checked={showForm}
-                  onChange={handleCheckboxChange}
-                  className="checkbox"
-                />
+        )}
+        <CardContent className="mt-5" >
+          <span className="max-w-[200px] py-1 text-sm">
+                Suas Redes:
+          </span>
+
+          <div className="py-4 flex flex-wrap gap-4">
+        
+            {filteredLinks && filteredLinks.length > 0 ? (
+              filteredLinks.map((link) => {
+                const socialNetworkName = link.social_network === "Twitter" ? "X" : link.social_network;
+                const icon = link.social_network === "Twitter" ? "/icons/x.svg" : link.icon;
+
+                return (
+                  <div key={link.url} className="p-4  text-gray-700 flex justify-center hover:text-white bg-gray-100 dark:bg-gray-800 transition-all duration-300 hover:transition-all hover:duration-300 hover:bg-black rounded-lg shadow-sm">
+                    <Link href={link.url} target="_blank" className="flex items-center justify-center">
+                      <Image
+                        src={icon}
+                        alt={`Ícone da rede social ${socialNetworkName}`}
+                        className="w-6 h-6 rounded-full"
+                        width={32}
+                        height={32}
+                      />
+                    </Link>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">
+                <p className="text-muted-foreground">Nenhum link de perfil cadastrado.</p>
               </div>
-            </CardContent> ) : null}
-
-            <div className="p-4 flex flex-wrap gap-4">
-              {filteredLinks && filteredLinks.length > 0 ? (
-                filteredLinks.map((link) => {
-                  const socialNetworkName = link.social_network === "Twitter" ? "X" : link.social_network;
-                  const icon = link.social_network === "Twitter" ? "/icons/x.svg" : link.icon;
-
-                  return (
-                    <div key={link.url} className="p-4 text-gray-700 flex justify-center hover:text-white bg-white transition-all duration-300 hover:transition-all hover:duration-300 hover:bg-black rounded-lg shadow-sm">
-                      <Link href={link.url} target="_blank" className="flex items-center justify-center">
-                        <Image
-                          src={icon}
-                          alt={`Ícone da rede social ${socialNetworkName}`}
-                          className="w-6 h-6 rounded-full"
-                          width={32}
-                          height={32}
-                        />
-                      </Link>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="bg-white p-6 rounded-lg shadow-md text-gray-800">
-                  <p className="text-muted-foreground">Nenhum link de perfil cadastrado.</p>
-                </div>
-              )}
-            </div>
-          <CardFooter className="flex flex-col sm:flex-row gap-4 sm:gap-2 items-stretch sm:items-center justify-between">
-            <Button className="flex-1 sm:flex-initial btn-hover" onClick={handleShare}>
-              <Share className="mr-2 h-4 w-4" /> Compartilhar
+            )}
+          </div>
+        </CardContent>
+        <CardFooter className="flex flex-col sm:flex-row gap-4 sm:gap-2 items-stretch sm:items-center justify-between">
+          <Button className="flex-1 sm:flex-initial btn-hover" onClick={handleShare}>
+            <Share className="mr-2 h-4 w-4" /> Compartilhar
+          </Button>
+          <Link href={"edit-account"}>
+            <Button className="flex-1 sm:flex-initial bg-yellow-400 btn-hover text-gray-950 hover:bg-yellow-400 hover:text-black">
+              Gerenciamento <i className="fa-solid fa-user-gear"></i>
             </Button>
-            <Link href={"edit-account"}>
-              <Button className="flex-1 sm:flex-initial bg-yellow-400 btn-hover text-gray-950 hover:bg-yellow-400 hover:text-black">
-                Gerenciamento <i className="fa-solid fa-user-gear"></i>
-              </Button>
-            </Link>
-          </CardFooter>
-        </Card>
+          </Link>
+        </CardFooter>
+      </Card>
 
-        <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      </div>
+      <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </div>
     </>
   );
 }

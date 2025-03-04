@@ -32,7 +32,9 @@ export default function PublicLayout({
     return (
       <div className="flex flex-col">
         <Header openModalLogin={openModalLogin}/>
-          <main className="mt-20 flex flex-col flex-1 min-h-screen">{children}</main>
+          <main className=" flex flex-col flex-1 min-h-screen">
+          {children}
+          </main>
         <Footer  />
         {/* Modal */}
             {isModalOpenLogin && (
