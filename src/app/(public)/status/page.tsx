@@ -5,21 +5,19 @@ import dynamic from "next/dynamic";
 import axiosInstance from "@/helper/axios-instance";
 import Image from "next/image";
 import LoadingSkeleton from "./loading-skeleton";
-import { AlertModal } from '@/components/common/AlertModal';
+import { AlertModal } from "@/components/common/AlertModal";
 import ContributorsSkeleton from "./contributors-skeleton";
-import { Bar, Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   BarElement,
-  LineElement,
-  PointElement,
   CategoryScale,
   LinearScale,
   Tooltip,
   Legend,
 } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 interface AppStatusData {
   status_app: boolean;
@@ -68,18 +66,24 @@ function StatusPage() {
 
   const formatChartData = (rawData: { [key: string]: number }) => {
     const allDates = Object.keys(rawData);
+
     if (allDates.length === 0) {
       return {
         labels: ["Sem dados"],
-        datasets: [{ label: "Quantidade", data: [0], backgroundColor: "rgba(54, 162, 235, 0.6)", borderColor: "rgba(54, 162, 235, 1)", borderWidth: 1 }],
+        datasets: [{ label: "Quantidade", data: [0], backgroundColor: "rgba(54, 162, 235, 0.6)" }],
       };
     }
-    const sortedDates = allDates.sort();
+
+    const sortedDates = allDates.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
     const dataValues = sortedDates.map((date) => rawData[date] || 0);
-    return { labels: sortedDates, datasets: [{ label: "Quantidade", data: dataValues, backgroundColor: "rgba(54, 162, 235, 0.6)", borderColor: "rgba(54, 162, 235, 1)", borderWidth: 1 }] };
+    
+    return {
+      labels: sortedDates,
+      datasets: [{ label: "Quantidade", data: dataValues, backgroundColor: "rgba(54, 162, 235, 0.6)" }],
+    };
   };
 
-  return (  
+  return (
     <div className="w-full dark:bg-gray-900">
       <div className="mx-auto my-8 p-4 pt-36">
         <h1 className="text-3xl text-gray-800 dark:text-gray-200 font-bold text-center mb-8">Status do Aplicativo</h1>
@@ -101,13 +105,13 @@ function StatusPage() {
           {data.count_links_per_date && (
             <div className="bg-white dark:text-gray-700 p-6 rounded-lg shadow-md">
               <h5 className="text-xl font-semibold mb-4">Links por Data</h5>
-              <Line data={formatChartData(data.count_links_per_date)} />
+              <Bar data={formatChartData(data.count_links_per_date)} />
             </div>
           )}
           {data.count_snaps_per_date && (
             <div className="bg-white dark:text-gray-700 p-6 rounded-lg shadow-md">
               <h5 className="text-xl font-semibold mb-4">Snaps por Data</h5>
-              <Line data={formatChartData(data.count_snaps_per_date)} />
+              <Bar data={formatChartData(data.count_snaps_per_date)} />
             </div>
           )}
         </div>
