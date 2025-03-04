@@ -164,7 +164,7 @@ export default function ViewBio() {
                 <div className="fixed z-50 right-4 top-24">
                   <ThemeSwitcher />
                 </div>
-                <div className="w-full">
+                <div className="w-full flex justify-center">
                 <MobileScreen bioData={bioData} />
                 </div>
               </div>
