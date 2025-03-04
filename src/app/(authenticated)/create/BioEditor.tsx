@@ -17,6 +17,7 @@ import { createSnap } from "@/hooks/use-snaps";
 import { nanoid } from "nanoid";
 import { AlertModal } from '@/components/common/AlertModal';
 import { AddContentModal } from "./AddContentModal";
+import AlertDecisionModal from "@/components/common/AlertDecisionModal";
 
 
 interface ContentItem {
@@ -24,6 +25,7 @@ interface ContentItem {
   type: "link" | "photo";
   content: string;
   url?: string;
+  og_image?: string;
   name?: string;
   title?: string;
   is_profile_link?: boolean;
@@ -54,10 +56,12 @@ interface SnapApiResponse {
   results: SnapItem[];
 }
 
+
+
 const BioEditor = () => {
   const token = Cookie.get("access_token");
 
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
   const [modalMessage, setModalMessage] = useState('');
@@ -95,6 +99,8 @@ const BioEditor = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [loadingSave, setLoadingSave] = useState<string | null>(null); 
+  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<{ id: string | number; type: "link" | "photo" } | null>(null);
 
   const generateUniqueId = () => `${Date.now()}-${nanoid()}`;
 
@@ -134,6 +140,7 @@ const BioEditor = () => {
             type: "link",
             content: link?.url || "",
             url: link?.url || "",
+            og_image: link?.og_image,
             title: link?.title || "",
             is_profile_link: link?.is_profile_link || false,
             created: true,
@@ -351,15 +358,23 @@ const BioEditor = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
       }
-  
+
       setBioData((prev) => ({
         ...prev,
         content: prev.content.filter((item) => item.id !== id),
       }));
-  
+
       showAlert('success', 'Item excluído com sucesso!');
     } catch (error) {
       showAlert('error', 'Erro ao excluir conteúdo. Tente novamente.');
+    } finally {
+      setIsDecisionModalOpen(false); // Fecha o modal após a exclusão
+    }
+  };
+
+  const handleDeleteConfirmation = () => {
+    if (itemToDelete) {
+      deleteItem(itemToDelete.id, itemToDelete.type);
     }
   };
 
@@ -372,147 +387,169 @@ const BioEditor = () => {
   if (errorUser) {showAlert('error', 'Erro ao carregar os dados do Usuário. Tente novamente mais tarde.');}
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10 min-h-screen">
-      <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">Editor de Bio</h2>
+    <div className="dark:bg-gray-900">
+      <div className="max-w-4xl mx-auto px-6 py-10 min-h-screen ">
+        <h2 className="text-2xl font-bold text-gray-900 text-center mb-6 dark:text-white">Editor de Bio</h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <Button onClick={() => addContent("link")} className="flex items-center gap-2">
-          <Globe className="w-5 h-5" /> Adicionar Link
-        </Button>
-        <Button onClick={() => addContent("photo")} className="flex items-center gap-2">
-          <ImageIcon className="w-5 h-5" /> Adicionar Snap
-        </Button>
-      </div>
+        <div className="flex flex-wrap gap-4 mb-8 w-full justify-center">
+          <Button onClick={() => addContent("link")} className="flex items-center gap-2 hover:scale-105 transition-all duration-300 font-bold dark:bg-yellow-400">
+            <Globe className="w-5 h-5" /> Adicionar Link
+          </Button>
+          <Button onClick={() => addContent("photo")} className="flex items-center gap-2 hover:scale-105 transition-all duration-300 font-bold dark:bg-blue-400">
+            <ImageIcon className="w-5 h-5" /> Adicionar Snap
+          </Button>
+        </div>
 
-      <div className="flex flex-col-reverse">
-        {/* Itens Criados (Renderizados) */}
-        <div>
-          <h2 className="text-lg text-gray-700 font-medium mb-4">Meu Conteúdo</h2>
-          <div className="md:columns-3 gap-6">
-            {bioData.content
-              .filter((item) => item && item.id && item.created && (item.type !== "link" || !item.is_profile_link))
-              .map((item) => (
-                <Card key={item.id} className="p-4 shadow-md hover:shadow-lg transition-shadow w-fit max-h-fit card-content w-full">
-                  <CardContent className="flex flex-col items-center gap-4">
-                    {item.type === "link" && (
-                      <>
-                        <Globe className="w-8 h-8 text-gray-500" />
-                        <Input
-                          type="url"
-                          className="w-full text-gray-500"
-                          placeholder="https://exemplo.com"
-                          value={item.url || ""}
-                          onChange={(e) => updateContent(item.id, item.content, e.target.value)}
-                          required
-                        />
-                        <Input
-                          type="text"
-                          className="w-full text-gray-500 mt-2"
-                          placeholder="Título do Link"
-                          value={item.title || ""}
-                          onChange={(e) =>
-                            updateContent(item.id, item.content, item.url, item.title, e.target.value)
-                          }
-                          required
-                        />
-                      </>
-                    )}
-                    {item.type === "photo" && (
-                      <>
-                        {item.content ? (
-                          <Image
-                            key={item.id}
-                            src={item.content}
-                            alt="Uploaded"
-                            width={100}
-                            height={100}
-                            className="rounded-md object-cover"
-                            unoptimized
+        <div className="flex flex-col-reverse">
+          {/* Itens Criados (Renderizados) */}
+          <div>
+            <h2 className="text-lg text-gray-700 font-medium mb-4 dark:text-gray-100">Meu Conteúdo</h2>
+            <div className="md:columns-3 gap-6">
+              {bioData.content
+                .filter((item) => item && item.id && item.created && (item.type !== "link" || !item.is_profile_link))
+                .map((item) => (
+                  <Card key={item.id} className="px-2 py-4 shadow-md hover:shadow-lg transition-shadow w-fit max-h-fit card-content mx-auto">
+                    <CardContent className="flex flex-col items-center gap-4">
+                      {item.type === "link" && (
+                        <>
+                          
+                          {item.og_image ? ( // Exibe a imagem de pré-visualização
+                            <div className="">
+                              <Image src={item.og_image} alt="Preview"
+                                width={100}
+                                height={100}
+                                className="rounded-md object-cover w-full"
+                                unoptimized/>
+                            </div>
+                          ) : <Globe className="w-8 h-8 text-gray-500" />}
+                          
+                          <Input
+                            type="url"
+                            className="w-full text-gray-700 dark:bg-gray-200"
+                            placeholder="https://exemplo.com"
+                            value={item.url || ""}
+                            onChange={(e) => updateContent(item.id, item.content, e.target.value)}
+                            required
                           />
-                        ) : (
-                          <label htmlFor={`file-input-${item.id}`} className="cursor-pointer flex flex-col items-center">
-                            <ImageIcon className="w-10 h-10 text-gray-500" />
-                            <span className="text-gray-600 text-sm">Enviar uma imagem</span>
-                          </label>
-                        )}
-                        <input
-                          id={`file-input-${item.id}`}
-                          type="file"
-                          className="hidden"
-                          accept="image/*"
-                          onChange={(e) => handlePhotoUpload(item.id, e)}
-                          required
-                        />
-                        <Input
-                          type="text"
-                          className="w-full text-gray-500"
-                          placeholder="Nome do Snap"
-                          value={item.name || ""}
-                          onChange={(e) =>
-                            updateContent(item.id, item.content, item.url, e.target.value, item.small_description)
-                          }
-                          required
-                        />
-                        <Input
-                          type="text"
-                          className="w-full text-gray-500"
-                          placeholder="Descrição pequena do Snap"
-                          value={item.small_description || ""}
-                          onChange={(e) =>
-                            updateContent(item.id, item.content, item.url, item.name, item.small_description, e.target.value)
-                          }
-                          required
-                        />
-                      </>
-                    )}
+                          <Input
+                            type="text"
+                            className="w-full text-gray-700 mt-2 dark:bg-gray-200"
+                            placeholder="Título do Link"
+                            value={item.title || ""}
+                            onChange={(e) =>
+                              updateContent(item.id, item.content, item.url, item.title, e.target.value)
+                            }
+                            required
+                          />
+                        </>
+                      )}
+                      {item.type === "photo" && (
+                        <>
+                          {item.content ? (
+                            <Image
+                              key={item.id}
+                              src={item.content}
+                              alt="Uploaded"
+                              width={100}
+                              height={100}
+                              className="rounded-md object-cover w-full"
+                              unoptimized
+                            />
+                          ) : (
+                            <label htmlFor={`file-input-${item.id}`} className="cursor-pointer flex flex-col items-center">
+                              <ImageIcon className="w-10 h-10 text-gray-500" />
+                              <span className="text-gray-600 text-sm">Enviar uma imagem</span>
+                            </label>
+                          )}
+                          <input
+                            id={`file-input-${item.id}`}
+                            type="file"
+                            className="hidden "
+                            accept="image/*"
+                            onChange={(e) => handlePhotoUpload(item.id, e)}
+                            required
+                          />
+                          <Input
+                            type="text"
+                            className="w-full text-gray-700 dark:bg-gray-200"
+                            placeholder="Nome do Snap"
+                            value={item.name || ""}
+                            onChange={(e) =>
+                              updateContent(item.id, item.content, item.url, e.target.value, item.small_description)
+                            }
+                            required
+                          />
+                          <Input
+                            type="text"
+                            className="w-full text-gray-700 dark:bg-gray-200"
+                            placeholder="Descrição pequena do Snap"
+                            value={item.small_description || ""}
+                            onChange={(e) =>
+                              updateContent(item.id, item.content, item.url, item.name, item.small_description, e.target.value)
+                            }
+                            required
+                          />
+                        </>
+                      )}
 
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      className="w-full"
-                      onClick={() => item.created ? updateItem(item) : saveContent(item)}
-                      disabled={loadingSave === item.id}
-                    >
-                      <Save className="w-4 h-4" /> {loadingSave === item.id ? "Salvando..." : "Salvar"}
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="w-full flex items-center gap-2"
-                      onClick={() => deleteItem(item.id, item.type)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Remover
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="w-full dark:bg-green-600"
+                        onClick={() => item.created ? updateItem(item) : saveContent(item)}
+                        disabled={loadingSave === item.id}
+                      >
+                        <Save className="w-4 h-4" /> {loadingSave === item.id ? "Salvando..." : "Salvar"}
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="w-full flex items-center gap-2"
+                        onClick={() => {
+                          setItemToDelete({ id: item.id, type: item.type }); // Armazena o item a ser excluído
+                          setIsDecisionModalOpen(true); // Abre o modal de decisão
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remover
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+            </div>
           </div>
         </div>
+
+        {showErrorModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+              <h3 className="text-lg font-bold text-red-600">Limite atingido</h3>
+              <p className="text-gray-700 mt-2">
+                Você atingiu o limite do seu plano. Considere fazer um upgrade para adicionar mais itens.
+              </p>
+              <Button className="mt-4" onClick={() => setShowErrorModal(false)}>
+                Fechar
+              </Button>
+            </div>
+          </div>
+        )}
+
+        <AddContentModal
+          isOpen={isAddContentModalOpen}
+          onClose={() => setIsAddContentModalOpen(false)}
+          type={contentType}
+          onSave={handleSaveNewContent}
+        />
+
+        <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+        <AlertDecisionModal
+          isOpen={isDecisionModalOpen}
+          message="Tem certeza que deseja excluir este item?"
+          onConfirm={handleDeleteConfirmation} // Função que será chamada ao confirmar
+          onCancel={() => setIsDecisionModalOpen(false)} // Fecha o modal ao cancelar
+        />
       </div>
-
-      {showErrorModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <h3 className="text-lg font-bold text-red-600">Limite atingido</h3>
-            <p className="text-gray-700 mt-2">
-              Você atingiu o limite do seu plano. Considere fazer um upgrade para adicionar mais itens.
-            </p>
-            <Button className="mt-4" onClick={() => setShowErrorModal(false)}>
-              Fechar
-            </Button>
-          </div>
-        </div>
-      )}
-
-      <AddContentModal
-        isOpen={isAddContentModalOpen}
-        onClose={() => setIsAddContentModalOpen(false)}
-        type={contentType}
-        onSave={handleSaveNewContent}
-      />
-
-      <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };

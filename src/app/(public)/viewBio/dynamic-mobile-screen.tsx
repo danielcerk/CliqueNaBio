@@ -238,7 +238,6 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
   useEffect(() => {
     if (bioData) {
       document.title = `CliqueNaBio | @${bioData.name}` || "Meu App";
-  
       if (bioData.image) {
         const favicon = document.querySelector("link[rel='icon']") as HTMLLinkElement | null;
         if (favicon) {
@@ -256,25 +255,27 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
   return (
     <div className="lg:max-w-[90%] mx-auto lg:flex justify-around rounded-xl">
-      <Card className="relative min-w-full lg:min-w-[500px] min-h-screen bg-white rounded-xl pb-10 overflow-hidden">
+      <Card className="relative min-w-full lg:min-w-[500px] min-h-screen bg-white dark:bg-black rounded-xl pb-10 overflow-hidden">
 
-        <div className="p-4 gap-5 lg:flex w-[100%] h-full">
-          <div className="bg-white p-2 py-20 rounded-xl lg:min-w-[40%] ">
+        <div className="p-4 gap-5 lg:flex items-start w-[100%] h-full">
+          <div className="bg-white p-2 dark:bg-gray-900 py-20 rounded-xl lg:min-w-[40%] ">
             <div className="text-center">
               <Avatar className="w-32 h-32 mx-auto mt-5 shadow">
                 <AvatarImage src={bioData.image} alt={bioData.name} />
                 <AvatarFallback>@{bioData.name}</AvatarFallback>
               </Avatar>
               <p className="mt-4 font-medium capitalize">@{bioData.name}</p>
-              <p className="mt-2 text-gray-700 text-sm max-w-[400px] mx-auto">{bioData.biografy}</p>
+              <p className="mt-2 text-gray-700 text-sm max-w-[400px] dark:text-gray-200 mx-auto mb-2">{bioData.biografy}</p>
 
+              {bioData.form_contact === true ? (
+               
               <Button
                 variant="outline"
                 onClick={() => setIsFormModalOpen(true)}
-                className="text-sm"
+                className="text-sm dark:text-yellow-400 font-bold"
               >
                  Entrar em Contato
-              </Button>
+              </Button>) : null }
             </div>
             
             <section className="flex items-center justify-center gap-6 p-6 rounded-lg">
@@ -359,7 +360,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                             className="flex flex-col items-center gap-2 w-full h-full justify-center"
                           >
                             <div
-                              className={`w-full border rounded p-5 shadow ${
+                              className={`w-full rounded-lg p-5 shadow ${
                                 item.url?.includes("instagram.com")
                                   ? "bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 text-white"
                                   : item.url?.includes("facebook.com")
@@ -458,23 +459,23 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
       {isFormModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md">
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg w-full max-w-md">
             <h2 className="text-xl font-semibold mb-4">Entre em Contato</h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Email</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
                 <input
                   type="email"
-                  className="mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full dark:bg-gray-200 text-black px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   value={emailContact}
                   onChange={(e) => setEmailContact(e.target.value)}
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Mensagem</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Mensagem</label>
                 <textarea
-                  className="mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full text-black px-3 dark:bg-gray-200 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   rows={4}
                   value={contentContact}
                   onChange={(e) => setContentContact(e.target.value)}
@@ -482,19 +483,19 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                 />
               </div>
               <div className="flex justify-end">
-                <button
+                <Button
                   type="button"
                   onClick={() => setIsFormModalOpen(false)}
-                  className="mr-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                  className="mr-2 px-4 py-2 bg-red-800 text-white rounded-lg hover:bg-red-900 font-bold transition-colors"
                 >
                   Cancelar
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                  className="px-4 py-2 dark:bg-green-600 text-white rounded-lg dark:hover:bg-green-700 font-bold transition-colors"
                 >
                   {loading ? "Enviando..." : "Enviar"}
-                </button>
+                </Button>
               </div>
             </form>
           </div>
@@ -502,17 +503,18 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
       )}
       {isPhotoModalOpen && selectedPhoto && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-4xl mx-4">
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg w-full max-w-4xl mx-4">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">{selectedPhoto.title || "Foto"}</h2>
+            <h2 className="text-xl font-semibold">{selectedPhoto.title || "Foto"}</h2>
               <button
                 onClick={() => setIsPhotoModalOpen(false)}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-700 hover:text-gray-700 ml-auto text-2xl dark:text-white"
               >
                 &times;
               </button>
             </div>
-            <div className="relative w-full h-[60vh]">
+            <div className="relative w-full h-[60vh] rounded-lg">
+            
               <Image
                 src={selectedPhoto.url}
                 alt="Imagem Expandida"
@@ -520,10 +522,11 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                 objectFit="contain"
                 quality={100}
                 priority
+                className="rounded-lg"
               />
             </div>
             {selectedPhoto.description && (
-              <p className="mt-4 text-gray-700 text-sm">{selectedPhoto.description}</p>
+              <p className="mt-4 text-gray-700 dark:text-gray-200 text-sm">{selectedPhoto.description}</p>
             )}
           </div>
         </div>

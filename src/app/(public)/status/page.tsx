@@ -79,54 +79,56 @@ function StatusPage() {
     return { labels: sortedDates, datasets: [{ label: "Quantidade", data: dataValues, backgroundColor: "rgba(54, 162, 235, 0.6)", borderColor: "rgba(54, 162, 235, 1)", borderWidth: 1 }] };
   };
 
-  return (
-    <div className="mx-auto my-8 p-4">
-      <h1 className="text-3xl font-bold text-center mb-8">Status do Aplicativo</h1>
+  return (  
+    <div className="w-full dark:bg-gray-900">
+      <div className="mx-auto my-8 p-4 pt-36">
+        <h1 className="text-3xl text-gray-800 dark:text-gray-200 font-bold text-center mb-8">Status do Aplicativo</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div className={`p-4 rounded-lg ${data.status_app ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-          Status do App: {data.status_app ? "Online" : "Offline"}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div className={`p-4 rounded-lg ${data.status_app ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+            Status do App: {data.status_app ? "Online" : "Offline"}
+          </div>
+          <div className={`p-4 rounded-lg ${data.status_db ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+            Status do Banco de Dados: {data.status_db ? "Online" : "Offline"}
+          </div>
         </div>
-        <div className={`p-4 rounded-lg ${data.status_db ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-          Status do Banco de Dados: {data.status_db ? "Online" : "Offline"}
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h5 className="text-xl font-semibold mb-4">Usuários por Data</h5>
-          <Bar data={formatChartData(data.count_user_per_date)} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="bg-white dark:text-gray-700 p-6 rounded-lg shadow-md">
+            <h5 className="text-xl font-semibold mb-4">Usuários por Data</h5>
+            <Bar data={formatChartData(data.count_user_per_date)} />
+          </div>
+          {data.count_links_per_date && (
+            <div className="bg-white dark:text-gray-700 p-6 rounded-lg shadow-md">
+              <h5 className="text-xl font-semibold mb-4">Links por Data</h5>
+              <Line data={formatChartData(data.count_links_per_date)} />
+            </div>
+          )}
+          {data.count_snaps_per_date && (
+            <div className="bg-white dark:text-gray-700 p-6 rounded-lg shadow-md">
+              <h5 className="text-xl font-semibold mb-4">Snaps por Data</h5>
+              <Line data={formatChartData(data.count_snaps_per_date)} />
+            </div>
+          )}
         </div>
-        {data.count_links_per_date && (
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h5 className="text-xl font-semibold mb-4">Links por Data</h5>
-            <Line data={formatChartData(data.count_links_per_date)} />
+
+        {loadingContributors ? (
+          <ContributorsSkeleton />
+        ) : (
+          <div className="mt-12">
+            <h3 className="text-2xl font-bold mb-6">Contribuidores</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {Object.entries(data.contribuitors).map(([username, avatarUrl]) => (
+                <div className="text-center" key={username}>
+                  <Image src={avatarUrl} alt={username} width={80} height={80} className="rounded-full mx-auto" />
+                  <p className="mt-2 text-lg font-medium">{username}</p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
-        {data.count_snaps_per_date && (
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h5 className="text-xl font-semibold mb-4">Snaps por Data</h5>
-            <Line data={formatChartData(data.count_snaps_per_date)} />
-          </div>
-        )}
+        <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       </div>
-
-      {loadingContributors ? (
-        <ContributorsSkeleton />
-      ) : (
-        <div className="mt-12">
-          <h3 className="text-2xl font-bold mb-6">Contribuidores</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {Object.entries(data.contribuitors).map(([username, avatarUrl]) => (
-              <div className="text-center" key={username}>
-                <Image src={avatarUrl} alt={username} width={80} height={80} className="rounded-full mx-auto" />
-                <p className="mt-2 text-lg font-medium">{username}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-      <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

@@ -8,6 +8,8 @@ import { nanoid } from "nanoid";
 import { AlertModal } from '@/components/common/AlertModal';
 import UserNotFound from "@/app/user-not-found";
 import LoadingSkeleton from "./loading-skeleton";
+import ThemeProvider from "@/providers/theme-provider";
+import ThemeSwitcher from "@/components/common/theme-switcher";
 // import { Metadata } from "next";
 
 import axios from 'axios';
@@ -154,9 +156,19 @@ export default function ViewBio() {
           {error ? (
              <UserNotFound></UserNotFound>
           ) : (
-            <div className="lg:mx-auto bg-gray-100 py-5 ">
-              <MobileScreen bioData={bioData} />
-            </div>
+            <ThemeProvider 
+            attribute="class"
+            defaultTheme="system"
+            enableSystem>
+              <div className="w-full bg-gray-100 dark:bg-gray-900 py-5 ">
+                <div className="fixed z-50 right-4 top-24">
+                  <ThemeSwitcher />
+                </div>
+                <div className="max-w-fit">
+                <MobileScreen bioData={bioData} />
+                </div>
+              </div>
+           </ThemeProvider>
           )}
           <AlertModal
             type={modalType}

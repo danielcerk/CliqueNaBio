@@ -92,71 +92,68 @@ const PricingTable = () => {
 
   return (
 
-    <div className='min-h-screen'>
+  <div className='min-h-screen pt-10 dark:bg-gray-900'>
+  <div className="max-w-3xl mx-auto p-6 bg-white dark:bg-black dark:text-white shadow-lg rounded-lg">
+    <h2 className="text-2xl font-semibold mb-6 ">Seu plano</h2>
 
-      <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg ">
-
-        <h2 className="text-2xl font-semibold mb-6">Seu plano</h2>
-
-        {/* Exibindo o plano do usuário */}
-        {user ? (
-
-          <>
-
-            {/* Planos e suas vantagens  */}
-            <div className="space-y-6">
-              {user.plan === 'GRÁTIS' && (
-                <div className="p-4 border rounded-md bg-gray-100">
-                  <h4 className="text-lg font-semibold mb-2">Plano Básico</h4>
-                  <p className="text-sm text-gray-700 mb-4">Ideal para quem deseja experimentar e dar os primeiros passos na criação de um perfil interativo.</p>
-                  <div className="space-y-2">
-                    {renderPlanFeatures('GRÁTIS')}
-                  </div>
-                  <div className="mt-4">
-                    <stripe-pricing-table
-                      pricing-table-id={process.env.NEXT_PUBLIC_PRICING_TABLE_ID}
-                      publishable-key={process.env.NEXT_PUBLIC_PUBLISHABLE_KEY}
-                    ></stripe-pricing-table>
-                  </div>
-                </div>
-              )}
-
-              {user.plan === 'CONEXÃO' && (
-                <div className="p-4 border rounded-md bg-blue-100">
-                  <h4 className="text-lg font-semibold mb-2">Plano Conexão</h4>
-                  <p className="text-sm text-gray-700 mb-4">Ideal para criadores de conteúdo e pequenas empresas que desejam um perfil mais dinâmico e atrativo.</p>
-                  <div className="space-y-2">
-                    {renderPlanFeatures('Conexão')}
-                  </div>
-                  <div className="mt-4">
-                    <a href={process.env.NEXT_PUBLIC_LINK_CUSTOMER_PORTAL} target="_blank" className="text-blue-500 hover:underline">
-                      Acesse o portal para alterar seu plano ou cancelar sua assinatura
-                    </a>
-                  </div>
-                </div>
-              )}
-
-              {user.plan === 'INFLUÊNCIA' && (
-                <div className="p-4 border rounded-md bg-yellow-100">
-                  <h4 className="text-lg font-semibold mb-2">Plano Influência</h4>
-                  <p className="text-sm text-gray-700 mb-4">Ideal para negócios e influenciadores que querem profissionalizar sua presença digital.</p>
-                  <div className="space-y-2">
-                    {renderPlanFeatures('Influência')}
-                  </div>
-                  <div className="mt-4">
-                    <a href={process.env.NEXT_PUBLIC_LINK_CUSTOMER_PORTAL} target="_blank" className="text-blue-500 hover:underline">
-                      Acesse o portal para alterar seu plano ou cancelar sua assinatura
-                    </a>
-                  </div>
-                </div>
-              )}
+    {/* Exibindo o plano do usuário */}
+    {user ? (
+      <>
+        {/* Planos e suas vantagens */}
+        <div className="space-y-6">
+          {user.plan === 'GRÁTIS' && (
+            <div className="p-4 border rounded-md bg-gray-100 dark:bg-gray-700">
+              <h4 className="text-lg font-semibold mb-2 dark:text-yellow-400">Plano Básico</h4>
+              <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">Ideal para quem deseja experimentar e dar os primeiros passos na criação de um perfil interativo.</p>
+              <div className="space-y-2">
+                {renderPlanFeatures('GRÁTIS')}
+              </div>
+              <div className="mt-4">
+                <stripe-pricing-table
+                  pricing-table-id={process.env.NEXT_PUBLIC_PRICING_TABLE_ID}
+                  publishable-key={process.env.NEXT_PUBLIC_PUBLISHABLE_KEY}
+                ></stripe-pricing-table>
+              </div>
             </div>
-          </>
-        ) : (
-          <h3 className="text-lg text-gray-500">Carregando informações do plano...</h3>
-        )}
-      </div>
-    </div>
+          )}
+
+          {user.plan === 'CONEXÃO' && (
+            <div className="p-4 border rounded-md bg-blue-100 dark:bg-blue-900">
+              <h4 className="text-lg font-semibold mb-2 dark:text-yellow-400">Plano Conexão</h4>
+              <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">Ideal para criadores de conteúdo e pequenas empresas que desejam um perfil mais dinâmico e atrativo.</p>
+              <div className="space-y-2">
+                {renderPlanFeatures('Conexão')}
+              </div>
+              <div className="mt-4">
+                <a href={process.env.NEXT_PUBLIC_LINK_CUSTOMER_PORTAL} target="_blank" className="text-blue-500 hover:underline dark:text-blue-300">
+                  Acesse o portal para alterar seu plano ou cancelar sua assinatura
+                </a>
+              </div>
+            </div>
+          )}
+
+          {user.plan === 'INFLUÊNCIA' && (
+            <div className="p-4 border rounded-md bg-yellow-100 dark:bg-gray-900">
+              <h4 className="text-lg font-semibold mb-2 dark:text-yellow-400">Plano Influência</h4>
+              <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">Ideal para negócios e influenciadores que querem profissionalizar sua presença digital.</p>
+              <div className="space-y-2">
+                {renderPlanFeatures('Influência')}
+              </div>
+              <div className="mt-4">
+                <a href={process.env.NEXT_PUBLIC_LINK_CUSTOMER_PORTAL} target="_blank" className="text-blue-500 hover:underline dark:text-blue-300">
+                  Acesse o portal para alterar seu plano ou cancelar sua assinatura
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
+      </>
+    ) : (
+      <h3 className="text-lg text-gray-500 dark:text-gray-400">Carregando informações do plano...</h3>
+    )}
+  </div>
+</div>
+
   );
 };
 

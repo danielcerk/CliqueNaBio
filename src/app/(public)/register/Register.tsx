@@ -84,11 +84,11 @@ export default function Register() {
 
 
   return (
-    <div className="w-full mx-auto relative">
+    <div className="w-full mx-auto relative bg-white pt-36">
       <div className="absolute h-full w-full -z-20 bg-white"></div>
       <div className="absolute h-full w-full -z-10 opacity-20"></div>
       <div className="w-full max-w-6xl mx-auto flex flex-col items-center lg:items-start lg:flex-row lg:justify-between min-h-screen">
-        <div className="rounded-xl flex p-10 mt-10">
+        <div className="rounded-xl flex p-10 md:pt-10 md:mt-10">
           <div>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Cadastre-se agora</h2>
             <p className="text-lg text-gray-800 mb-6">
@@ -102,7 +102,7 @@ export default function Register() {
           </div>
         </div>
 
-        <div className='flex flex-col'>
+        <div className='flex flex-col mb-20'>
           <div className="max-w-[450px] bg-gray-100 w-full h-fit rounded-xl p-10 lg:mt-10">
             <form onSubmit={handleSubmit} className="w-full">
               <span className="w-full block mb-5 font-bold text-xl text-gray-900 leading-[1.2]">

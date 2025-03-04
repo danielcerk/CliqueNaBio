@@ -26,37 +26,30 @@ export function AlertModal({ type, message, isOpen, onClose }: AlertModalProps) 
     onClose()
   }
 
-  const getIcon = () => {
+  const getStyles = () => {
     switch (type) {
       case "success":
-        return <CheckCircle2 className="h-6 w-6 text-green-500" />
+        return { bg: "bg-green-50", text: "text-green-800", icon: <CheckCircle2 className="h-6 w-6 text-green-600" /> }
       case "error":
-        return <XCircle className="h-6 w-6 text-red-500" />
+        return { bg: "bg-red-50", text: "text-red-800", icon: <XCircle className="h-6 w-6 text-red-600" /> }
       case "info":
-        return <AlertCircle className="h-6 w-6 text-blue-500" />
+        return { bg: "bg-blue-50", text: "text-blue-800", icon: <AlertCircle className="h-6 w-6 text-blue-600" /> }
+      default:
+        return { bg: "bg-gray-50", text: "text-gray-800", icon: null }
     }
   }
 
-  const getBackgroundColor = () => {
-    switch (type) {
-      case "success":
-        return "bg-green-50"
-      case "error":
-        return "bg-red-50"
-      case "info":
-        return "bg-blue-50"
-    }
-  }
+  const { bg, text, icon } = getStyles()
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className={`sm:max-w-[425px] ${getBackgroundColor()}`}>
+      <DialogContent className={`sm:max-w-[425px] text-gray-600 ${bg}`}>
         <VisuallyHidden>
           <DialogTitle>Alerta</DialogTitle>
         </VisuallyHidden>
         <div className="flex items-center gap-4">
-          {getIcon()}
-          <p className="text-sm font-medium">{message}</p>
+          {icon}
+          <p className={`text-sm font-medium ${text}`}>{message}</p>
         </div>
       </DialogContent>
     </Dialog>

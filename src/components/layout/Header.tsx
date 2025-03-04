@@ -103,9 +103,22 @@ const Header = ({ openModalLogin }: HeaderProps) => {
             <Link href="/#FAQ" className="py-3 px-3 text-gray-700 hover:text-gray-900">
               Sobre
             </Link>
-            <button className="py-3 w-[90%] text-gray-700 hover:text-gray-900 bg-yellow-400" onClick={openModalLogin}>
-              Acessar
-            </button>
+
+            {isAuthenticated ? (
+                <Link
+                  href="/home" className="w-[90%] text-gray-700 hover:text-gray-900 bg-yellow-400 py-3 "
+                >
+                  <button className="w-full">
+                  Acessar
+                  </button>
+                </Link>
+                
+              ) : (
+                <button className="py-3 w-[90%] text-gray-700 hover:text-gray-900 bg-yellow-400" onClick={openModalLogin}>
+                 Acessar
+                </button>
+              )}
+    
           </div>
         </div>
       </nav>

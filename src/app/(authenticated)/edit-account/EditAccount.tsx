@@ -10,7 +10,7 @@ import { AlertModal } from '@/components/common/AlertModal';
 import LoadingSkeleton from "./loading-skeleton";
 import Link from "next/link";
 import { createLink, updateLink, deleteLink } from "@/hooks/use-links";
-
+import AlertDecisionModal from "@/components/common/AlertDecisionModal";
 import {
   FaFacebook,
   FaInstagram,
@@ -71,6 +71,10 @@ interface SocialLink {
 export default function EditAccount() {
   const token = Cookie.get('access_token');
   const router = useRouter();
+
+  const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
+  const [linkToDelete, setLinkToDelete] = useState<number | null>(null); 
+
 
   const [user, loadingUser, errorUser] = useAxios<User | null>({
     axiosInstance,
@@ -151,23 +155,25 @@ export default function EditAccount() {
         showAlert('error', 'Token não encontrado.');
         return;
       }
-
+  
       await axiosInstance.delete("/api/v1/account/me/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
+  
       // Remover todos os cookies
       document.cookie.split(";").forEach((cookie) => {
         const [name] = cookie.split("=");
         Cookie.remove(name.trim());
       });
-
+  
       router.push("/");
       showAlert('success', 'Conta excluída com sucesso.');
     } catch (error) {
       showAlert('error', 'Erro ao excluir a conta');
+    } finally {
+      setIsDecisionModalOpen(false); // Fecha o modal após a exclusão
     }
   };
 
@@ -331,15 +337,18 @@ export default function EditAccount() {
     setSocialNetwork(link.social_network);
   };
 
-  const handleDeleteLink = async (linkId: number) => {
-    try {
-      await deleteLink(axiosInstance, linkId);
-      showAlert('success', 'Link deletado com sucesso!');
-      fetchSocialLinks();
-    } catch (error) {
-      showAlert('error', 'Erro ao deletar o link.');
-    }
-  };
+ const handleDeleteLink = async (linkId: number) => {
+  try {
+    await deleteLink(axiosInstance, linkId);
+    showAlert('success', 'Link deletado com sucesso!');
+    fetchSocialLinks();
+  } catch (error) {
+    showAlert('error', 'Erro ao deletar o link.');
+  } finally {
+    setLinkToDelete(null); // Fecha o modal após a exclusão
+  }
+};
+
 
   if (loadingUser) {
     return <LoadingSkeleton />;
@@ -350,193 +359,212 @@ export default function EditAccount() {
   }
 
   return (
-    <div className="bg-gray-100 flex flex-col min-h-screen items-center p-4">
-      <div className="w-[400px] mt-3 mb-5">
-        <Link
-          href="/account"
-          className="p-3 rounded-xl w-fit bg-gray-900 hover:bg-gray-900/75 transition-all duration-500 text-white flex items-center"
-        >
-          <i className="fa-solid fa-reply"></i>
-        </Link>
-      </div>
-
-      <Tabs defaultValue="account" className="w-[400px]">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="account">Conta</TabsTrigger>
-          <TabsTrigger value="social_media">Redes Sociais</TabsTrigger>
-          <TabsTrigger value="password">Senha</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="account">
-          <Card>
-            <CardHeader>
-              <CardDescription>Faça alterações em sua conta aqui. Clique em salvar quando terminar.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2 flex flex-col gap-3">
-              <form onSubmit={handleAccountSubmit} className="flex flex-col gap-4">
-                <div className="space-y-1">
-                  <Label htmlFor="first_name">Nome</Label>
-                  <Input
-                    className="text-gray-800"
-                    id="first_name"
-                    value={formData.first_name}
-                    onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="last_name">Sobrenome</Label>
-                  <Input
-                    className="text-gray-800"
-                    id="last_name"
-                    value={formData.last_name}
-                    onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="username">Nome de usuário </Label>
-                  <Input
-                    className="text-gray-800"
-                    type="text"
-                    id="username"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    className="text-gray-800"
-                    type="text"
-                    id="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="biografy">Sua Bio</Label>
-                  <Textarea
-                    className="text-gray-800 h-32"
-                    id="biografy"
-                    value={formData.biografy || ''}
-                    onChange={(e) => setFormData({ ...formData, biografy: e.target.value })}
-                  />
-                </div>
-
-                <CardFooter className="mt-2 flex justify-between align-middle space-x-1 p-0">
-                  <Button type="submit">Salvar alterações</Button>
-                  <Button variant="destructive" onClick={handleDelete}>Excluir Conta</Button>
-                </CardFooter>
-              </form>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="social_media">
-          <Card>
-            <CardHeader>
-              <CardDescription>Inclua e altere suas Redes Sociais aqui.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                <div className="space-y-1">
-                  <Label htmlFor="socialNetwork">Rede Social:</Label>
-                  <select
-                    id="socialNetwork"
-                    value={socialNetwork}
-                    onChange={(e) => setSocialNetwork(e.target.value)}
-                    className="text-gray-800 p-2"
-                  >
-                    {Object.entries(socialNetworks).map(([key, value]) => (
-                      <option key={key} value={key}>
-                        {key}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="url">URL:</Label>
-                  <Input
-                    className="text-gray-800"
-                    type="url"
-                    id="url"
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <Button type="submit">{editingLink ? "Atualizar Link" : "Criar Link"}</Button>
-              </form>
-
-              <div className="mt-4">
-                  <h3 className="text-lg font-semibold mb-4">Links Existentes</h3>
-                  <ul className="space-y-3">
-                    {socialLinks.map((link) => (
-                      <li key={link.id} className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div className="flex items-center space-x-3">
-                          {/* Ícone da rede social */}
-                          <span className="text-gray-700">
-                            {getSocialIcon(link.social_network)}
-                          </span>
-                          {/* Nome da rede social */}
-                          <span className="font-medium text-gray-800">
-                            {link.title || link.social_network}
-                          </span>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Button
-                            variant="outline"
-                            onClick={() => handleEditLink(link)}
-                            className="text-sm"
-                          >
-                            Editar
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            onClick={() => handleDeleteLink(link.id)}
-                            className="text-sm"
-                          >
-                            Deletar
-                          </Button>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="password">
-          <Card>
-            <CardHeader>
-              <CardDescription>Altere sua senha aqui. Depois de salvar, todos vocês serão desconectados.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <form onSubmit={handlePasswordSubmit}>
-                <div className="space-y-1">
-                  <Label htmlFor="new">Nova senha</Label>
-                  <Input
-                    className="text-gray-800"
-                    id="new"
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                  />
-                </div>
-
-                <CardFooter className="mt-4 p-0">
-                  <Button type="submit" disabled={isSaving}>
-                    {isSaving ? "Alterando..." : "Alterar senha"}
-                  </Button>
-                </CardFooter>
-              </form>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-
-      <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    <div className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white flex flex-col min-h-screen items-center p-4 pt-10">
+    <div className="w-[400px] mt-3 mb-5">
+      <Link
+        href="/account"
+        className="p-3 rounded-xl w-fit bg-gray-900 dark:bg-gray-700 hover:bg-gray-900/75 dark:hover:bg-gray-600 transition-all duration-500 text-white flex items-center"
+      >
+        <i className="fa-solid fa-reply"></i>
+      </Link>
     </div>
+  
+    <Tabs defaultValue="account" className="w-[400px]">
+      <TabsList className="grid w-full grid-cols-3 ">
+        <TabsTrigger value="account" className="text-gray-900 dark:text-white ">Conta</TabsTrigger>
+        <TabsTrigger value="social_media" className="text-gray-900 dark:text-white">Redes Sociais</TabsTrigger>
+        <TabsTrigger value="password" className="text-gray-900 dark:text-white">Senha</TabsTrigger>
+      </TabsList>
+  
+      <TabsContent value="account">
+        <Card className="bg-white dark:bg-black">
+          <CardHeader>
+            <CardDescription className="dark:text-gray-200">Faça alterações em sua conta aqui. Clique em salvar quando terminar.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2 flex flex-col gap-3">
+            <form onSubmit={handleAccountSubmit} className="flex flex-col gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="first_name" className="dark:text-gray-300">Nome</Label>
+                <Input
+                  className="text-gray-800 dark:bg-gray-200"
+                  id="first_name"
+                  value={formData.first_name}
+                  onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="last_name" className="dark:text-gray-300">Sobrenome</Label>
+                <Input
+                  className="text-gray-800 dark:bg-gray-200"
+                  id="last_name"
+                  value={formData.last_name}
+                  onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="username" className="dark:text-gray-300">Nome de usuário </Label>
+                <Input
+                  className="text-gray-800 dark:bg-gray-200"
+                  type="text"
+                  id="username"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="email" className="dark:text-gray-300">Email</Label>
+                <Input
+                  className="text-gray-800 dark:bg-gray-200"
+                  type="text"
+                  id="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="biografy" className="dark:text-gray-300">Sua Bio</Label>
+                <Textarea
+                  className="text-gray-800 dark:bg-gray-200 h-32"
+                  id="biografy"
+                  value={formData.biografy || ''}
+                  onChange={(e) => setFormData({ ...formData, biografy: e.target.value })}
+                />
+              </div>
+  
+              <CardFooter className="mt-2 flex justify-between align-middle space-x-1 p-0">
+                <Button type="submit" className="dark:bg-green-600 w-full dark:text-white">Salvar alterações</Button>
+              </CardFooter>
+            </form>
+            <Button
+              variant="destructive"
+              onClick={() => setIsDecisionModalOpen(true)} // Abre o modal de decisão
+            >
+              Excluir Conta
+            </Button>
+          </CardContent>
+        </Card>
+      </TabsContent>
+  
+      <TabsContent value="social_media">
+        <Card className="bg-white dark:bg-black">
+          <CardHeader>
+            <CardDescription>Inclua e altere suas Redes Sociais aqui.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="socialNetwork" className="dark:text-gray-300">Rede Social:</Label>
+                <select
+                  id="socialNetwork"
+                  value={socialNetwork}
+                  onChange={(e) => setSocialNetwork(e.target.value)}
+                  className="text-gray-800  p-2"
+                >
+                  {Object.entries(socialNetworks).map(([key, value]) => (
+                    <option key={key} value={key}>
+                      {key}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="url" className="dark:text-gray-300">URL:</Label>
+                <Input
+                  className="text-gray-800  dark:bg-gray-200"
+                  type="url"
+                  id="url"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  required
+                />
+              </div>
+  
+              <Button type="submit" className="dark:bg-yellow-400 ">{editingLink ? "Atualizar Link" : "Criar Link"}</Button>
+            </form>
+  
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Links Existentes</h3>
+              <ul className="space-y-3">
+                {socialLinks.map((link) => (
+                  <li key={link.id} className="flex justify-between items-center p-3 bg-white dark:bg-gray-700 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-center space-x-3">
+                      {/* Ícone da rede social */}
+                      <span className="text-gray-700 dark:text-gray-300">
+                        {getSocialIcon(link.social_network)}
+                      </span>
+                      {/* Nome da rede social */}
+                      <span className="font-medium text-gray-800 dark:text-gray-100">
+                        {link.title || link.social_network}
+                      </span>
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => handleEditLink(link)}
+                        className="text-sm"
+                      >
+                        Editar
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        onClick={() => setLinkToDelete(link.id)} // Abre o modal de decisão
+                        className="text-sm"
+                      >
+                        Deletar
+                      </Button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+  
+      <TabsContent value="password">
+        <Card className="bg-white dark:bg-black">
+          <CardHeader>
+            <CardDescription className="dark:text-gray-200">Altere sua senha aqui. Depois de salvar, todos vocês serão desconectados.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <form onSubmit={handlePasswordSubmit}>
+              <div className="space-y-1">
+                <Label htmlFor="new" className="dark:text-gray-300">Nova senha</Label>
+                <Input
+                  className="text-gray-800 dark:bg-gray-200"
+                  id="new"
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+              </div>
+  
+              <CardFooter className="mt-4 p-0">
+                <Button type="submit" className="dark:bg-yellow-400 " disabled={isSaving}>
+                  {isSaving ? "Alterando..." : "Alterar senha"}
+                </Button>
+              </CardFooter>
+            </form>
+          </CardContent>
+        </Card>
+      </TabsContent>
+    </Tabs>
+  
+    <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    <AlertDecisionModal
+      isOpen={isDecisionModalOpen}
+      message="Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita."
+      onConfirm={handleDelete} // Função que será chamada ao confirmar
+      onCancel={() => setIsDecisionModalOpen(false)} // Fecha o modal ao cancelar
+    />
+
+    <AlertDecisionModal
+      isOpen={linkToDelete !== null}
+      message="Tem certeza que deseja excluir este link?"
+      onConfirm={() => handleDeleteLink(linkToDelete!)} // Função que será chamada ao confirmar
+      onCancel={() => setLinkToDelete(null)} // Fecha o modal ao cancelar
+    />
+  </div>
+  
   );
 }

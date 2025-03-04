@@ -49,7 +49,7 @@ export default function ScreenPhone() {
       <div className={`flex flex-col lg:flex-row gap-5 lg:gap-0 justify-center items-center max-w-6xl mx-auto text-left transition-all duration-500 ${
         scrolling > 0 ? "animate-screen-phone" : "animate-screen-phone-off"
       }`}>
-        <h2 className="text-5xl uppercase lg:w-1/3 mx-auto font-extrabold mb-5 p-4">
+        <h2 className="text-5xl text-gray-900 uppercase lg:w-1/3 mx-auto font-extrabold mb-5 p-4">
           Deixe o link na bio a sua cara, conecte, compartilhe e analise.
         </h2>
         <div className="lg:w-2/3 flex justify-center">
