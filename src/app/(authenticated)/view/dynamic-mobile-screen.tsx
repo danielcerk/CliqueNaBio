@@ -181,8 +181,8 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
 
   return (
-    <div className="lg:max-w-5xl mx-auto lg:flex justify-around">
-      <Card className="relative min-w-full lg:min-w-[500px] min-h-screen bg-white dark:bg-black mb-5 rounded-3xl overflow-hidden">
+    <div className="lg:max-w-5xl w-full lg:flex lg:justify-around">
+      <Card className="relative min-w-full min-h-screen bg-white dark:bg-black mb-5 rounded-3xl overflow-hidden">
 
         <div className="p-4 gap-5 lg:flex items-start w-[100%]">
           <div className="bg-white dark:bg-gray-900 p-2 py-20 rounded-xl lg:min-w-[40%] ">
