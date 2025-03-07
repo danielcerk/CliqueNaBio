@@ -8,7 +8,7 @@ export default function PrivacyPolicy() {
     <div className="mx-auto mb-14 max-w-6xl px-4">
       <h1 className="text-center text-3xl font-semibold mb-6">Política de Privacidade - CliqueNaBio</h1>
       <p className="text-center text-gray-600 dark:text-gray-400 mb-8">
-        Última atualização: 28 de Janeiro de 2025
+        Última atualização: 03 de Março de 2025
       </p>
 
       <div className="bg-white dark:bg-gray-800 dark:text-white shadow-md rounded-xl p-6">
@@ -60,7 +60,12 @@ export default function PrivacyPolicy() {
         <section className="mb-6">
           <h2 className="text-xl font-medium mb-2">5. Segurança dos Dados</h2>
           <p>
-            Adotamos medidas técnicas e organizacionais para proteger suas informações contra acesso não autorizado, perda ou destruição. No entanto, nenhum sistema é 100% seguro, e não podemos garantir a segurança absoluta. Recomendamos que você utilize senhas fortes e faça logout de sua conta quando terminar de usar a plataforma.
+            Adotamos medidas técnicas e organizacionais avançadas para proteger suas informações contra 
+            acessos não autorizados, perda ou destruição. No entanto, a segurança da sua conta também 
+            depende de você. É sua responsabilidade utilizar senhas fortes, manter suas credenciais em 
+            sigilo e encerrar a sessão ao finalizar o uso da plataforma. O CliqueNaBio emprega protocolos 
+            de segurança modernos para proteger seus dados, mas qualquer descuido no uso da conta pode 
+            comprometer a proteção das suas informações.
           </p>
         </section>
 
@@ -85,7 +90,9 @@ export default function PrivacyPolicy() {
           <h2 className="text-xl font-medium mb-2">8. Contato</h2>
           <p>
             Caso tenha dúvidas ou preocupações sobre esta Política de Privacidade, entre em contato conosco pelo e-mail:
-            <a href="mailto:support@clicanabio.com" className="text-blue-600 hover:underline"> support@clicanabio.com</a>.
+            <a className="text-blue-500 dark:text-blue-400 hover:underline" href="mailto:suporteconstsoft@gmail.com">
+                suporteconstsoft@gmail.com
+            </a>.
           </p>
         </section>
       </div>
