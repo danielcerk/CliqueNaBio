@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import { Users } from "lucide-react";
 import axiosInstance from "@/helper/axios-instance";
+import { AxiosError } from 'axios';
 import useAxios from "@/hooks/use-axios";
 import Cookie from "js-cookie";
 import LoadingSkeleton from "./loading-skeleton";
@@ -31,9 +32,9 @@ interface User {
   name?: string;
   email?: string;
   phone?: string;
-  biografy?: string;
+  biography?: string;
   image?: string;
-  plan?: string,
+  plan?: string;
   showProfileForm?: boolean;
 }
 
@@ -45,8 +46,13 @@ export default function Home() {
   const [modalMessage, setModalMessage] = useState('');
 
   useEffect(() => {
-    setIsDarkMode(document.documentElement.classList.contains('dark'));
+    const observer = new MutationObserver(() => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'));
+    });
 
+    observer.observe(document.documentElement, { attributes: true });
+
+    return () => observer.disconnect();
   }, []);
 
   const showAlert = (type: 'success' | 'error' | 'info', message: string) => {
@@ -73,14 +79,28 @@ export default function Home() {
     }
   });
 
-  useEffect(() => {
-    if (errorDashboard) {
-      showAlert('error', 'Erro ao carregar os dados. Tente novamente mais tarde.');
-    }
-  }, [errorDashboard]);
+ 
+const refreshToken = Cookie.get('refresh_token');
 
+if (
+  (errorDashboard as AxiosError)?.response?.status === 401 ||
+  (errorUser as AxiosError)?.response?.status === 401
+) {
+  axiosInstance.post('/api/v1/token/refresh/', { refresh: refreshToken })
+    .then((response) => {
+      const newAccessToken = response.data.access;
+      Cookie.set('access_token', newAccessToken);
+      // Repetir a requisição original com o novo token
+    })
+    .catch((error) => {
+      console.error('Erro ao renovar o token:', error);
+      showAlert('error', 'Sessão expirada. Faça login novamente.');
+    });
+}
+  
   useEffect(() => {
     if (errorUser) {
+      console.error('Erro ao carregar informações do usuário:', errorUser);
       showAlert('error', 'Erro ao carregar informações do usuário.');
     }
   }, [errorUser]);
@@ -89,7 +109,7 @@ export default function Home() {
   if (!dashboard || !user) return null;
 
   const formatChartData = (data: Record<string, number>) => 
-    Object.entries(data).map(([key, value]) => ({ key, value }));
+    Object.entries(data).map(([date, count]) => ({ date, count }));
 
   return (
     <div className='dark:bg-gray-900 pt-10'>
@@ -109,9 +129,8 @@ export default function Home() {
             </CardContent>
           </Card>
           <Card>
-            <CardHeader className='flex-row items-center gap-2'>
+            <CardHeader className='flex gap-2'>
               <CardTitle>Links Criados</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold dark:text-[#facc15]">{dashboard?.links_count}</div>
@@ -127,7 +146,7 @@ export default function Home() {
                   <CardTitle>{title}</CardTitle>
                 </CardHeader>
                 <CardContent className="h-[300px] flex items-center justify-center">
-                  <ResponsiveContainer width="100%" height={300}>
+                  <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={formatChartData(
                         dashboard?.[
@@ -142,17 +161,17 @@ export default function Home() {
                       )}
                     >
                       <XAxis 
-                        dataKey="key" 
-                        tick={{ fontSize: 12, fill: isDarkMode ? '#333' : 'white' }} 
+                        dataKey="date" 
+                        tick={{ fontSize: 12, fill: isDarkMode ? '#fff' : '#333' }} 
                       />
                       <Bar 
-                        dataKey="value" 
+                        dataKey="count" 
                         fill="#facc15" 
                         radius={[4, 4, 0, 0]} 
                         maxBarSize={65}
                       >
                         <LabelList 
-                          dataKey="value" 
+                          dataKey="count" 
                           position="center" 
                           fill={isDarkMode ? 'white' : 'black'} 
                         />

@@ -85,7 +85,7 @@ function StatusPage() {
 
   return (
     <div className="w-full dark:bg-gray-900">
-      <div className="mx-auto my-8 p-4 pt-36">
+      <div className="mx-auto max-w-7xl my-8 p-4 pt-36">
         <h1 className="text-3xl text-gray-800 dark:text-gray-200 font-bold text-center mb-8">Status do Aplicativo</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">

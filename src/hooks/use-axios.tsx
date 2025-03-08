@@ -18,14 +18,14 @@ export default function useAxios<T = unknown>(configRequest: ConfigRequest<T>) {
 
   const [data, setData] = useState<T | null>(null); 
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<AxiosError | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
 
     const fetchData = async () => {
       if (!url) { 
-        setError('URL não fornecida.');
+        // setError('URL não fornecida.');
         setLoading(false);
         return;
       }
@@ -43,19 +43,11 @@ export default function useAxios<T = unknown>(configRequest: ConfigRequest<T>) {
             // A requisição foi abortada, podemos ignorar esse erro
             return;
           }
-
-          const errorMessage = err.response && err.response.data
-          ? (typeof err.response.data === 'string'
-              ? err.response.data
-              : JSON.stringify(err.response.data))
-          : err.message;
-          setError(errorMessage || 'Erro ao processar a resposta da API.');
+          setError(err); // Armazenando o erro completo
         } else if (err instanceof Error) {
-
-          setError(err.message);
+          setError(new AxiosError(err.message)); // Convertendo para AxiosError
         } else {
-
-          setError('Erro inesperado.');
+          setError(new AxiosError('Erro inesperado.')); // Convertendo para AxiosError
         }
       } finally {
         setLoading(false); 

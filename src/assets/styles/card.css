@@ -33,6 +33,12 @@
   column-fill: balance;
 }
 
+.line-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* Número de linhas */
+  overflow: hidden;
+}
 
 .container img,
 .container a {

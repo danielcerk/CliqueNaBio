@@ -360,7 +360,7 @@ export default function EditAccount() {
 
   return (
     <div className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white flex flex-col min-h-screen items-center p-4 pt-10">
-    <div className="w-[400px] mt-3 mb-5">
+    <div className="max-w-[400px] mt-3 mb-5 flex justify-center">
       <Link
         href="/account"
         className="p-3 rounded-xl w-fit bg-gray-900 dark:bg-gray-700 hover:bg-gray-900/75 dark:hover:bg-gray-600 transition-all duration-500 text-white flex items-center"
@@ -369,7 +369,7 @@ export default function EditAccount() {
       </Link>
     </div>
   
-    <Tabs defaultValue="account" className="w-[400px]">
+    <Tabs defaultValue="account" className="max-w-[400px]">
       <TabsList className="grid w-full grid-cols-3 ">
         <TabsTrigger value="account" className="text-gray-900 dark:text-white ">Conta</TabsTrigger>
         <TabsTrigger value="social_media" className="text-gray-900 dark:text-white">Redes Sociais</TabsTrigger>
@@ -458,7 +458,7 @@ export default function EditAccount() {
                   id="socialNetwork"
                   value={socialNetwork}
                   onChange={(e) => setSocialNetwork(e.target.value)}
-                  className="text-gray-800  p-2"
+                  className="text-gray-800 p-2"
                 >
                   {Object.entries(socialNetworks).map(([key, value]) => (
                     <option key={key} value={key}>
@@ -486,18 +486,18 @@ export default function EditAccount() {
               <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Links Existentes</h3>
               <ul className="space-y-3">
                 {socialLinks.map((link) => (
-                  <li key={link.id} className="flex justify-between items-center p-3 bg-white dark:bg-gray-700 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center space-x-3">
+                  <li key={link.id} className="flex flex-col sm:flex-row justify-between gap-2 items-center p-3 bg-white dark:bg-gray-700 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-center">
                       {/* Ícone da rede social */}
                       <span className="text-gray-700 dark:text-gray-300">
                         {getSocialIcon(link.social_network)}
                       </span>
                       {/* Nome da rede social */}
-                      <span className="font-medium text-gray-800 dark:text-gray-100">
+                      <span className="font-medium text-gray-800 dark:text-gray-100 ml-2">
                         {link.title || link.social_network}
                       </span>
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex gap-2 mt-2 sm:mt-0">
                       <Button
                         variant="outline"
                         onClick={() => handleEditLink(link)}

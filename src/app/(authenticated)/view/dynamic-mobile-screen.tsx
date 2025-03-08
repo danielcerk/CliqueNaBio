@@ -112,6 +112,8 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
   const itemRefs = useRef<(HTMLElement | null)[]>([]);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
+
+
   const checkHorizontalDistance = (
     element1: HTMLElement | null,
     element2: HTMLElement | null,
@@ -172,7 +174,6 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const [imageLoaded, setImageLoaded] = useState(true);
 
   const isImageUrl = (url: string) => {
     const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
@@ -181,8 +182,8 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
 
   return (
-    <div className="lg:max-w-5xl mx-auto lg:flex justify-around">
-      <Card className="relative min-w-full lg:min-w-[500px] min-h-screen bg-white dark:bg-black mb-5 rounded-3xl overflow-hidden">
+    <div className="lg:max-w-5xl w-full lg:flex lg:justify-around">
+      <Card className="relative min-w-full min-h-screen bg-white dark:bg-black mb-5 rounded-3xl overflow-hidden">
 
         <div className="p-4 gap-5 lg:flex items-start w-[100%]">
           <div className="bg-white dark:bg-gray-900 p-2 py-20 rounded-xl lg:min-w-[40%] ">
@@ -237,8 +238,8 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                 return dateB.getTime() - dateA.getTime();
               })
               .map((item, index) => {
-                const isImage = item.icon; 
-      
+                const isImage = "https://online.stl.tech/cdn/shop/products/image_9_80239d75-941f-42bc-b028-9c895b8a7e10.png"; 
+                 
                 return (
                   <div
                     key={item.id}
@@ -248,7 +249,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                       }
                     }}
                     className={`overflow-hidden flex flex-col items-center ${
-                      item.type === "link" && isImage === "/icons/image.ico" && screenWidth < 1024
+                      item.type === "link" &&  !isImage  && screenWidth < 1024
                         ? "col-span-full full-column "
                         : extendedItems.has(item.id) && screenWidth < 1024// Verifica se o item deve se estender
                         ? "col-span-full full-column"
@@ -259,7 +260,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                         <Link
                         href={item.url || ""}
                         target="_blank" className={`w-full mt-4 cursor-pointer  transition-transform transform hover:scale-95  ${
-                          item.type === "link" && isImage === "/icons/image.ico" 
+                          item.type === "link" && item.og_image === isImage 
                             ? "py-0 max-w-[95%] " 
                             : "py-4 max-w-[90%] "
                         }` }>
@@ -269,9 +270,27 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                               layout="fill"
                               objectFit="cover"
                               alt={`Imagem de Capa do Link de ${item.url} na CliqueNaBio`}
-                              className={`w-full h-40 object-cover rounded-lg ${ isImage === "/icons/image.ico" ? " opacity-0" : "opacity-100"}`}
+                              className={`w-full h-40 object-cover rounded-lg ${ item.og_image === isImage ? " opacity-0" : "opacity-100"}`}
                             />
                             
+                          )}
+                          {/* Fundo gradiente se a imagem não carregar */}
+                          {item.og_image === isImage && (
+                            <div
+                              className={`absolute inset-0  rounded-lg ${
+                                item.url?.includes("instagram.com")
+                                  ? "bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 text-white"
+                                  : item.url?.includes("facebook.com")
+                                  ? "bg-[#1877F2] text-white"
+                                  : item.url?.includes("x.com")
+                                  ? "bg-[#14171A] text-white"
+                                  : item.url?.includes("youtube.com")
+                                  ? "bg-[#B31217] text-white"
+                                  : item.url?.includes("linkedin.com")
+                                  ? "bg-[#0A66C2] text-white"
+                                  : "bg-gradient-to-r from-gray-100 via-gray-300 to-gray-500"
+                              }`}
+                            ></div>
                           )}
 
                           <div className="absolute inset-0 bg-black opacity-35 rounded-lg"></div>
@@ -293,29 +312,19 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                                   : "bg-gray-400 text-white "
                               }`}
                             >
-                              {isImageUrl(item.url || "") ? (
-                                <Image
-                                  src={item.url || ""}
-                                  alt={item.content}
-                                  layout="fill"
-                                  objectFit="cover"
-                                  className="rounded-lg opacity-50"
-                                  onLoadingComplete={() => setImageLoaded(true)}
-                                  onError={() => setImageLoaded(false)}
-                                />
-                              ) : null}
 
-                              <div className={`flex items-start  ${
-                                item.type === "link" && isImage === "/icons/image.ico" 
+                              <div className={`flex items-start flex-wrap ${
+                                item.type === "link" && item.og_image === isImage 
                                   ? "flex-row justify-between" 
                                   : "flex-col justify-end"
                                 }`}>
-                                <span
-                                  className="z-10 text-lg font-semibold capitalize inline-block whitespace-wrap"
-                                  style={{ minWidth: "50%" }}
-                                >
-                                  {item.title}
-                                </span>
+                             <span
+                                className="z-10 text-lg font-semibold capitalize inline-block"
+                                style={{ maxWidth: "100%" }} // Defina um maxWidth para limitar o espaço
+                                title={item.title} // Exibe o texto completo ao passar o mouse
+                              >
+                                <p className="line-clamp">{item.title}</p>
+                              </span>
                                 {isImageUrl(item.url || "") ? null : (
                                   <div className="flex flex-col items-center gap-2">
                                     {item.icon && (
@@ -326,8 +335,6 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                                         width={32}
                                         height={32}
                                         objectFit="cover"
-                                        onLoadingComplete={() => setImageLoaded(false)}
-                                        onError={() => setImageLoaded(true)}
                                       />
                                     )}
                                   </div>
