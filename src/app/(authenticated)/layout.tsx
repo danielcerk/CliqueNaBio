@@ -1,6 +1,24 @@
+'use client';
+import { useEffect, useState } from "react";
 import SideBar from "@/components/layout/Sidebar";
-import ThemeProvider from "@/providers/theme-provider";
+import { ThemeProvider } from "next-themes";
 import ThemeSwitcher from "@/components/common/theme-switcher";
+
+//componente de wrapper para evitar renderização no servidor
+
+function ClientOnly({ children }: { children: React.ReactNode }){
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, []);
+
+  if(!mounted){
+    return null;
+  }
+
+  return <>{children}</>
+}
 
 export default function AuthenticatedLayout({
   children,
@@ -8,6 +26,7 @@ export default function AuthenticatedLayout({
   children: React.ReactNode;
 }) {
   return (
+    <ClientOnly>
     <div className="flex">
       <ThemeProvider 
       attribute="class"
@@ -23,5 +42,6 @@ export default function AuthenticatedLayout({
       </main>
       </ThemeProvider>
     </div>
+    </ClientOnly>
   );
 }

@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
-
+import lineClamp from "@tailwindcss/line-clamp"; // Importação ES6
 export default {
     darkMode: ["class"],
     content: [
@@ -85,5 +85,8 @@ export default {
   		}
   	}
   },
-  plugins: [tailwindcssAnimate],
+  plugins: [
+    lineClamp, // Usando a importação ES6
+    tailwindcssAnimate,
+  ],
 } satisfies Config;

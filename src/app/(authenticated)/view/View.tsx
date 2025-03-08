@@ -177,21 +177,23 @@ const View = (): JSX.Element | null =>{
       <div className="flex flex-col items-center w-full">
 
         {publicLink && (
-          <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-3xl mx-auto mb-5 dark:bg-gray-900">
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-100">Seu link público:</p>
-            <div className="flex items-center gap-2 mt-2">
-              <input
-                type="text"
-                value={publicLink}
-                readOnly
-                className="flex-1 p-2 border text-gray-700 border-gray-300 rounded-lg text-sm dark:bg-gray-200"
-              />
-              <button
-                onClick={handleCopyLink}
-                className="p-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-600 transition-colors"
-              >
-                Copiar
-              </button>
+          <div className="w-full lg:max-w-5xl">
+            <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-3xl mb-5 dark:bg-gray-900">
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-100">Seu link público:</p>
+              <div className="flex items-center gap-2 mt-2">
+                <input
+                  type="text"
+                  value={publicLink}
+                  readOnly
+                  className="flex-1 p-2 border text-gray-700 border-gray-300 rounded-lg text-sm dark:bg-gray-200"
+                />
+                <button
+                  onClick={handleCopyLink}
+                  className="p-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-600 transition-colors"
+                >
+                  Copiar
+                </button>
+              </div>
             </div>
           </div>
         )}
