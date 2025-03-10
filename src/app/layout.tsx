@@ -39,7 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta property="og:title" content="CliqueNaBio | Guarde memórias e experiências em um link na bio" />
         <meta property="og:description" content="CliqueNaBio é um espaço completo para tornar seus momentos e experiências mais aesthetics." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://cliquenabio.vercel.app" />
+        <meta property="og:url" content="https://cliquenabio.com.br" />
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
@@ -56,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
             "name": "CliqueNaBio",
-            "url": "https://cliquenabio.vercel.app/",
+            "url": "https://cliquenabio.com.br/",
             "description": "CliqueNaBio é uma plataforma poderosa que permite criar links personalizados, estéticos e otimizados para suas redes sociais, ajudando você a destacar seus momentos e experiências.",
             "applicationCategory": "BusinessApplication",
             "operatingSystem": "Web",
@@ -64,7 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             "creator": {
               "@type": "Organization",
               "name": "CliqueNaBio",
-              "url": "https://cliquenabio.vercel.app/"
+              "url": "https://cliquenabio.com.br/"
             },
             "offers": {
               "@type": "Offer",
