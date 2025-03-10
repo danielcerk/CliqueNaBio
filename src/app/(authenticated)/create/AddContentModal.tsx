@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Globe, ImageIcon } from "lucide-react";
 import { cloudinaryUpload } from "@/hooks/cloudinaryUpload";
+import { AlertModal } from '@/components/common/AlertModal';
 
 interface AddContentModalProps {
   isOpen: boolean;
@@ -19,6 +20,19 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
+  const [modalMessage, setModalMessage] = useState('');
+  
+  const [isAddContentModalOpen, setIsAddContentModalOpen] = useState(false);
+  const [contentType, setContentType] = useState<"link" | "photo">("link");
+  
+  const showAlert = (type: 'success' | 'error' | 'info', message: string) => {
+    setModalType(type);
+    setModalMessage(message);
+    setIsModalOpen(true);
+  };
+
   const handleImageUpload = async (file: File) => {
     try {
       const imageUrl = await cloudinaryUpload(file);
@@ -29,6 +43,12 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
   };
 
   const handleSave = async () => {
+
+    if (type === "photo" && !imageFile) {
+      showAlert('error','Por favor, selecione uma imagem antes de salvar.');
+      return;
+    }
+
     setLoading(true);
     try {
       let imageUrl = "";
@@ -98,6 +118,7 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
                 type="file"
                 className="hidden"
                 accept="image/*"
+                required
                 onChange={(e) => {
                   if (e.target.files && e.target.files[0]) {
                     setImageFile(e.target.files[0]);
@@ -122,6 +143,9 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
           
           </>
         )}
+
+        <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={onClose} className="dark:bg-red-900 font-bold">
             Cancelar

@@ -209,7 +209,7 @@ export default function Account() {
     }
 
     const URL = process.env.NODE_ENV === 'production' 
-      ? 'https://cliquenabio.vercel.app/' 
+      ? 'https://cliquenabio.com.br/' 
       : 'http://localhost:3000/';
 
     return `${URL}profile/${user.slug}`;

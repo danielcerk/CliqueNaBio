@@ -89,7 +89,7 @@ const View = (): JSX.Element | null =>{
         // Verifica se o slug está presente nos dados do usuário
         if (userData.slug) {
           const URL = process.env.NODE_ENV === 'production' 
-            ? 'https://cliquenabio.vercel.app/' 
+            ? 'https://cliquenabio.com.br/' 
             : 'http://localhost:3000/';
 
           // Gera o link público com base no slug

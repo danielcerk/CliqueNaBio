@@ -374,7 +374,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
               <footer className="text-center p-4 mt-6">
                 <p className="text-gray-600 font-medium">
                   Feito com ❤️ por <span className="font-bold">
-                    <a target="_blank" href="https://cliquenabio.vercel.app/">CliqueNaBio</a></span>
+                    <a target="_blank" href="https://cliquenabio.com.br/">CliqueNaBio</a></span>
                 </p>
               </footer> ) : null
             }
