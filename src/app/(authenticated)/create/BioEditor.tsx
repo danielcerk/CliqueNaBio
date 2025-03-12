@@ -16,6 +16,7 @@ import { createLink, createSnap } from "@/hooks/use-content";
 import { nanoid } from "nanoid";
 import { AlertModal } from '@/components/common/AlertModal';
 import { AddContentModal } from "./AddContentModal";
+import { EditContentModal } from "./EditContentModal";
 import AlertDecisionModal from "@/components/common/AlertDecisionModal";
 import { ContentItem, BioData, UserData, SnapItem, LinkItem} from "../../../lib/types"
 
@@ -31,6 +32,10 @@ const BioEditor = () => {
   // Estados para o modal de criação de conteúdo
   const [isAddContentModalOpen, setIsAddContentModalOpen] = useState(false);
   const [contentType, setContentType] = useState<"link" | "photo">("link");
+
+  const [isEditContentModalOpen, setIsEditContentModalOpen] = useState(false);
+  const [contentToEdit, setContentToEdit] = useState<ContentItem | null>(null);
+
 
   // Função para mostrar o alerta
   const showAlert = (type: 'success' | 'error' | 'info', message: string) => {
@@ -53,7 +58,13 @@ const BioEditor = () => {
   const username = userData?.name || "";
 
   const [bioData, setBioData] = useState<BioData>({
-    content: [],
+    id:'',
+    name: "",         
+    biografy: "",     
+    image: "",        
+    content: [],      
+    form_contact: false,  
+    copyright: false,  
   });
 
   const [planLimits, setPlanLimits] = useState({ maxLinks: 0, maxSnaps: 0 });
@@ -119,7 +130,13 @@ const BioEditor = () => {
         }));
 
         setBioData({
-            content: [...links, ...snaps],
+          id:'',
+          name: "",         
+          biografy: "",     
+          image: "",        
+          content: [...links, ...snaps],   
+          form_contact: false,  
+          copyright: false,  
         });
     } catch (err) {
         setError(true);
@@ -167,6 +184,34 @@ const BioEditor = () => {
     setIsAddContentModalOpen(false);
   };
 
+  const handleEditContent = (item: ContentItem) => {
+    setContentToEdit(item);
+    setIsEditContentModalOpen(true);
+  };
+
+  const handleSaveEditedContent = async (data: { url?: string; title?: string; name?: string; small_description?: string; image?: string }) => {
+    if (!contentToEdit) return;
+
+    const updatedContent = {
+      ...contentToEdit,
+      url: data.url || contentToEdit.url,
+      title: data.title || contentToEdit.title,
+      name: data.name || contentToEdit.name,
+      small_description: data.small_description || contentToEdit.small_description,
+      content: data.image || contentToEdit.content,
+    };
+
+    setBioData((prev) => ({
+      ...prev,
+      content: prev.content.map((item) =>
+        item.id === contentToEdit.id ? updatedContent : item
+      ),
+    }));
+
+    await updateItem(updatedContent);
+    setIsEditContentModalOpen(false);
+  };
+
   const updateContent = (
     id: string,
     content: string,
@@ -191,8 +236,7 @@ const BioEditor = () => {
       ),
     }));
   };
-
-
+  
   const handlePhotoUpload = async (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -449,15 +493,14 @@ const BioEditor = () => {
                           />
                         </>
                       )}
-
                       <Button
                         variant="secondary"
                         size="sm"
                         className="w-full dark:bg-green-600"
-                        onClick={() => item.created ? updateItem(item) : saveContent(item)}
+                        onClick={() => handleEditContent(item)}
                         disabled={loadingSave === item.id}
                       >
-                        <Save className="w-4 h-4" /> {loadingSave === item.id ? "Salvando..." : "Salvar"}
+                        <Save className="w-4 h-4" /> Editar
                       </Button>
                       <Button
                         variant="destructive"
@@ -491,6 +534,22 @@ const BioEditor = () => {
             </div>
           </div>
         )}
+
+      {contentToEdit && (
+        <EditContentModal
+          isOpen={isEditContentModalOpen}
+          onClose={() => setIsEditContentModalOpen(false)}
+          type={contentToEdit.type}
+          content={{
+            url: contentToEdit.url,
+            title: contentToEdit.title,
+            name: contentToEdit.name,
+            small_description: contentToEdit.small_description,
+            image: contentToEdit.content,
+          }}
+          onSave={handleSaveEditedContent}
+        />
+      )}
 
         <AddContentModal
           isOpen={isAddContentModalOpen}

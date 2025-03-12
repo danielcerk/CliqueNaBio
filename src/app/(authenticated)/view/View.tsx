@@ -12,6 +12,7 @@ import { ContentItem, BioData, SnapItem} from "../../../lib/types"
 
 const View = (): JSX.Element | null =>{
   const [bioData, setBioData] = useState<BioData>({
+    id:'',
     name: "",         
     biografy: "",     
     image: "",        
@@ -100,6 +101,7 @@ const View = (): JSX.Element | null =>{
         }));
 
         setBioData({
+          id: userData.id,
           name: userData.name,
           biografy: userData.biografy,
           image: userData.image,

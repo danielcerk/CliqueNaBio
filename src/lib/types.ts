@@ -20,13 +20,13 @@ export interface ContentItem {
 }
 
 export interface BioData {
-  id: string | number;
+  id?: string | number;
   name: string;
-  biografy: string;
-  image: string;
+  biografy?: string;
+  image?: string;
   content: ContentItem[];
-  form_contact: boolean;
-  copyright: boolean;
+  form_contact?: boolean;
+  copyright?: boolean;
 }
 
 export interface MobileScreenProps {

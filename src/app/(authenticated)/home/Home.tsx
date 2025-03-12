@@ -43,6 +43,8 @@ export default function Home() {
     setIsModalOpen(true);
   };
 
+
+
   const [dashboard, loadingDashboard, errorDashboard] = useAxios<Dashboard>({
     axiosInstance,
     method: 'get',
@@ -62,30 +64,14 @@ export default function Home() {
   });
 
  
-const refreshToken = Cookie.get('refresh_token');
 
-if (
-  (errorDashboard as AxiosError)?.response?.status === 401 ||
-  (errorUser as AxiosError)?.response?.status === 401
-) {
-  axiosInstance.post('/api/v1/token/refresh/', { refresh: refreshToken })
-    .then((response) => {
-      const newAccessToken = response.data.access;
-      Cookie.set('access_token', newAccessToken);
-      // Repetir a requisição original com o novo token
-    })
-    .catch((error) => {
-      console.error('Erro ao renovar o token:', error);
-      showAlert('error', 'Sessão expirada. Faça login novamente.');
-    });
-}
-  
+
   useEffect(() => {
-    if (errorUser) {
-      console.error('Erro ao carregar informações do usuário:', errorUser);
-      showAlert('error', 'Erro ao carregar informações do usuário.');
+    if (errorDashboard || errorUser) {
+      console.error('Erro ao carregar informações:', errorDashboard || errorUser);
+      showAlert('error', 'Erro ao carregar informações.');
     }
-  }, [errorUser]);
+  }, [errorDashboard, errorUser]);
 
   if (loadingDashboard || loadingUser) return <LoadingSkeleton />;
   if (!dashboard || !user) return null;
