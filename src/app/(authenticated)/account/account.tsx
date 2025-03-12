@@ -12,35 +12,7 @@ import Cookie from "js-cookie";
 import LoadingSkeleton from "./loading-skeleton";
 import Image from "next/image";
 import { AlertModal } from '@/components/common/AlertModal';
-
-interface User {
-  name?: string;
-  email?: string;
-  phone?: string;
-  biografy?: string;
-  image?: string;
-  plan?: string;
-  showProfileForm?: boolean;
-  slug?: string;
-}
-
-interface Profile {
-  slug: string;
-}
-
-interface FormEmail {
-  is_activate: boolean;
-}
-
-interface Link {
-  owner: string;
-  url: string;
-  title: string;
-  social_network: string;
-  username: string;
-  is_profile_link: boolean;
-  icon: string;
-}
+import { User, Profile, FormEmail, LinkItem} from "../../../lib/types"
 
 export default function Account() {
   const socialIcons = {
@@ -101,7 +73,7 @@ export default function Account() {
     },
   });
 
-  const [links, loadingLinks, errorLinks] = useAxios<Link>({
+  const [links, loadingLinks, errorLinks] = useAxios<LinkItem>({
     axiosInstance,
     method: "get",
     url: `/api/v1/account/me/link/`,

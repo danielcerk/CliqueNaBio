@@ -17,26 +17,8 @@ import Cookie from "js-cookie";
 import LoadingSkeleton from "./loading-skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertModal } from '@/components/common/AlertModal';
+import {User, Dashboard} from "../../../lib/types"
 
-interface Dashboard {
-  count_views_per_date: Record<string, number>;
-  views: number;
-  links_count: number;
-  snaps_count: number;
-  traffic_origin: Record<string, number>;
-  locations: Record<string, number>;
-  devices: Record<string, number>;
-}
-
-interface User {
-  name?: string;
-  email?: string;
-  phone?: string;
-  biography?: string;
-  image?: string;
-  plan?: string;
-  showProfileForm?: boolean;
-}
 
 export default function Home() {
   const token = Cookie.get('access_token');

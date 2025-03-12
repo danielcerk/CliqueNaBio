@@ -12,55 +12,17 @@ import axiosInstance from "@/helper/axios-instance";
 import useAxios from "@/hooks/use-axios";
 import { cloudinaryUpload } from "@/hooks/cloudinaryUpload";
 import { deleteImageFromCloudinary } from "@/hooks/cloudinaryUpload";
-import { createLink } from "@/hooks/use-links";
-import { createSnap } from "@/hooks/use-snaps";
+import { createLink, createSnap } from "@/hooks/use-content";
 import { nanoid } from "nanoid";
 import { AlertModal } from '@/components/common/AlertModal';
 import { AddContentModal } from "./AddContentModal";
 import AlertDecisionModal from "@/components/common/AlertDecisionModal";
-
-
-interface ContentItem {
-  id: string;
-  type: "link" | "photo";
-  content: string;
-  url?: string;
-  og_image?: string;
-  name?: string;
-  title?: string;
-  is_profile_link?: boolean;
-  small_description?: string;
-  created?: boolean;
-}
-
-interface BioData {
-  content: ContentItem[];
-}
-
-interface UserData {
-  id: string;
-  plan?: "GRÁTIS" | "CONEXÃO" | "INFLUÊNCIA";
-  name?: string;
-}
-
-interface SnapItem {
-  id: string;
-  name: string;
-  small_description: string;
-  image: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface SnapApiResponse {
-  results: SnapItem[];
-}
+import { ContentItem, BioData, UserData, SnapItem, LinkItem} from "../../../lib/types"
 
 
 
 const BioEditor = () => {
   const token = Cookie.get("access_token");
-
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
@@ -135,7 +97,7 @@ const BioEditor = () => {
             }),
         ]);
 
-        const links = linkResponse.data.map((link: any) => ({
+        const links = linkResponse.data.map((link: LinkItem) => ({
             id: link?.id,
             type: "link",
             content: link?.url || "",
@@ -190,7 +152,7 @@ const BioEditor = () => {
       type: contentType,
       content: contentType === "link" ? data.url || "" : data.image || "",
       url: data.url,
-      name: data.name,
+      name: data.name ,
       title: data.title,
       small_description: data.small_description,
       created: false,
@@ -230,12 +192,6 @@ const BioEditor = () => {
     }));
   };
 
-  const removeContent = (id: string) => {
-    setBioData((prev) => ({
-      ...prev,
-      content: prev.content.filter((item) => item.id !== id),
-    }));
-  };
 
   const handlePhotoUpload = async (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -259,6 +215,7 @@ const BioEditor = () => {
           title: item.title || "",
           social_network: "",
           username: username,
+          is_profile_link: false
         };
   
         if (!isValidUrl(linkData.url)) {
@@ -306,6 +263,7 @@ const BioEditor = () => {
           title: item.title || "",
           social_network: "",
           username: username,
+          is_profile_link: false
         };
   
         if (!isValidUrl(linkData.url)) {
