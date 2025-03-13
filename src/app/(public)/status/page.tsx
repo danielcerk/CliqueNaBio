@@ -25,6 +25,7 @@ interface AppStatusData {
   count_user_per_date: { [key: string]: number };
   count_links_per_date: { [key: string]: number };
   count_snaps_per_date: { [key: string]: number };
+  count_notes_per_date: { [key: string]: number };
   count_users: number;
   contribuitors: { [key: string]: string };
 }
@@ -112,6 +113,12 @@ function StatusPage() {
             <div className="bg-white dark:text-gray-700 p-6 rounded-lg shadow-md">
               <h5 className="text-xl font-semibold mb-4">Snaps por Data</h5>
               <Bar data={formatChartData(data.count_snaps_per_date)} />
+            </div>
+          )}
+          {data.count_notes_per_date && (
+            <div className="bg-white dark:text-gray-700 p-6 rounded-lg shadow-md">
+              <h5 className="text-xl font-semibold mb-4">Notas por Data</h5>
+              <Bar data={formatChartData(data.count_notes_per_date)} />
             </div>
           )}
         </div>
