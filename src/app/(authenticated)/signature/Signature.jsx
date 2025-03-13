@@ -39,11 +39,13 @@ const PricingTable = () => {
   const renderPlanFeatures = (plan) => {
     const features = {
       'GRÁTIS': [
+        'Limite de 1 nota',
         'Limite de 3 links',
         'Limite de 10 snaps',
         'Acesso básico',
       ],
       'Conexão': [
+        'Limite de 6 notas',
         'Limite de 6 links',
         'Limite de 50 snaps',
         'Analytics',
@@ -52,6 +54,7 @@ const PricingTable = () => {
         'Suporte 24/7',
       ],
       'Influência': [
+        'Sem limite de notas',
         'Sem limite de links',
         'Sem limite de snaps',
         'Acesso a recursos extras',

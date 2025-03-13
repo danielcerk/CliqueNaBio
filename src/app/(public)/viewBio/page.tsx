@@ -14,34 +14,8 @@ import ThemeSwitcher from "@/components/common/theme-switcher";
 
 import axios from 'axios';
 
-interface ContentItem {
-  id: string;
-  type: "link" | "photo" | "text";
-  content: string;
-  name: string;
-  small_description: string;
-  image: string;
-  url?: string;
-  owner?: string;
-  title?: string;
-  og_image?: string;
-  is_profile_link?: boolean;
-  social_network?: string;
-  username?: string;
-  icon?: string;
-  created_at?: string;
-  updated_at?: string;
-}
 
-interface BioData {
-  id: 0,
-  name: string;
-  biografy: string;
-  image: string;
-  content: ContentItem[];
-  form_contact: boolean;
-  copyright: boolean;
-}
+import { BioData} from "../../../lib/types"
 
 export default function ViewBio() {
 

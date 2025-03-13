@@ -27,21 +27,17 @@ export default function AuthenticatedLayout({
 }) {
   return (
     <ClientOnly>
-    <div className="flex">
-      <ThemeProvider 
-      attribute="class"
-      defaultTheme="system"
-      enableSystem>
-      
-        <SideBar />
-      <main className="flex-1 bg-gray-100">  
-        <div className="fixed z-50 right-4 top-24">
-          <ThemeSwitcher />
-        </div>
-        {children}
-      </main>
-      </ThemeProvider>
-    </div>
+      <div className="flex flex-col w-full overflow-hidden">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <SideBar />
+          <main className="flex-1 bg-gray-100 w-full max-w-full overflow-hidden">
+            <div className="fixed z-50 right-4 top-24 max-w-full">
+              <ThemeSwitcher />
+            </div>
+            {children}
+          </main>
+        </ThemeProvider>
+      </div>
     </ClientOnly>
   );
 }

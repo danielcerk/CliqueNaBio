@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -5,28 +7,32 @@ import { Globe, ImageIcon } from "lucide-react";
 import { cloudinaryUpload } from "@/hooks/cloudinaryUpload";
 import { AlertModal } from '@/components/common/AlertModal';
 
-interface AddContentModalProps {
+interface EditContentModalProps {
   isOpen: boolean;
   onClose: () => void;
   type: "link" | "photo";
+  content: {
+    url?: string;
+    title?: string;
+    name?: string;
+    small_description?: string;
+    image?: string;
+  };
   onSave: (data: { url?: string; title?: string; name?: string; small_description?: string; image?: string }) => Promise<void>;
 }
 
-export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentModalProps) => {
-  const [url, setUrl] = useState("");
-  const [title, setTitle] = useState("");
-  const [name, setName] = useState("");
-  const [smallDescription, setSmallDescription] = useState("");
+export const EditContentModal = ({ isOpen, onClose, type, content, onSave }: EditContentModalProps) => {
+  const [url, setUrl] = useState(content.url || "");
+  const [title, setTitle] = useState(content.title || "");
+  const [name, setName] = useState(content.name || "");
+  const [smallDescription, setSmallDescription] = useState(content.small_description || "");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
   const [modalMessage, setModalMessage] = useState('');
-  
-  const [isAddContentModalOpen, setIsAddContentModalOpen] = useState(false);
-  const [contentType, setContentType] = useState<"link" | "photo">("link");
-  
+
   const showAlert = (type: 'success' | 'error' | 'info', message: string) => {
     setModalType(type);
     setModalMessage(message);
@@ -42,23 +48,19 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
     }
   };
 
- 
-
   const handleSave = async () => {
-
-    if (type === "photo" && !imageFile) {
-      showAlert('error','Por favor, selecione uma imagem antes de salvar.');
+    if (type === "photo" && !imageFile && !content.image) {
+      showAlert('error', 'Por favor, selecione uma imagem antes de salvar.');
       return;
     }
 
     setLoading(true);
     try {
-      let imageUrl = "";
+      let imageUrl = content.image || "";
       if (type === "photo" && imageFile) {
         imageUrl = await handleImageUpload(imageFile);
       }
 
-      // Chama a função onSave passada como prop
       await onSave({
         url,
         title,
@@ -67,9 +69,10 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
         image: imageUrl,
       });
 
-      onClose(); // Fecha o modal após salvar
+      onClose();
     } catch (error) {
       console.error(error);
+      showAlert('error', 'Erro ao salvar as alterações. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -80,7 +83,7 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div className="bg-white dark:bg-black p-6 rounded-lg shadow-lg w-96 dark:border dark:border-yellow-400 max-h-[80vh] overflow-y-auto">
-        <h3 className="text-lg font-bold mb-4">Adicionar {type === "link" ? "Link" : "Snap"}</h3>
+        <h3 className="text-lg font-bold mb-4">Editar {type === "link" ? "Link" : "Snap"}</h3>
         {type === "link" ? (
           <>
             <Input
@@ -108,6 +111,12 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
                     alt="Preview"
                     className="rounded-md object-cover w-full"
                   />
+                ) : content.image ? (
+                  <img
+                    src={content.image}
+                    alt="Preview"
+                    className="rounded-md object-cover w-full"
+                  />
                 ) : (
                   <>
                     <ImageIcon className="w-10 h-10 text-gray-500" />
@@ -120,7 +129,6 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
                 type="file"
                 className="hidden"
                 accept="image/*"
-                required
                 onChange={(e) => {
                   if (e.target.files && e.target.files[0]) {
                     setImageFile(e.target.files[0]);
@@ -135,14 +143,13 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
               onChange={(e) => setName(e.target.value)}
               className="mb-4 text-gray-700 dark:bg-gray-200"
             />
-             <textarea
+            <textarea
               placeholder="Descrição pequena do Snap"
               value={smallDescription}
               onChange={(e) => setSmallDescription(e.target.value)}
               className="mb-4 p-2 w-full border rounded text-gray-700 dark:bg-gray-200"
-              rows={4} // Define o número de linhas visíveis
-              />
-          
+              rows={4}
+            />
           </>
         )}
 
@@ -160,6 +167,3 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
     </div>
   );
 };
-
-
-

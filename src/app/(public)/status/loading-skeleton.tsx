@@ -24,6 +24,10 @@ export default function LoadingSkeleton() {
           <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-4" />
           <div className="h-64 bg-gray-200 rounded animate-pulse" />
         </div>
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-4" />
+          <div className="h-64 bg-gray-200 rounded animate-pulse" />
+        </div>
       </div>
 
       {/* Contributors Skeleton */}

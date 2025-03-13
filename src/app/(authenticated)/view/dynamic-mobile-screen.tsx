@@ -40,9 +40,6 @@ const socialIcons = {
   Pinterest: FaPinterest, 
 };
 
-
-
-
 const socialColors: Record<SocialIconKey, string> = {
   Facebook: "text-blue-600", // Azul do Facebook
   Instagram: "text-pink-500", // Rosa do Instagram
@@ -72,38 +69,8 @@ const getSocialIcon = (title: string): React.ComponentType<Omit<LucideProps, "re
   return socialIconKey ? socialIcons[socialIconKey] : Globe;
 };
 
-interface ContentItem {
-  id: string;
-  type: "link" | "photo" | "text";
-  content: string;
-  name: string;
-  small_description: string;
-  image: string;
-  url?: string;
-  owner?: string;
-  title?: string;
-  og_image?: string;
-  is_profile_link?: boolean;
-  social_network?: string;
-  username?: string;
-  icon?: string;
-  created_at?: string;
-  updated_at?: string;
-}
 
-
-interface BioData {
-  name: string
-  biografy: string
-  image: string
-  content: ContentItem[]
-  form_contact: boolean
-  copyright: boolean
-}
-
-interface MobileScreenProps {
-  bioData: BioData
-}
+import { MobileScreenProps} from "../../../lib/types"
 
 
 const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
@@ -182,11 +149,11 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
 
   return (
-    <div className="lg:max-w-5xl w-full lg:flex lg:justify-around">
-      <Card className="relative min-w-full min-h-screen bg-white dark:bg-black mb-5 rounded-3xl overflow-hidden">
+    <div className="lg:max-w-[90%] w-full lg:flex lg:justify-around rounded-xl">
+      <Card className="relative max-w-full min-h-screen bg-white dark:bg-black rounded-xl pb-10 overflow-hidden">
 
-        <div className="p-4 gap-5 lg:flex items-start w-[100%]">
-          <div className="bg-white dark:bg-gray-900 p-2 py-20 rounded-xl lg:min-w-[40%] ">
+      <div className="p-4 gap-5 lg:flex items-start w-[100%] h-full">
+       <div className="bg-white dark:bg-gray-900 p-2 py-20 rounded-xl w-full lg:min-w-[40%]">
             <div className="text-center">
               <Avatar className="w-32 h-32 mx-auto mt-5 shadow">
                 <AvatarImage src={bioData.image} alt={bioData.name} />
@@ -228,7 +195,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
           </div>
 
           {/* <hr /> */}
-          <div className="mt-5 w-full">
+          <div className="mt-5 w-full ">
 
           <div className="container gap-4 w-full h-full mx-auto">
             {bioData.content
@@ -360,11 +327,6 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                         </div>
                       )}
 
-                      {item.type === "text" && (
-                        <p className="text-sm bg-gray-100 p-4 rounded-lg shadow-inner w-full text-center">
-                          {item.content}
-                        </p>
-                      )}
                   </div>
                  );
               })}

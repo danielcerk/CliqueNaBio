@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { AlertModal } from '@/components/common/AlertModal';
 import LoadingSkeleton from "./loading-skeleton";
 import Link from "next/link";
-import { createLink, updateLink, deleteLink } from "@/hooks/use-links";
+import { createLink, updateLink, deleteLink } from "@/hooks/use-content";
 import AlertDecisionModal from "@/components/common/AlertDecisionModal";
 import {
   FaFacebook,
@@ -42,31 +42,8 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
+import {User, FormData, SocialLink} from "../../../lib/types"
 
-interface User {
-  name: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  biografy?: string;
-}
-
-interface FormData {
-  name: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-  biografy?: string;
-}
-
-interface SocialLink {
-  id: number;
-  url: string;
-  title: string;
-  social_network: string;
-  username: string;
-}
 
 export default function EditAccount() {
   const token = Cookie.get('access_token');

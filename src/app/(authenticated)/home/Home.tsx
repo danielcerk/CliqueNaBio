@@ -17,26 +17,8 @@ import Cookie from "js-cookie";
 import LoadingSkeleton from "./loading-skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertModal } from '@/components/common/AlertModal';
+import {User, Dashboard} from "../../../lib/types"
 
-interface Dashboard {
-  count_views_per_date: Record<string, number>;
-  views: number;
-  links_count: number;
-  snaps_count: number;
-  traffic_origin: Record<string, number>;
-  locations: Record<string, number>;
-  devices: Record<string, number>;
-}
-
-interface User {
-  name?: string;
-  email?: string;
-  phone?: string;
-  biography?: string;
-  image?: string;
-  plan?: string;
-  showProfileForm?: boolean;
-}
 
 export default function Home() {
   const token = Cookie.get('access_token');
@@ -61,6 +43,8 @@ export default function Home() {
     setIsModalOpen(true);
   };
 
+
+
   const [dashboard, loadingDashboard, errorDashboard] = useAxios<Dashboard>({
     axiosInstance,
     method: 'get',
@@ -80,30 +64,14 @@ export default function Home() {
   });
 
  
-const refreshToken = Cookie.get('refresh_token');
 
-if (
-  (errorDashboard as AxiosError)?.response?.status === 401 ||
-  (errorUser as AxiosError)?.response?.status === 401
-) {
-  axiosInstance.post('/api/v1/token/refresh/', { refresh: refreshToken })
-    .then((response) => {
-      const newAccessToken = response.data.access;
-      Cookie.set('access_token', newAccessToken);
-      // Repetir a requisição original com o novo token
-    })
-    .catch((error) => {
-      console.error('Erro ao renovar o token:', error);
-      showAlert('error', 'Sessão expirada. Faça login novamente.');
-    });
-}
-  
+
   useEffect(() => {
-    if (errorUser) {
-      console.error('Erro ao carregar informações do usuário:', errorUser);
-      showAlert('error', 'Erro ao carregar informações do usuário.');
+    if (errorDashboard || errorUser) {
+      console.error('Erro ao carregar informações:', errorDashboard || errorUser);
+      showAlert('error', 'Erro ao carregar informações.');
     }
-  }, [errorUser]);
+  }, [errorDashboard, errorUser]);
 
   if (loadingDashboard || loadingUser) return <LoadingSkeleton />;
   if (!dashboard || !user) return null;
