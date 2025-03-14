@@ -226,10 +226,20 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
     <div className="lg:max-w-[90%] w-full lg:flex lg:justify-around rounded-xl">
       <Card className="relative min-w-full min-h-screen bg-white dark:bg-black rounded-xl pb-10 overflow-hidden">
 
-        <div className="p-4 gap-5 lg:flex items-start w-[100%] h-full">
-          <div className="bg-white p-2 dark:bg-gray-900 py-20 rounded-xl lg:min-w-[40%] ">
+      <div className="p-4 gap-5 max-w-xl lg:flex items-start mx-auto lg:mx-0 lg:max-w-[100%] h-full">
+        <div className="bg-white max-w-xl dark:bg-gray-900 pb-20 rounded-xl w-full  relative border">
+             <div className="absolute w-full h-[30%] rounded-t overflow-hidden">
+               <div className="w-full h-full cursor-pointer">
+                 <Image
+                  src={bioData.banner || ''}
+                  alt={`Imagem de fundo`}
+                  layout="fill"
+                  objectFit="cover"
+                 />
+               </div>
+             </div>
             <div className="text-center">
-              <Avatar className="w-32 h-32 mx-auto mt-5 shadow">
+              <Avatar className="w-32 h-32 mx-auto mt-10 shadow">
                 <AvatarImage src={bioData.image} alt={bioData.name} />
                 <AvatarFallback>@{bioData.name}</AvatarFallback>
               </Avatar>
@@ -279,7 +289,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
             </section>
           </div>
 
-          <div className="mt-5 w-full">
+          <div className="mt-5 lg:mt-0 w-full">
 
           <div className="container gap-4 w-full h-full mx-auto">
             {bioData.content

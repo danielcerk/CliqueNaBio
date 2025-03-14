@@ -24,6 +24,7 @@ export interface BioData {
   name: string;
   biografy?: string;
   image?: string;
+  banner?:string;
   content: ContentItem[];
   form_contact?: boolean;
   copyright?: boolean;
@@ -46,6 +47,7 @@ export interface User {
   email?: string;
   phone?: string;
   biografy?: string;
+  banner?: string;
   image?: string;
   plan?: string;
   showProfileForm?: boolean;
@@ -53,7 +55,8 @@ export interface User {
 }
 
 export interface Profile {
-  slug: string;
+  slug?: string;
+  banner?: string;
 }
 
 export interface FormEmail {
