@@ -29,6 +29,7 @@ export const EditContentModal = ({ isOpen, onClose, type, content, onSave }: Edi
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
   const [modalMessage, setModalMessage] = useState('');
@@ -83,7 +84,7 @@ export const EditContentModal = ({ isOpen, onClose, type, content, onSave }: Edi
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div className="bg-white dark:bg-black p-6 rounded-lg shadow-lg w-96 dark:border dark:border-yellow-400 max-h-[80vh] overflow-y-auto">
-        <h3 className="text-lg font-bold mb-4">Editar {type === "link" ? "Link" : "Snap"}</h3>
+        <h3 className="text-lg font-bold mb-4">Editar {type === "link" ? "Link" : "Publicação"}</h3>
         {type === "link" ? (
           <>
             <Input
@@ -138,14 +139,14 @@ export const EditContentModal = ({ isOpen, onClose, type, content, onSave }: Edi
             </div>
             <Input
               type="text"
-              placeholder="Nome do Snap"
-              value={name}
+              placeholder="Titulo da publicação"
+              value={content.name}
               onChange={(e) => setName(e.target.value)}
               className="mb-4 text-gray-700 dark:bg-gray-200"
             />
             <textarea
-              placeholder="Descrição pequena do Snap"
-              value={smallDescription}
+              placeholder="Descrição pequena da publicação"
+              value={content.small_description}
               onChange={(e) => setSmallDescription(e.target.value)}
               className="mb-4 p-2 w-full border rounded text-gray-700 dark:bg-gray-200"
               rows={4}

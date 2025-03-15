@@ -67,6 +67,12 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
         image: imageUrl,
       });
 
+      setUrl("");
+      setTitle("");
+      setName("");
+      setSmallDescription("");
+      setImageFile(null);
+
       onClose(); // Fecha o modal após salvar
     } catch (error) {
       console.error(error);
