@@ -74,13 +74,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             }
           })}
         </Script>
-
-        {/* Script do Google Tag Manager */}
         <Script
-          strategy="afterInteractive"
+          strategy="beforeInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-N7VDCH1XYJ"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="beforeInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
