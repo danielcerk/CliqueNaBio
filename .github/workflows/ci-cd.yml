@@ -1,0 +1,62 @@
+name: Frontend CI/CD
+
+on:
+    push:
+        branches:
+            - main
+            - dev
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        env:
+            NEXT_PUBLIC_PRICING_TABLE_ID: ${{ secrets.NEXT_PUBLIC_PRICING_TABLE_ID }}
+            NEXT_PUBLIC_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_PUBLISHABLE_KEY }}
+            NEXT_PUBLIC_LINK_CUSTOMER_PORTAL: ${{ secrets.NEXT_PUBLIC_LINK_CUSTOMER_PORTAL }}
+            NEXT_PUBLIC_GOOGLE_CALLBACK_URI: ${{ secrets.NEXT_PUBLIC_GOOGLE_CALLBACK_URI }}
+            NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
+            NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
+            NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET }}
+            NEXT_PUBLIC_CLOUDINARY_API_KEY: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_API_KEY }}
+            NEXT_PUBLIC_CLOUDINARY_API_SECRET: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_API_SECRET }}
+
+        steps:
+            - name: Checkout do repositório
+              uses: actions/checkout@v4
+
+            - name: Instalar Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 18
+
+            - name: Instalar dependências
+              run: npm install
+
+            - name: Build da aplicação
+              run: npm run build
+
+            - name: Verificar lint
+              run: npm run lint
+
+    deploy:
+        
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout do repositório
+              uses: actions/checkout@v4
+
+            - name: Instalar Vercel CLI
+              run: npm install -g vercel
+
+            - name: Fazer login no Vercel
+              run: vercel login --token ${{ secrets.VERCEL_TOKEN }}
+
+            - name: Configurar projeto no Vercel
+              run: vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}
+
+            - name: Construir o projeto no Vercel
+              run: vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
+
+            - name: Fazer deploy para produção
+              run: vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }}
