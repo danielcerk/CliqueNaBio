@@ -9,6 +9,7 @@ import Cookie from "js-cookie";
 import LoadingSkeleton from "./loading-skeleton";
 import { AlertModal } from '@/components/common/AlertModal';
 import { ContentItem, BioData, SnapItem} from "../../../lib/types"
+import ThemeSelectorModal from './ThemeSelectorModal';
 
 const View = (): JSX.Element | null =>{
   const [bioData, setBioData] = useState<BioData>({
@@ -29,6 +30,13 @@ const View = (): JSX.Element | null =>{
   const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
   const [modalMessage, setModalMessage] = useState('');
 
+  const [isThemeModalOpen, setIsThemeModalOpen] = useState(false); // Estado para controlar o modal de seleção de temas
+  const [selectedTheme, setSelectedTheme] = useState<{ // Estado para armazenar o tema selecionado
+    background_color: string;
+    foreground_color: string;
+    font_family: string;
+  } | null>(null);
+
   // Função para mostrar o alerta
   const showAlert = (type: 'success' | 'error' | 'info', message: string) => {
     setModalType(type);
@@ -36,6 +44,27 @@ const View = (): JSX.Element | null =>{
     setIsModalOpen(true);
   };
 
+  const handleSelectTheme = async (theme: {
+    id: number;
+    name: string;
+    background_color: string;
+    foreground_color: string;
+    font_family: string;
+  }) => {
+    try {
+      // Atualiza o tema do usuário no backend
+      await axiosInstance.put("/api/v1/account/theme/", { theme_id: theme.id });
+      setSelectedTheme({
+        background_color: theme.background_color,
+        foreground_color: theme.foreground_color,
+        font_family: theme.font_family,
+      });
+      showAlert('success', 'Tema selecionado com sucesso!');
+    } catch (error) {
+      console.error("Erro ao selecionar tema:", error);
+      showAlert('error', 'Erro ao selecionar tema.');
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -141,13 +170,17 @@ const View = (): JSX.Element | null =>{
 
 
   return (
-    <div className="flex flex-col lg:flex-row dark:bg-gray-900 pt-10">
+    <div className="flex flex-col lg:flex-row  pt-10" style={{
+      backgroundColor: selectedTheme?.background_color || 'white',
+      color: selectedTheme?.foreground_color || 'black',
+      fontFamily: selectedTheme?.font_family || 'Arial, sans-serif',
+    }}>
       <div className="flex flex-col items-center w-full">
 
         {publicLink && (
           <div className="w-full lg:max-w-5xl">
-            <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-3xl mb-5 dark:bg-gray-900">
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-100">Seu link público:</p>
+            <div className="mt-4 p-4 rounded-lg max-w-3xl mb-5 ">
+              <p className="text-sm font-medium ">Seu link público:</p>
               <div className="flex items-center gap-2 mt-2">
                 <input
                   type="text"
@@ -162,12 +195,25 @@ const View = (): JSX.Element | null =>{
                   Copiar
                 </button>
               </div>
+
+              <button
+                onClick={() => setIsThemeModalOpen(true)}
+                className="mt-4 p-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-600 transition-colors"
+              >
+                Selecionar Tema
+              </button>
             </div>
           </div>
         )}
 
         <MobileScreen bioData={bioData} />
       </div>
+      <ThemeSelectorModal
+        isOpen={isThemeModalOpen}
+        onClose={() => setIsThemeModalOpen(false)}
+        onSelectTheme={handleSelectTheme}
+      />
+
       <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );

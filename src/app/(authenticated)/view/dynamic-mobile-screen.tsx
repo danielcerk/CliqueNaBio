@@ -73,7 +73,8 @@ const getSocialIcon = (title: string): React.ComponentType<Omit<LucideProps, "re
 import { MobileScreenProps} from "../../../lib/types"
 
 
-const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
+
+const MobileScreen: React.FC<MobileScreenProps> = ({ bioData}) => {
 
   const [extendedItems, setExtendedItems] = useState<Set<string>>(new Set());
   const itemRefs = useRef<(HTMLElement | null)[]>([]);
