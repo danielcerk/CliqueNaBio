@@ -224,10 +224,14 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
   return (
     <div className="lg:max-w-[90%] w-full lg:flex lg:justify-around rounded-xl">
-      <Card className="relative min-w-full min-h-screen bg-white dark:bg-black rounded-xl pb-10 overflow-hidden">
+      <Card className="relative min-w-full min-h-screen  rounded-xl pb-10 overflow-hidden" style={{
+      backgroundColor: bioData.theme[0]?.background_color || 'white',
+      color: bioData.theme[0]?.foreground_color || 'black',
+      fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
+    }}>
 
       <div className="p-4 gap-5 max-w-xl lg:flex items-start mx-auto lg:mx-0 lg:max-w-[100%] h-full">
-        <div className="bg-white max-w-xl dark:bg-gray-900 pb-20 rounded-xl w-full  relative border">
+        <div className="max-w-xl  pb-20 rounded-xl w-full  relative border">
              <div className="absolute w-full h-[30%] rounded-t overflow-hidden">
                <div className="w-full h-full cursor-pointer">
                  <Image
@@ -244,14 +248,17 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                 <AvatarFallback>@{bioData.name}</AvatarFallback>
               </Avatar>
               <p className="mt-4 font-medium capitalize">@{bioData.name}</p>
-              <p className="mt-2 text-gray-700 text-sm max-w-[400px] dark:text-gray-200 mx-auto mb-2">{bioData.biografy}</p>
+              <p className="mt-2  text-sm max-w-[400px]  mx-auto mb-2">{bioData.biografy}</p>
 
               {bioData.form_contact === true ? (
                
               <Button
-                variant="outline"
                 onClick={() => setIsFormModalOpen(true)}
-                className="text-sm dark:text-yellow-400 font-bold"
+                className="text-sm font-bold" style={{
+                  backgroundColor: bioData.theme[0]?.foreground_color || 'black',
+                  color: bioData.theme[0]?.background_color || 'white' ,
+                  fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
+                }}
               >
                  Entrar em Contato
               </Button>) : null }
@@ -444,11 +451,18 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
       {isFormModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg w-full max-w-md">
+          <div className=" p-6 rounded-lg w-full max-w-md" style={{
+            backgroundColor: bioData.theme[0]?.background_color || 'white',
+            color: bioData.theme[0]?.foreground_color || 'black',
+            fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
+          }}>
             <h2 className="text-xl font-semibold mb-4">Entre em Contato</h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                <label className="block text-sm font-medium " style={{
+                  color: bioData.theme[0]?.foreground_color || 'black',
+                  fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
+                }}>Email</label>
                 <input
                   type="email"
                   className="mt-1 block w-full dark:bg-gray-200 text-black px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
@@ -458,7 +472,10 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Mensagem</label>
+                <label className="block text-sm font-medium " style={{
+                  color: bioData.theme[0]?.foreground_color || 'black',
+                  fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
+                }}>Mensagem</label>
                 <textarea
                   className="mt-1 block w-full text-black px-3 dark:bg-gray-200 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   rows={4}
@@ -488,7 +505,11 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
       )}
       {isPhotoModalOpen && selectedPhoto && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg w-full max-w-4xl mx-4">
+          <div className=" p-6 rounded-lg w-full max-w-4xl mx-4" style={{
+            backgroundColor: bioData.theme[0]?.background_color || 'white',
+            color: bioData.theme[0]?.foreground_color || 'black',
+            fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
+          }}>
             <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">{selectedPhoto.title || "Foto"}</h2>
               <button
@@ -511,7 +532,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
               />
             </div>
             {selectedPhoto.description && (
-              <p className="mt-4 text-gray-700 dark:text-gray-200 text-sm">{selectedPhoto.description}</p>
+              <p className="mt-4 text-sm">{selectedPhoto.description}</p>
             )}
           </div>
         </div>

@@ -8,8 +8,14 @@ import { nanoid } from "nanoid";
 import Cookie from "js-cookie";
 import LoadingSkeleton from "./loading-skeleton";
 import { AlertModal } from '@/components/common/AlertModal';
-import { ContentItem, BioData, SnapItem} from "../../../lib/types"
-import ThemeSelectorModal from './ThemeSelectorModal';
+import { BioData, SnapItem} from "../../../lib/types"
+import ThemeEditorModal from './ThemeEditorModal';
+
+interface Theme {
+  background_color?: string; 
+  foreground_color?: string; 
+  font_family?: string; 
+}
 
 const View = (): JSX.Element | null =>{
   const [bioData, setBioData] = useState<BioData>({
@@ -20,7 +26,8 @@ const View = (): JSX.Element | null =>{
     banner: "",      
     content: [],      
     form_contact: false,  
-    copyright: false,     
+    copyright: false,    
+    theme: []
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -30,12 +37,8 @@ const View = (): JSX.Element | null =>{
   const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
   const [modalMessage, setModalMessage] = useState('');
 
-  const [isThemeModalOpen, setIsThemeModalOpen] = useState(false); // Estado para controlar o modal de seleção de temas
-  const [selectedTheme, setSelectedTheme] = useState<{ // Estado para armazenar o tema selecionado
-    background_color: string;
-    foreground_color: string;
-    font_family: string;
-  } | null>(null);
+  
+  const [isThemeEditorOpen, setIsThemeEditorOpen] = useState(false); // Estado para controlar o editor de tema
 
   // Função para mostrar o alerta
   const showAlert = (type: 'success' | 'error' | 'info', message: string) => {
@@ -44,25 +47,39 @@ const View = (): JSX.Element | null =>{
     setIsModalOpen(true);
   };
 
-  const handleSelectTheme = async (theme: {
-    id: number;
-    name: string;
-    background_color: string;
-    foreground_color: string;
-    font_family: string;
-  }) => {
+  const handleSaveTheme = async (editedTheme: Theme) => {
     try {
-      // Atualiza o tema do usuário no backend
-      await axiosInstance.put("/api/v1/account/theme/", { theme_id: theme.id });
-      setSelectedTheme({
-        background_color: theme.background_color,
-        foreground_color: theme.foreground_color,
-        font_family: theme.font_family,
+      const token = Cookie.get("access_token"); // Recupera o token do cookie
+      if (!token) {
+        showAlert('error', 'Token não encontrado. Faça login novamente.');
+        return;
+      }
+  
+      // Envia as alterações para o backend com o token no cabeçalho
+      await axiosInstance.put("/api/v1/account/theme/", {
+        background_color: editedTheme.background_color,
+        foreground_color: editedTheme.foreground_color,
+        font_family: editedTheme.font_family,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Adiciona o token no cabeçalho
+        },
       });
-      showAlert('success', 'Tema selecionado com sucesso!');
+  
+      // Atualiza o tema no bioData
+      setBioData((prevData) => ({
+        ...prevData,
+        theme: [editedTheme],
+      }));
+  
+      showAlert('success', 'Tema atualizado com sucesso!');
     } catch (error) {
-      console.error("Erro ao selecionar tema:", error);
-      showAlert('error', 'Erro ao selecionar tema.');
+      if (error) {
+        showAlert('error', 'Sessão expirada. Faça login novamente.');
+      } else {
+        console.error("Erro ao atualizar tema:", error);
+        showAlert('error', 'Erro ao atualizar tema.');
+      }
     }
   };
 
@@ -71,7 +88,6 @@ const View = (): JSX.Element | null =>{
       try {
         setLoading(true);
 
-        // Busca os dados do usuário autenticado
         const token = Cookie.get("access_token");
         if (!token) showAlert('error', 'Token não encontrado');
 
@@ -81,13 +97,12 @@ const View = (): JSX.Element | null =>{
 
         const userData = userResponse.data;
 
-        // Verifica se o slug está presente nos dados do usuário
+
         if (userData.slug) {
           const URL = process.env.NODE_ENV === 'production' 
             ? 'https://cliquenabio.com.br/' 
             : 'http://localhost:3000/';
 
-          // Gera o link público com base no slug
           const link = `${URL}profile/${userData.slug}`;
           setPublicLink(link);
 
@@ -96,11 +111,14 @@ const View = (): JSX.Element | null =>{
         }
 
         // Busca os links e snaps do usuário
-        const [linkResponse, snapResponse] = await Promise.all([
+        const [linkResponse, snapResponse, themeResponse] = await Promise.all([
           axiosInstance.get("/api/v1/account/me/link/", {
             headers: { Authorization: `Bearer ${token}` },
           }),
           axiosInstance.get("/api/v1/account/me/snap/", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axiosInstance.get("/api/v1/account/theme/", {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -130,6 +148,9 @@ const View = (): JSX.Element | null =>{
           updated_at: snap.updated_at || snap.created_at || "",
         }));
 
+
+        const themeData = themeResponse.data;
+
         setBioData({
           id: userData.id,
           name: userData.name,
@@ -139,7 +160,11 @@ const View = (): JSX.Element | null =>{
           content: [...links, ...snaps],
           form_contact: userData.form_contact,
           copyright: userData.copyright,
+          theme: [themeData], // Use o tema do backend, se existir
         });
+        console.log("aqui")
+        console.log(themeData)
+        console.log("Não")
 
       } catch (err) {
         setError(true);
@@ -168,12 +193,12 @@ const View = (): JSX.Element | null =>{
   if (error) return null; 
 
 
-
   return (
+  
     <div className="flex flex-col lg:flex-row  pt-10" style={{
-      backgroundColor: selectedTheme?.background_color || 'white',
-      color: selectedTheme?.foreground_color || 'black',
-      fontFamily: selectedTheme?.font_family || 'Arial, sans-serif',
+      backgroundColor: bioData.theme[0]?.background_color || 'white',
+      color: bioData.theme[0]?.foreground_color || 'black',
+      fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
     }}>
       <div className="flex flex-col items-center w-full">
 
@@ -197,10 +222,10 @@ const View = (): JSX.Element | null =>{
               </div>
 
               <button
-                onClick={() => setIsThemeModalOpen(true)}
+                onClick={() => setIsThemeEditorOpen(true)}
                 className="mt-4 p-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-600 transition-colors"
               >
-                Selecionar Tema
+                Editar Tema
               </button>
             </div>
           </div>
@@ -208,10 +233,15 @@ const View = (): JSX.Element | null =>{
 
         <MobileScreen bioData={bioData} />
       </div>
-      <ThemeSelectorModal
-        isOpen={isThemeModalOpen}
-        onClose={() => setIsThemeModalOpen(false)}
-        onSelectTheme={handleSelectTheme}
+      <ThemeEditorModal
+        isOpen={isThemeEditorOpen}
+        onClose={() => setIsThemeEditorOpen(false)}
+        initialTheme={{
+          background_color: bioData.theme[0]?.background_color || '#ffffff', // Valor padrão
+          foreground_color: bioData.theme[0]?.foreground_color || '#000000', // Valor padrão
+          font_family: bioData.theme[0]?.font_family || 'Arial, sans-serif', // Valor padrão
+        }}
+        onSave={handleSaveTheme}
       />
 
       <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />

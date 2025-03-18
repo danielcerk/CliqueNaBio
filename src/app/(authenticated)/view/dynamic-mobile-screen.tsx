@@ -69,7 +69,6 @@ const getSocialIcon = (title: string): React.ComponentType<Omit<LucideProps, "re
   return socialIconKey ? socialIcons[socialIconKey] : Globe;
 };
 
-
 import { MobileScreenProps} from "../../../lib/types"
 
 
@@ -148,13 +147,19 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData}) => {
     return imageExtensions.some((ext) => url.toLowerCase().endsWith(ext));
   };
 
+  console.log(bioData.theme)
+
 
   return (
-    <div className="lg:max-w-[90%] w-full lg:flex lg:justify-around rounded-xl">
-      <Card className="relative max-w-full min-h-screen bg-white dark:bg-black rounded-xl pb-10 overflow-hidden">
+    <div className="lg:max-w-[90%] w-full lg:flex lg:justify-around rounded-xl"  >
+      <Card className="relative max-w-full min-h-screen rounded-xl pb-10 overflow-hidden " style={{
+      backgroundColor: bioData.theme[0]?.background_color || 'white',
+      color: bioData.theme[0]?.foreground_color || 'black',
+      fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
+    }}>
 
       <div className="p-4 gap-5 max-w-xl lg:flex items-start mx-auto lg:mx-0 lg:max-w-[100%] h-full">
-        <div className="bg-white max-w-xl dark:bg-gray-900 pb-20 rounded-xl w-full  relative border">
+        <div className=" pb-20 rounded-xl w-full  relative border">
 
               <div className="absolute w-full h-[30%] rounded-t overflow-hidden">
                 <div className="w-full h-full cursor-pointer">
