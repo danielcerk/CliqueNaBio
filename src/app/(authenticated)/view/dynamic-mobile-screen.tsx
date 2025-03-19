@@ -158,13 +158,13 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData}) => {
       fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
     }}>
 
-      <div className="p-4 gap-5 max-w-xl lg:flex items-start mx-auto lg:mx-0 lg:max-w-[100%] h-full">
+      <div className="p-4 gap-5 max-w-xl lg:flex items-start mx-auto lg:mx-0 lg:max-w-[100%] lg:min-w-[1000px] h-full">
         <div className=" pb-20 rounded-xl w-full  relative border">
 
               <div className="absolute w-full h-[30%] rounded-t overflow-hidden">
                 <div className="w-full h-full cursor-pointer">
                   <Image
-                    src={bioData.banner || ''}
+                    src={bioData.banner || '/bg-01.jpg'}
                     alt={`Imagem de fundo`}
                     layout="fill"
                     objectFit="cover"

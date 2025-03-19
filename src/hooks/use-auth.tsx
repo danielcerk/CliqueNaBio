@@ -39,38 +39,33 @@ export const register = async (
     return response.data;
 
   } catch (error: unknown) {
-
-    if (error instanceof Error) {
-
-      console.error("Erro ao criar conta:", error.message);
-      
+    if (error instanceof AxiosError && error.response) {
+      console.error('Erro na resposta:', error.response.data);
+      throw new Error(error.response.data.message || 'Erro ao registrar.');
     } else {
-
-      console.error("Um erro foi encontrado:", error);
-
+      console.error('Erro na requisição:', error);
+      throw new Error('Erro ao conectar ao servidor.');
     }
-
-    throw error;
-
   }
   
 }
 
 
 export const login = async (
-  apiBase: AxiosInstance, 
+  apiBase: AxiosInstance,
   email: string,
   password: string
 ): Promise<TokenResponse> => {
-
   try {
+    console.log('Enviando credenciais:', { email, password });
+
     const response = await apiBase.post<TokenResponse>('/api/v1/auth/token/', {
       email,
       password,
     });
-    
-    // Extraindo corretamente os tokens
-    const { access, refresh } = response.data; 
+
+
+    const { access, refresh } = response.data;
 
     if (!access || !refresh) {
       throw new Error("A resposta do servidor não contém tokens válidos.");
@@ -79,7 +74,6 @@ export const login = async (
     // Salva os tokens nos cookies
     Cookies.set('access_token', access, { expires: 1, path: '/' });
     Cookies.set('refresh_token', refresh, { expires: 50, path: '/' });
-
     // Adiciona o token ao Axios
     apiBase.defaults.headers.common["Authorization"] = `Bearer ${access}`;
 
@@ -87,8 +81,13 @@ export const login = async (
 
   } catch (error) {
     const axiosError = error as AxiosError<LoginError>;
-
-    throw axiosError.response?.data || axiosError;
+    if (axiosError.response) {
+      console.error('Erro na resposta:', axiosError.response.data);
+      throw axiosError.response.data;
+    } else {
+      console.error('Erro na requisição:', axiosError.message);
+      throw new Error('Erro ao conectar ao servidor.');
+    }
   }
 };
 

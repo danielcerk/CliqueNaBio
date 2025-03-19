@@ -49,12 +49,12 @@ export default function Register() {
     e.preventDefault();
 
     const data = {
-      name: `${formData.first_name} ${formData.last_name}`, 
+      name: `${formData.first_name} ${formData.last_name}`,
       first_name: formData.first_name,
       last_name: formData.last_name,
       email: formData.email,
       password: formData.password,
-      terms_of_use_is_ready: formData.terms_of_use_is_ready
+      terms_of_use_is_ready: formData.terms_of_use_is_ready,
     };
 
     try {
@@ -68,13 +68,21 @@ export default function Register() {
 
       router.push('/home');
     } catch (error) {
-
       if (error instanceof Error) {
-        setError('Erro ao criar conta');
-        showAlert("error", "Erro ao criar conta!")
+        // Verifica se o erro é uma instância de Error
+        setError('Erro ao criar conta: ' + error.message);
+        showAlert("error", "Erro ao criar conta!");
+      } else if (typeof error === 'object' && error !== null && 'response' in error) {
+        // Verifica se o erro tem a propriedade 'response'
+        const axiosError = error as { response: { status: number } };
+        if (axiosError.response.status === 400) {
+          setError('E-mail já cadastrado.');
+        } else {
+          setError('Erro ao criar conta. Tente novamente.');
+        }
       } else {
-        setError('Erro desconhecido');
-        showAlert("error", "Erro desconhecido!")
+        // Caso o erro seja de um tipo desconhecido
+        setError('Erro desconhecido ao criar conta.');
       }
     } finally {
       setLoading(false);
@@ -198,22 +206,7 @@ export default function Register() {
               <span className="block text-gray-950">Já tem uma <b className='text-yellow-500'>conta?</b></span>
             </button>
           </div>
-            
-          {/*<div className="flex flex-col items-center gap-5 my-5">
-          <span className="">ou</span>
-              <Link href="#" className="hover:scale-105 transition-all leading-[1.2] duration-500">
-                <span className="text-[1.125rem] leading-[1.2] flex justify-center items-center p-4 h-[70px] rounded-[10px] shadow-md transition-all duration-500 relative bg-white text-[#555555] z-1 mb-5">
-                  <Image
-                    src="/icons/icon-google.png"
-                    alt="Login no CliqueNaBio usando o Google"
-                    width={24}
-                    height={24}
-                    className="mr-[15px] pb-[3px]"
-                  />
-                  Google
-                </span>
-              </Link>
-          </div>*/}
+
         </div>
       </div>
 

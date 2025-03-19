@@ -26,7 +26,6 @@ export default function Login() {
     setIsModalOpen(true);
   };
 
-  // Função para realizar o login
   const handleLogin = async () => {
     setLoading(true);
     try {
@@ -34,13 +33,14 @@ export default function Login() {
       showAlert('success', 'Login bem-sucedido!');
       router.push('/home');
     } catch (error) {
+      console.error('Erro no login:', error);
       setError('Email ou senha inválidos. Tente novamente.');
       showAlert('error', 'Erro! Senha ou email incorretos');
     } finally {
       setLoading(false);
     }
   };
-
+  
   useEffect(() => {
     const code = searchParams.get('code');
     if (code) {
