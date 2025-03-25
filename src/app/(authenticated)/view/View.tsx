@@ -103,7 +103,7 @@ const View = (): JSX.Element | null =>{
             ? 'https://cliquenabio.com.br/' 
             : 'http://localhost:3000/';
 
-          const link = `${URL}profile/${userData.slug}`;
+          const link = `${URL}@${userData.slug}`;
           setPublicLink(link);
 
         } else {
@@ -215,7 +215,7 @@ const View = (): JSX.Element | null =>{
                 />
                 <button
                   onClick={handleCopyLink}
-                  className="p-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-600 transition-colors"
+                  className="p-2 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-600 transition-colors"
                 >
                   Copiar
                 </button>
@@ -223,9 +223,9 @@ const View = (): JSX.Element | null =>{
 
               <button
                 onClick={() => setIsThemeEditorOpen(true)}
-                className="mt-4 p-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-600 transition-colors"
+                className="mt-4 p-2 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-600 transition-colors"
               >
-                Editar Tema
+                Alterar Tema
               </button>
             </div>
           </div>

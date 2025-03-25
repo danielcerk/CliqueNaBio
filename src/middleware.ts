@@ -15,23 +15,21 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(normalizedPathname, request.url));
   }
 
-  // Ignorar arquivos estáticos e rotas do Next.js
-  if (
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/public') ||
+   // Ignorar arquivos estáticos
+   if (
+    pathname.startsWith('/_next') || 
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/static') ||
     pathname.match(/\.(png|jpg|jpeg|gif|svg|webp|ico|css|js|woff2?)$/)
   ) {
     return NextResponse.next();
   }
 
-  // Verificar rotas dinâmicas (ex: /profile/[slug])
-  const isDynamicRoute = /^\/profile\/[^\/]+$/.test(pathname);
-
-  if (isDynamicRoute) {
-    const slug = pathname.split('/')[2];
-    // Aqui você pode adicionar lógica adicional para rotas dinâmicas, se necessário
-    return NextResponse.next();
+  if (/^\/@[^\/]+$/.test(pathname)) {
+    const username = pathname.slice(2); // Remove '/@'
+    return NextResponse.rewrite(new URL(`/${username}`, request.url));
   }
+
 
   // Proteger rotas privadas
   if (!token && !publicRoutes.includes(pathname)) {
@@ -40,3 +38,4 @@ export function middleware(request: NextRequest) {
 
   return NextResponse.next();
 }
+

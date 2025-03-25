@@ -152,14 +152,14 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData}) => {
 
   return (
     <div className="lg:max-w-[90%] w-full lg:flex lg:justify-around rounded-xl"  >
-      <Card className="relative max-w-full min-h-screen rounded-xl pb-10 overflow-hidden " style={{
+      <Card className="relative max-w-full min-h-screen rounded-xl pb-10 overflow-hidden border-0" style={{
       backgroundColor: bioData.theme[0]?.background_color || 'white',
       color: bioData.theme[0]?.foreground_color || 'black',
       fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
     }}>
 
       <div className="p-4 gap-5 max-w-xl lg:flex items-start mx-auto lg:mx-0 lg:max-w-[100%] lg:min-w-[1000px] h-full">
-        <div className=" pb-20 rounded-xl w-full  relative border">
+        <div className=" pb-3 rounded-xl w-full  relative border max-w-[500px]">
 
               <div className="absolute w-full h-[30%] rounded-t overflow-hidden">
                 <div className="w-full h-full cursor-pointer">
@@ -211,7 +211,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData}) => {
               </section>
         </div>
 
-        <div className="mt-5 lg:mt-0 w-full ">
+        <div className="mt-5 lg:mt-0 w-full max-w-[1000px]">
 
         <div className="container gap-4 w-full h-full mx-auto">
           {bioData.content

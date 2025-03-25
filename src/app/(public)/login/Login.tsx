@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { AlertModal } from '@/components/common/AlertModal';
 import Cookie from 'js-cookie';
 import Loading from './loading';
+import Image from 'next/image';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -134,9 +135,21 @@ export default function Login() {
 
             {/* Links para cadastro e login com Google */}
             <div className="w-full text-center mt-5">
-              <Link href="/register">
-                <span className="block text-yellow-500 text-lg mb-5">Cadastre-se</span>
-              </Link>
+            <Link href="/register">
+              <span className="block text-lg font-semibold text-yellow-500 hover:text-yellow-400 transition duration-300">
+              <i className="fa-regular fa-circle-right"></i> Cadastre-se
+              </span>
+              <Image
+                src="/icons/image.ico"
+                alt="Icon CliqueNaBio"
+                width={30}
+                height={30}
+                quality={100}  // Qualidade máxima
+                className="rounded-3xl mx-auto py-5"
+                style={{ objectFit: 'cover' }}
+              />
+            </Link>
+
               {/*<span className="mt-3 text-white">ou</span>
               <div className="flex justify-center gap-5 my-5">
                 <Link href={`https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=${process.env.NEXT_PUBLIC_GOOGLE_CALLBACK_URI}&prompt=consent&response_type=code&client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&scope=openid%20email%20profile&access_type=offline`} className="hover:scale-105 transition-all leading-[1.2] duration-500">

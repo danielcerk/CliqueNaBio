@@ -222,7 +222,7 @@ export default function Account() {
       ? 'https://cliquenabio.com.br/' 
       : 'http://localhost:3000/';
 
-    return `${URL}profile/${user.slug}`;
+    return `${URL}@${user.slug}`;
   };
 
   const handleShare = () => {
