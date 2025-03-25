@@ -62,7 +62,7 @@ export default function ViewBio() {
           showAlert('error', 'Usuário não encontrado na URL!');
         }
   
-        const profileResponse = await axiosInstance.get(`/api/v1/@${slug}/`);
+        const profileResponse = await axiosInstance.get(`/api/v1/profile/${slug}/`);
         const profileData = profileResponse.data;
  
         const theme = profileData.theme ? {
