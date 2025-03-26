@@ -144,8 +144,8 @@ const ThemeEditorModal: React.FC<ThemeEditorModalProps> = ({ isOpen, onClose, in
                 onChange={(e) => handleChange("background_color", e.target.value)}
                 className="flex-1 p-2 border rounded-lg"
                 style={{
-                  color: editedTheme.foreground_color || "#000", // Cor do texto
-                  backgroundColor: editedTheme.background_color || "#fff" // Cor de fundo (opcional)
+                  color: "#000", // Cor do texto
+                  backgroundColor: "#fff" // Cor de fundo (opcional)
                 }}
               />
             </div>
@@ -167,8 +167,8 @@ const ThemeEditorModal: React.FC<ThemeEditorModalProps> = ({ isOpen, onClose, in
                 onChange={(e) => handleChange("foreground_color", e.target.value)}
                 className="flex-1 p-2 border rounded-lg"
                 style={{
-                  color: editedTheme.foreground_color || "#000", // Cor do texto
-                  backgroundColor: editedTheme.background_color || "#fff" // Cor de fundo (opcional)
+                  color: "#000", // Cor do texto
+                  backgroundColor: "#fff" // Cor de fundo (opcional)
                 }}
               />
             </div>
@@ -182,8 +182,8 @@ const ThemeEditorModal: React.FC<ThemeEditorModalProps> = ({ isOpen, onClose, in
               onChange={(e) => handleChange("font_family", e.target.value)}
               className="w-full p-2 border rounded-lg"
               style={{
-                color: editedTheme.foreground_color || "#000", // Cor do texto
-                backgroundColor: editedTheme.background_color || "#fff" // Cor de fundo (opcional)
+                color: "#000", // Cor do texto
+                backgroundColor: "#fff" // Cor de fundo (opcional)
               }}
             >
               <option value="Arial, sans-serif">Arial</option>

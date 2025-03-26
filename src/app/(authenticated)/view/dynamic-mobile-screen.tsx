@@ -163,7 +163,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData}) => {
           boxShadow: `0 10px 15px -3px ${bioData.theme[0]?.foreground_color || '#000000'}33, 0 4px 6px -2px ${bioData.theme[0]?.foreground_color || '#000000'}1a`
           }}>
 
-              <div className="absolute w-full h-[30%] rounded-t overflow-hidden">
+              <div className="absolute w-full h-[30%] rounded-t overflow-hidden ">
                 <div className="w-full h-full cursor-pointer">
                   <Image
                     src={bioData.banner || '/bg-01.jpg'}
