@@ -40,6 +40,7 @@ export default function ViewBio() {
     content: [],
     form_contact: false,
     copyright: false,
+    theme: []
   });
 
   const [loading, setLoading] = useState(true);
@@ -63,6 +64,12 @@ export default function ViewBio() {
   
         const profileResponse = await axiosInstance.get(`/api/v1/profile/${slug}/`);
         const profileData = profileResponse.data;
+ 
+        const theme = profileData.theme ? {
+          background_color: profileData.theme.background_color || 'white',
+          foreground_color: profileData.theme.foreground_color || 'black',
+          font_family: profileData.theme.font_family || 'Arial, sans-serif',
+        } : null;
   
         const links = profileData.links.map((link: any) => ({
           id: nanoid(),
@@ -89,6 +96,7 @@ export default function ViewBio() {
           updated_at: snap.updated_at || snap.created_at || "",
         }));
   
+
         setBioData({
           id: profileData.id,
           name: profileData.name,
@@ -98,6 +106,7 @@ export default function ViewBio() {
           content: [...links, ...snaps],
           form_contact: profileData.form_contact,
           copyright: profileData.copyright,
+          theme: theme ? [theme] : []
         });
       } catch (err) {
         let errorMessage = "Erro ao carregar dados.";
@@ -128,7 +137,11 @@ export default function ViewBio() {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col lg:flex-row">
+        <div className="flex flex-col lg:flex-row" style={{
+          backgroundColor: bioData.theme[0]?.background_color || 'white',
+          color: bioData.theme[0]?.foreground_color || 'black',
+          fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
+        }}>
           {error ? (
              <UserNotFound></UserNotFound>
           ) : (
@@ -136,7 +149,7 @@ export default function ViewBio() {
             attribute="class"
             defaultTheme="system"
             enableSystem>
-              <div className="w-full bg-gray-100 dark:bg-gray-900 py-5 ">
+              <div className="w-full  py-5 ">
                 <div className="fixed z-50 right-4 top-24">
                   <ThemeSwitcher />
                 </div>

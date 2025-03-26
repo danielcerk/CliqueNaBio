@@ -63,8 +63,9 @@ const BioEditor = () => {
     biografy: "",     
     image: "",        
     content: [],      
-    form_contact: false,  
-    copyright: false,  
+    form_contact: false,
+    copyright: false,
+    theme: [],
   });
 
   const [planLimits, setPlanLimits] = useState({ maxLinks: 0, maxSnaps: 0 });
@@ -137,6 +138,7 @@ const BioEditor = () => {
           content: [...links, ...snaps],   
           form_contact: false,  
           copyright: false,  
+          theme: []
         });
     } catch (err) {
         setError(true);

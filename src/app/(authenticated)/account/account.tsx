@@ -222,7 +222,7 @@ export default function Account() {
       ? 'https://cliquenabio.com.br/' 
       : 'http://localhost:3000/';
 
-    return `${URL}profile/${user.slug}`;
+    return `${URL}@${user.slug}`;
   };
 
   const handleShare = () => {
@@ -252,7 +252,7 @@ export default function Account() {
 
             <div className="w-full h-full cursor-pointer" onClick={handleBannerClick}>
               <Image
-                src={user?.banner?.trim() ? user.banner : "/placeholder.svg?height=128&width=128"}
+                src={user?.banner?.trim() ? user.banner : "/bg-01.jpg"}
                 alt={`Imagem de fundo`}
                 layout="fill"
                 objectFit="cover"
@@ -273,6 +273,7 @@ export default function Account() {
                 <AvatarImage
                   src={user?.image?.trim() ? user.image : "/placeholder.svg?height=128&width=128"}
                   alt={`Foto de perfil de ${user?.name}`}
+                  style={{ objectFit: 'cover' }}
                 />
                 <AvatarFallback>{usrNameFirst2Letters}</AvatarFallback>
               </Avatar>

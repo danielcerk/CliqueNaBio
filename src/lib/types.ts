@@ -19,6 +19,12 @@ export interface ContentItem {
   created?: boolean;
 }
 
+export interface Theme {
+  background_color?: string;
+  foreground_color?: string;
+  font_family?: string;
+}
+
 export interface BioData {
   id?: string | number;
   name: string;
@@ -28,6 +34,7 @@ export interface BioData {
   content: ContentItem[];
   form_contact?: boolean;
   copyright?: boolean;
+  theme:  Theme[]
 }
 
 export interface MobileScreenProps {

@@ -68,9 +68,9 @@ export default function TermsOfUse() {
             <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">5. Privacidade</h2>
             <p className="text-gray-700 dark:text-gray-300">
               Sua privacidade é importante para nós. Coletamos e processamos suas informações pessoais conforme descrito em nossa{" "}
-              <a className="text-blue-500 dark:text-blue-400 hover:underline" href="/politica-de-privacidade">
+              <Link className="text-blue-500 dark:text-blue-400 hover:underline" href="/privacy-policy">
                 Política de Privacidade
-              </a>. Ao usar a plataforma, você concorda com o uso de seus dados conforme descrito nela.
+              </Link>. Ao usar a plataforma, você concorda com o uso de seus dados conforme descrito nela.
             </p>
           </section>
 

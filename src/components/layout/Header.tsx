@@ -67,7 +67,7 @@ const Header = ({ openModalLogin }: HeaderProps) => {
                   href="/home"
                   className="py-2 px-4 font-medium bg-yellow-400 text-black rounded-xl transition-all hover:bg-yellow-300"
                 >
-                  Seu Painel <i className="fa-solid fa-chart-line"></i>
+                  Painel
                 </Link>
               ) : (
                 <button
