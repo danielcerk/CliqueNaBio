@@ -15,6 +15,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(normalizedPathname, request.url));
   }
 
+  if(token && pathname === "/"){
+    return NextResponse.redirect(new URL('/home', request.url))
+  }
+
    // Ignorar arquivos estáticos
    if (
     pathname.startsWith('/_next') || 

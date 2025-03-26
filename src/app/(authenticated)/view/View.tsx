@@ -10,6 +10,7 @@ import LoadingSkeleton from "./loading-skeleton";
 import { AlertModal } from '@/components/common/AlertModal';
 import { BioData, SnapItem} from "../../../lib/types"
 import ThemeEditorModal from './ThemeEditorModal';
+import { Button } from "@/components/ui/button";
 
 interface Theme {
   background_color?: string; 
@@ -38,7 +39,15 @@ const View = (): JSX.Element | null =>{
   const [modalMessage, setModalMessage] = useState('');
 
   
-  const [isThemeEditorOpen, setIsThemeEditorOpen] = useState(false); // Estado para controlar o editor de tema
+  const [isThemeEditorOpen, setIsThemeEditorOpen] = useState(false); 
+
+ 
+  const [currentTheme, setCurrentTheme] = useState<Theme>({
+    background_color: "#ffffff",
+    foreground_color: "#000000",
+    font_family: "Arial, sans-serif",
+  })
+
 
   // Função para mostrar o alerta
   const showAlert = (type: 'success' | 'error' | 'info', message: string) => {
@@ -71,6 +80,8 @@ const View = (): JSX.Element | null =>{
         ...prevData,
         theme: [editedTheme],
       }));
+
+      setCurrentTheme(editedTheme)
   
       showAlert('success', 'Tema atualizado com sucesso!');
     } catch (error) {
@@ -204,43 +215,37 @@ const View = (): JSX.Element | null =>{
 
         {publicLink && (
           <div className="w-full lg:max-w-5xl">
-            <div className="mt-4 p-4 rounded-lg max-w-3xl mb-5 ">
+            <div className="mt-4 p-4 rounded-lg max-w-3xl ">
               <p className="text-sm font-medium ">Seu link público:</p>
               <div className="flex items-center gap-2 mt-2">
                 <input
                   type="text"
                   value={publicLink}
                   readOnly
-                  className="flex-1 p-2 border text-gray-700 border-gray-300 rounded-lg text-sm dark:bg-gray-200"
+                  className="flex-1 p-2 bg-white border border-gray-500 text-black rounded-lg text-sm "
                 />
-                <button
+                <Button
                   onClick={handleCopyLink}
                   className="p-2 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-600 transition-colors"
                 >
                   Copiar
-                </button>
+                </Button>
               </div>
 
-              <button
-                onClick={() => setIsThemeEditorOpen(true)}
-                className="mt-4 p-2 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-600 transition-colors"
-              >
-                Alterar Tema
-              </button>
+              <Button onClick={() => setIsThemeEditorOpen(true)} className="my-8 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-600 transition-colors">
+                Alterar tema
+              </Button>
             </div>
           </div>
         )}
 
         <MobileScreen bioData={bioData} />
       </div>
+
       <ThemeEditorModal
         isOpen={isThemeEditorOpen}
         onClose={() => setIsThemeEditorOpen(false)}
-        initialTheme={{
-          background_color: bioData.theme[0]?.background_color || '#ffffff', // Valor padrão
-          foreground_color: bioData.theme[0]?.foreground_color || '#000000', // Valor padrão
-          font_family: bioData.theme[0]?.font_family || 'Arial, sans-serif', // Valor padrão
-        }}
+        initialTheme={currentTheme}
         onSave={handleSaveTheme}
       />
 

@@ -152,14 +152,16 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData}) => {
 
   return (
     <div className="lg:max-w-[90%] w-full lg:flex lg:justify-around rounded-xl"  >
-      <Card className="relative max-w-full min-h-screen rounded-xl pb-10 overflow-hidden border-0" style={{
+      <Card className="relative max-w-full min-h-screen rounded-xl pb-10 overflow-hidden border-none shadow-none" style={{
       backgroundColor: bioData.theme[0]?.background_color || 'white',
       color: bioData.theme[0]?.foreground_color || 'black',
       fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
     }}>
 
-      <div className="p-4 gap-5 max-w-xl lg:flex items-start mx-auto lg:mx-0 lg:max-w-[100%] lg:min-w-[1000px] h-full">
-        <div className=" pb-3 rounded-xl w-full  relative border max-w-[500px]">
+      <div className="px-4 gap-5 max-w-xl lg:flex items-start mx-auto lg:mx-0 lg:max-w-[100%] lg:min-w-[1000px] h-full">
+        <div className=" pb-3 rounded-xl w-full  relative max-w-[500px]" style={{ 
+          boxShadow: `0 10px 15px -3px ${bioData.theme[0]?.foreground_color || '#000000'}33, 0 4px 6px -2px ${bioData.theme[0]?.foreground_color || '#000000'}1a`
+          }}>
 
               <div className="absolute w-full h-[30%] rounded-t overflow-hidden">
                 <div className="w-full h-full cursor-pointer">
@@ -173,42 +175,45 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData}) => {
               </div>
               <div className="text-center z-50">
                 <Avatar className="w-32 h-32 mx-auto mt-10 shadow">
-                  <AvatarImage src={bioData.image} alt={bioData.name} />
+                  <AvatarImage src={bioData.image} alt={bioData.name} style={{ objectFit: 'cover' }}/>
                   <AvatarFallback>{bioData.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <p className="mt-4 font-medium capitalize ">{bioData.name}</p>
-                <p className="mt-2 text-gray-700 text-sm max-w-[400px] mx-auto dark:text-gray-200 ">{bioData.biografy}</p>
+                <p className="mt-2  text-sm max-w-[400px] mx-auto ">{bioData.biografy}</p>
               </div>
               
               <section className="flex items-center justify-center gap-6 p-6 rounded-lg">
-                {bioData.content.map((item) =>
-                  item.type === "link" && item.is_profile_link ? (
-                    <a
-                      key={item.url}
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group transition duration-300 ease-in-out transform hover:scale-110"
-                    >
-                      {(() => {
-                        const Icon = getSocialIcon(item.title || item.social_network ||  "");
-                        const socialKey = Object.keys(socialColors).find((key) =>
-                          item.title?.toLowerCase().includes(key.toLowerCase())
-                        ) as SocialIconKey | undefined;
+              {bioData.content.map((item) =>
+                item.type === "link" && item.is_profile_link ? (
+                  <a
+                    key={item.url}
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1.5 rounded-full bg-black/10 backdrop-blur-sm
+                      group transition duration-300 hover:scale-110"
+                  >
+                    {(() => {
+                      const Icon = getSocialIcon(item.title || item.social_network || "");
+                      const socialKey = Object.keys(socialColors).find((key) =>
+                        item.title?.toLowerCase().includes(key.toLowerCase())
+                      ) as SocialIconKey | undefined;
 
-                        // Define a cor padrão como cinza se a rede social não for encontrada
-                        const colorClass = socialKey ? socialColors[socialKey] : "text-gray-600";
-
-                        return (
-                          <Icon
-                            className={`w-6 h-6 ${colorClass} group-hover:opacity-80 transition-colors duration-300`}
-                          />
-                        );
-                      })()}
-                    </a>
-                  ) : null
-                )}
-              </section>
+                      const colorClass = socialKey ? socialColors[socialKey] : "text-gray-600";
+                      
+                      return (
+                        <Icon
+                          className={`w-6 h-6 ${colorClass}
+                            drop-shadow-[0_1px_1px_rgba(0,0,0,0)]
+                            group-hover:drop-shadow-[0_2px_2px_rgba(0,0,0,0)]
+                            transition-all duration-300`}
+                        />
+                      );
+                    })()}
+                  </a>
+                ) : null
+              )}
+            </section>
         </div>
 
         <div className="mt-5 lg:mt-0 w-full max-w-[1000px]">
