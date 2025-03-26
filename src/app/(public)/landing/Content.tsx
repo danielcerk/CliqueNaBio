@@ -267,7 +267,7 @@ export default function ContentLanding() {
                     </svg> Limite de 10 snaps
                   </li>
                 </ul>
-                <a href="/register" className="mt-8 block rounded-xl px-3.5 py-2.5 bg-yellow-400 text-black font-semibold ring-1 ring-inset ring-gray-900/25 hover:ring-yellow-300">Comece agora</a>
+                <Link href="/register" className="mt-8 block rounded-xl px-3.5 py-2.5 bg-yellow-400 text-black font-semibold ring-1 ring-inset ring-gray-900/25 hover:ring-yellow-300">Comece agora</Link>
               </div>
 
               {/* Plano Conexão */}
@@ -314,7 +314,7 @@ export default function ContentLanding() {
                     </svg> Suporte 24/7
                   </li>
                 </ul>
-                <a href="/register" className="mt-8 block rounded-xl px-3.5 py-2.5 bg-yellow-400 text-black font-semibold ring-1 ring-inset ring-yellow-200 hover:ring-yellow-300">Testar por 7 dias grátis</a>
+                <Link href="/register" className="mt-8 block rounded-xl px-3.5 py-2.5 bg-yellow-400 text-black font-semibold ring-1 ring-inset ring-yellow-200 hover:ring-yellow-300">Testar por 7 dias grátis</Link>
               </div>
 
               {/* Plano Influência */}
@@ -351,7 +351,7 @@ export default function ContentLanding() {
                     </svg> Acesso a recursos extras
                   </li>
                 </ul>
-                <a href="/register" className="mt-8 block rounded-xl px-3.5 py-2.5 bg-yellow-400 text-black font-semibold ring-1 ring-inset ring-gray-900/25 hover:ring-yellow-300">Testar por 7 dias grátis</a>
+                <Link href="/register" className="mt-8 block rounded-xl px-3.5 py-2.5 bg-yellow-400 text-black font-semibold ring-1 ring-inset ring-gray-900/25 hover:ring-yellow-300">Testar por 7 dias grátis</Link>
               </div>
             </div>
           </div>
