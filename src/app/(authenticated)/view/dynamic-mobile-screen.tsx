@@ -178,7 +178,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData}) => {
                   <AvatarImage src={bioData.image} alt={bioData.name} style={{ objectFit: 'cover' }}/>
                   <AvatarFallback>{bioData.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <p className="mt-4 font-medium capitalize ">{bioData.name}</p>
+                <p className="mt-4 font-bold capitalize ">{bioData.name}</p>
                 <p className="mt-2  text-sm max-w-[400px] mx-auto ">{bioData.biografy}</p>
               </div>
               

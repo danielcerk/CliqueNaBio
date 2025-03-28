@@ -41,28 +41,27 @@ export default function ScreenPhone() {
         scrolling > 0 ? "animate-screen-phone" : "animate-screen-phone-off"
       }`}>
 
-        <h2 className="text-5xl sm:text-6xl font-bold text-gray-900 mb-6 uppercase relative  lg:w-1/3 mx-auto p-4">
+        <h2 className="text-5xl sm:text-6xl font-bold text-gray-900  mb-6 uppercase relative  lg:w-1/3 mx-auto p-4">
           <div className="inline-flex  items-center rounded-lg bg-muted px-3 py-1 text-sm">
             <Share2 className="mr-1 h-4 w-4" />
-            <span>Identidade Digital</span>
+            <span className="dark:text-white">Identidade Digital</span>
           </div>
           <span className="relative mt-4 inline-block">
           Deixe o link na bio a sua cara, conecte, compartilhe e analise.
           </span>
         </h2>
-        <div className="lg:w-2/3 flex flex-col items-end">
+        <div className=" flex flex-col items-end">
           <Image
-            src={"/iphones_mostrando_links_na_bio_feitos_com_cliquenabio.png"}
+            src={"/selena.png"}
             alt="Identidade digital"
-            className="w-full max-w-md"
+            className="w-full "
             width={400}
-            height={250}
+            height={400}
             data-aos="fade-up"
             data-aos-duration="1000"
           />
-          <p className="lg:w-2/3 text-center px-5 text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-            Conecte-se com o mundo digital de forma segura e simples. Nossa plataforma permite que você compartilhe
-            suas credenciais digitais quando e com quem quiser.
+          <p className="lg:w-2/3 text-center px-5 text-gray-900 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+            Conecte-se com o mundo digital de forma segura e simples.
           </p>
         </div>
       </div>

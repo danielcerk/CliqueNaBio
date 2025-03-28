@@ -65,6 +65,7 @@ const BioEditor = () => {
     content: [],      
     form_contact: false,  
     copyright: false,  
+    theme: []
   });
 
   const [planLimits, setPlanLimits] = useState({ maxLinks: 0, maxSnaps: 0 });
@@ -137,6 +138,7 @@ const BioEditor = () => {
           content: [...links, ...snaps],   
           form_contact: false,  
           copyright: false,  
+          theme: []
         });
     } catch (err) {
         setError(true);
@@ -425,7 +427,7 @@ const BioEditor = () => {
                             </div>
                           ) : <Globe className="w-8 h-8 text-gray-500" />}
                           
-                          <Input
+                          {/* <Input
                             type="url"
                             className="w-full text-gray-700 dark:bg-gray-200"
                             placeholder="https://exemplo.com"
@@ -442,7 +444,7 @@ const BioEditor = () => {
                               updateContent(item.id, item.content, item.url, item.title, e.target.value)
                             }
                             required
-                          />
+                          /> */}
                         </>
                       )}
                       {item.type === "photo" && (
@@ -471,7 +473,7 @@ const BioEditor = () => {
                             onChange={(e) => handlePhotoUpload(item.id, e)}
                             required
                           />
-                          <Input
+                          {/* <Input
                             type="text"
                             className="w-full text-gray-700 dark:bg-gray-200"
                             placeholder="Nome do Snap"
@@ -490,7 +492,7 @@ const BioEditor = () => {
                               updateContent(item.id, item.content, item.url, item.name, item.small_description, e.target.value)
                             }
                             required
-                          />
+                          /> */}
                         </>
                       )}
                       <Button

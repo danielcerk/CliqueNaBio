@@ -52,7 +52,7 @@ export default function ContentLanding() {
     <div>
       <div className="bg-white">
         <section 
-          className={`isolate bg-yellow-400 overflow-hidden px-6 py-24 lg:px-8 rounded transition-all duration-500 ${
+          className={`isolate bg-yellow-400 overflow-hidden px-6 py-2 lg:py-24 lg:px-8 rounded transition-all duration-500 ${
             scrolling > componentPosition - 300 ? "animate-content " : "animate-content-off"
           }`} ref={contentRef} >
           <div className=" inset-0 -z-10 opacity-30 "></div>
@@ -156,11 +156,11 @@ export default function ContentLanding() {
                   <div className="relative bg-gradient-to-r from-yellow-400 to-yellow-500 p-1 rounded-3xl shadow-2xl transform rotate-3 hover:rotate-0 transition-all duration-500 cursor-pointer">
                     <div className="bg-white p-2 rounded-[22px] overflow-hidden">
                       <Image
-                        src=""
+                        src="/larissa.png"
                         alt="Link na bio no celular"
                         width={500}
                         height={500}
-                        className="w-full rounded-2xl"
+                        className="w-full max-w-md rounded-2xl"
                         data-aos="zoom-in"
                       />
                     </div>
@@ -211,7 +211,7 @@ export default function ContentLanding() {
         </section>
 
 
-        <div className="w-full bg-gradient-to-b from-zinc-950 to-zinc-900 py-16 overflow-hidden">
+        <div className="w-full bg-gradient-to-b from-zinc-950 to-zinc-900 lg:py-16 overflow-hidden">
           {/* Dashboard Section */}
           <section className="container mx-auto px-4 sm:px-6 py-20" data-aos="fade-up">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -261,7 +261,7 @@ export default function ContentLanding() {
                   />
                 </div>
                 <div className="absolute -bottom-4 -right-4 bg-yellow-400 text-black font-bold rounded-full px-4 py-2 shadow-lg">
-                  100% Personalizável
+                  100% Confiável
                 </div>
               </div>
             </div>
@@ -281,10 +281,9 @@ export default function ContentLanding() {
               </div>
               <h2 className="text-5xl sm:text-6xl font-bold text-white uppercase tracking-tight mb-6">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-300">
-                  Adicione Snaps e Links
+                  Adicione Fotos, Links e Textos <span className="text-white">na Bio</span>
                 </span>
-                <br />
-                na Bio
+                
               </h2>
               <p className="text-xl text-zinc-300 leading-relaxed">
                 Crie um link dinâmico e interativo em poucos cliques. Personalize sua presença digital com uma interface
@@ -293,36 +292,40 @@ export default function ContentLanding() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              {/* Container Desktop (paisagem) */}
               <div className="lg:col-span-7 relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 rounded-3xl blur-md opacity-70 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                <div className="relative bg-zinc-900/80 backdrop-blur p-2 rounded-3xl overflow-hidden h-full">
-                  <Image
-                    src="/"
-                    alt="Interface de criação do CliqueNaBio - Desktop"
-                    width={1200}
-                    height={800}
-                    quality={100}
-                    className="rounded-2xl w-full h-full object-cover shadow-2xl transform transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-yellow-400/20"
-                  />
-                  <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm rounded-full px-4 py-2 text-yellow-400 font-medium">
-                    Versão Desktop
+                <div className="relative bg-black/80 backdrop-blur p-4 rounded-3xl overflow-hidden h-full flex justify-center">
+                  <div className="w-full aspect-video relative">
+                    <Image
+                      src="/create-desktop.png"
+                      alt="Interface de criação do CliqueNaBio - Desktop"
+                      fill
+                      quality={100}
+                      className="rounded-2xl object-contain shadow-2xl transform transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-yellow-400/20"
+                    />
+                    <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm rounded-full px-4 py-2 text-yellow-400 font-medium">
+                      Versão Desktop
+                    </div>
                   </div>
                 </div>
               </div>
 
+              {/* Container Mobile (retrato) */}
               <div className="lg:col-span-5 relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 rounded-3xl blur-md opacity-70 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                <div className="relative bg-zinc-900/80 backdrop-blur p-2 rounded-3xl overflow-hidden h-full">
-                  <Image
-                    src="/"
-                    alt="Interface de criação do CliqueNaBio - Mobile"
-                    width={1200}
-                    height={800}
-                    quality={100}
-                    className="rounded-2xl w-full h-full object-cover shadow-2xl transform transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-yellow-400/20"
-                  />
-                  <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm rounded-full px-4 py-2 text-yellow-400 font-medium">
-                    Versão Mobile
+                <div className="relative bg-black/80 backdrop-blur p-4 rounded-3xl overflow-hidden h-full flex justify-center">
+                  <div className="w-full md:max-w-[200px] aspect-[8/16] relative mx-auto">
+                    <Image
+                      src="/create-mobile.png"
+                      alt="Interface de criação do CliqueNaBio - Mobile"
+                      fill
+                      quality={100}
+                      className="rounded-2xl object-contain shadow-2xl transform transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-yellow-400/20"
+                    />
+                    <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm rounded-full px-4 py-2 text-yellow-400 font-medium">
+                      Versão Mobile
+                    </div>
                   </div>
                 </div>
               </div>
