@@ -95,6 +95,16 @@ export default function ViewBio() {
           small_description: snap.small_description || "",
           updated_at: snap.updated_at || snap.created_at || "",
         }));
+
+
+        const notes = profileData.snaps.map((note: any) => ({
+          id: note?.id,
+          type: "note",
+          content: note?.text || "",
+          created_at: note?.created_at || new Date().toISOString(),
+          updated_at: note?.updated_at || new Date().toISOString(),
+          created: true,
+        }))
   
 
         setBioData({
@@ -103,11 +113,15 @@ export default function ViewBio() {
           biografy: profileData.biografy,
           image: profileData.image,
           banner: profileData.banner,
-          content: [...links, ...snaps],
+          content: [...links, ...snaps, ...notes],
           form_contact: profileData.form_contact,
           copyright: profileData.copyright,
           theme: theme ? [theme] : []
         });
+
+        console.log(snaps)
+        console.log(notes)
+
       } catch (err) {
         let errorMessage = "Erro ao carregar dados.";
   

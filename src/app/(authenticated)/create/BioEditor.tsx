@@ -32,7 +32,7 @@ const BioEditor = () => {
 
   // Estados para o modal de criação de conteúdo
   const [isAddContentModalOpen, setIsAddContentModalOpen] = useState(false);
-  const [contentType, setContentType] = useState<"link" | "photo" | "text">("link");
+  const [contentType, setContentType] = useState<"link" | "photo" | "note">("link");
 
   const [isEditContentModalOpen, setIsEditContentModalOpen] = useState(false);
   const [contentToEdit, setContentToEdit] = useState<ContentItem | null>(null);
@@ -75,7 +75,7 @@ const BioEditor = () => {
   const [error, setError] = useState(false);
   const [loadingSave, setLoadingSave] = useState<string | null>(null); 
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState<{ id: string | number; type: "link" | "photo" | "text" } | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<{ id: string | number; type: "link" | "photo" | "note" } | null>(null);
 
   const generateUniqueId = () => `${Date.now()}-${nanoid()}`;
 
@@ -136,7 +136,7 @@ const BioEditor = () => {
 
         const notes = noteResponse.data.map((note: NoteItem)=> ({
           id: note?.id,
-          type: "text",
+          type: "note",
           content: note?.text || "",
           created_at: note?.created_at || new Date().toISOString(),
           updated_at: note?.updated_at || new Date().toISOString(),
@@ -165,7 +165,7 @@ const BioEditor = () => {
   }, [fetchContent]);
 
 
-  const addContent = (type: "link" | "photo" | "text") => {
+  const addContent = (type: "link" | "photo" | "note") => {
     const linksCount = bioData.content.filter((item) => item.type === "link").length;
     const snapsCount = bioData.content.filter((item) => item.type === "photo").length;
   
@@ -203,7 +203,7 @@ const BioEditor = () => {
     setBioData((prev) => ({ ...prev, content: [...prev.content, newContent] }));
   
     try {
-      if (contentType === "text") {
+      if (contentType === "note") {
         if (!data.text) {
           throw new Error("Texto da nota não pode estar vazio");
         }
@@ -243,7 +243,7 @@ const BioEditor = () => {
       name: data.name || contentToEdit.name,
       small_description: data.small_description || contentToEdit.small_description,
       content: contentType === "photo" ? data.image || contentToEdit.content :
-      contentType === "text" ? data.text || contentToEdit.content :
+      contentType === "note" ? data.text || contentToEdit.content :
       contentToEdit.content,
     };
 
@@ -255,8 +255,9 @@ const BioEditor = () => {
     }));
 
     try {
-      if (contentToEdit.type === "text" && data.text) {
+      if (contentToEdit.type === "note" && data.text) {
         await updateNote(axiosInstance, data.text, contentToEdit.id.toString());
+        await fetchContent(); 
       } else {
         await updateItem(updatedContent);
       }
@@ -395,7 +396,7 @@ const BioEditor = () => {
   };
 
 
-  const deleteItem = async (id: string | number, type: "link" | "photo" | "text") => {
+  const deleteItem = async (id: string | number, type: "link" | "photo" | "note") => {
     const stringId = id.toString();
     const numericId = stringId.split("-")[0];
     try {
@@ -415,7 +416,7 @@ const BioEditor = () => {
         await axiosInstance.delete(`/api/v1/account/me/snap/${numericId}/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-      }else if (type === "text") {
+      }else if (type === "note") {
         await deleteNote(axiosInstance, numericId);
       }
 
@@ -452,13 +453,13 @@ const BioEditor = () => {
         <h2 className="text-2xl font-bold text-gray-900 text-center mb-6 dark:text-white">Editor de Bio</h2>
 
         <div className="flex flex-wrap gap-4 mb-8 w-full justify-center">
-          <Button onClick={() => addContent("link")} className="flex items-center p-10 gap-2 hover:scale-105 transition-all duration-300 font-bold dark:bg-yellow-400">
+          <Button onClick={() => addContent("link")} className="flex items-center p-5 gap-2 hover:scale-105 transition-all duration-300 font-bold dark:bg-yellow-400">
             <Globe className="w-5 h-5" /> Adicionar Link
           </Button>
-          <Button onClick={() => addContent("photo")} className="flex items-center p-10 gap-2 hover:scale-105 transition-all duration-300 font-bold dark:bg-blue-400">
+          <Button onClick={() => addContent("photo")} className="flex items-center p-5 gap-2 hover:scale-105 transition-all duration-300 font-bold dark:bg-blue-400">
             <ImageIcon className="w-5 h-5" /> Adicionar Foto
           </Button>
-          <Button onClick={() => addContent("text")} className="flex items-center p-10 gap-2 hover:scale-105 transition-all duration-300 font-bold dark:bg-blue-400">
+          <Button onClick={() => addContent("note")} className="flex items-center p-5 gap-2 hover:scale-105 transition-all duration-300 font-bold dark:bg-green-400">
             <ImageIcon className="w-5 h-5" /> Adicionar Texto
           </Button>
         </div>
@@ -515,7 +516,7 @@ const BioEditor = () => {
                           />
                         </>
                       )}
-                     {item.type === "text" && (
+                     {item.type === "note" && (
                         <div className="w-full p-4 bg-gray-100 dark:bg-gray-700 rounded-md">
                           <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
                             {item.content}

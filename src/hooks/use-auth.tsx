@@ -57,7 +57,6 @@ export const login = async (
   password: string
 ): Promise<TokenResponse> => {
   try {
-    console.log('Enviando credenciais:', { email, password });
 
     const response = await apiBase.post<TokenResponse>('/api/v1/auth/token/', {
       email,

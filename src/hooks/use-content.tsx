@@ -107,12 +107,12 @@ export const createNote = async (
 // Adicione esta função para atualizar notas
 export const updateNote = async (
   api: AxiosInstance,
-  NoteData: string, 
+  text: string,
   id: string) => {
   try {
     const token = Cookies.get("access_token");
     const response = await api.put(`/api/v1/account/me/note/${id}/`, 
-      NoteData,
+      {text},
       { headers: { Authorization: `Bearer ${token}` } }
     );
     return response.data;

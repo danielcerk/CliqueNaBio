@@ -1,7 +1,7 @@
 
 export interface ContentItem {
   id: string;
-  type: "link" | "photo" | "text";
+  type: "link" | "photo" | "note";
   content: string;
   name?: string ;
   small_description?: string;

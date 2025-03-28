@@ -10,7 +10,7 @@ import { AlertModal } from '@/components/common/AlertModal';
 interface EditContentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  type: "link" | "photo" | "text";
+  type: "link" | "photo" | "note";
   content: {
     url?: string;
     title?: string;
@@ -63,7 +63,7 @@ export const EditContentModal = ({ isOpen, onClose, type, content, onSave }: Edi
       return;
     }
 
-    if (type === "text" && !text.trim()) {
+    if (type === "note" && !text.trim()) {
       showAlert('error', 'Por favor, digite algum texto para a nota.');
       return;
     }
@@ -81,7 +81,7 @@ export const EditContentModal = ({ isOpen, onClose, type, content, onSave }: Edi
         name,
         small_description: smallDescription,
         image: imageUrl,
-        text: type === "text" ? text : undefined,
+        text: type === "note" ? text : undefined,
       });
 
       onClose();

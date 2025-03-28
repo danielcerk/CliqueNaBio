@@ -348,6 +348,27 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData}) => {
                       </div>
                     )}
 
+                    {item.type === "note" && (
+                      <div className="w-full p-4 rounded-md" style={{
+                        backgroundColor: bioData.theme[0]?.background_color || 'white',
+                        color: bioData.theme[0]?.foreground_color || 'black',
+                        fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
+                      }}>
+                        <p className="whitespace-pre-wrap">
+                          {item.content}
+                        </p>
+                        {item.created_at && (
+                          <p className="text-xs mt-2" style={{
+                            backgroundColor: bioData.theme[0]?.background_color || 'white',
+                            color: bioData.theme[0]?.foreground_color || 'black',
+                            fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
+                          }}>
+                            Criado em: {new Date(item.created_at).toLocaleString()}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
                 </div>
                 );
             })}

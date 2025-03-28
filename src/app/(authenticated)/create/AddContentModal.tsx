@@ -8,7 +8,7 @@ import { AlertModal } from '@/components/common/AlertModal';
 interface AddContentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  type: "link" | "photo" | "text";
+  type: "link" | "photo" | "note";
   onSave: (data: { 
     url?: string; 
     title?: string; 
@@ -53,7 +53,7 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
       return;
     }
 
-    if (type === "text" && !text.trim()) {
+    if (type === "note" && !text.trim()) {
       showAlert('error', 'Por favor, digite algum texto para a nota.');
       return;
     }
@@ -71,7 +71,7 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
         name,
         small_description: smallDescription,
         image: imageUrl,
-        text: type === "text" ? text : undefined,
+        text: type === "note" ? text : undefined,
       });
 
       // Reset form

@@ -8,7 +8,7 @@ import { nanoid } from "nanoid";
 import Cookie from "js-cookie";
 import LoadingSkeleton from "./loading-skeleton";
 import { AlertModal } from '@/components/common/AlertModal';
-import { BioData, SnapItem} from "../../../lib/types"
+import { BioData, SnapItem, NoteItem} from "../../../lib/types"
 import ThemeEditorModal from './ThemeEditorModal';
 import { Button } from "@/components/ui/button";
 
@@ -122,7 +122,7 @@ const View = (): JSX.Element | null =>{
         }
 
         // Busca os links e snaps do usuário
-        const [linkResponse, snapResponse, themeResponse] = await Promise.all([
+        const [linkResponse, snapResponse, themeResponse, noteResponse] = await Promise.all([
           axiosInstance.get("/api/v1/account/me/link/", {
             headers: { Authorization: `Bearer ${token}` },
           }),
@@ -132,6 +132,9 @@ const View = (): JSX.Element | null =>{
           axiosInstance.get("/api/v1/account/theme/", {
             headers: { Authorization: `Bearer ${token}` },
           }),
+          axiosInstance.get("/api/v1/account/me/note/", {
+            headers: { Authorization: `Bearer ${token}` },
+          })
         ]);
 
         const links = linkResponse.data.map((link: any) => ({
@@ -159,6 +162,14 @@ const View = (): JSX.Element | null =>{
           updated_at: snap.updated_at || snap.created_at || "",
         }));
 
+        const notes = noteResponse.data.map((note: NoteItem)=> ({
+          id: note?.id,
+          type: "note",
+          content: note?.text || "",
+          created_at: note?.created_at || new Date().toISOString(),
+          updated_at: note?.updated_at || new Date().toISOString(),
+          created: true,
+        }))
 
         const themeData = themeResponse.data;
 
@@ -168,7 +179,7 @@ const View = (): JSX.Element | null =>{
           biografy: userData.biografy,
           image: userData.image,
           banner: userData.banner,
-          content: [...links, ...snaps],
+          content: [...links, ...snaps, ...notes],
           form_contact: userData.form_contact,
           copyright: userData.copyright,
           theme: [themeData], // Use o tema do backend, se existir
