@@ -156,7 +156,7 @@ export default function ContentLanding() {
                   <div className="relative bg-gradient-to-r from-yellow-400 to-yellow-500 p-1 rounded-3xl shadow-2xl transform rotate-3 hover:rotate-0 transition-all duration-500 cursor-pointer">
                     <div className="bg-white p-2 rounded-[22px] overflow-hidden">
                       <Image
-                        src="/celular_acessando_site_do_cliquenabio.png"
+                        src=""
                         alt="Link na bio no celular"
                         width={500}
                         height={500}
@@ -297,7 +297,7 @@ export default function ContentLanding() {
                 <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 rounded-3xl blur-md opacity-70 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
                 <div className="relative bg-zinc-900/80 backdrop-blur p-2 rounded-3xl overflow-hidden h-full">
                   <Image
-                    src="/create.png"
+                    src="/"
                     alt="Interface de criação do CliqueNaBio - Desktop"
                     width={1200}
                     height={800}
@@ -314,7 +314,7 @@ export default function ContentLanding() {
                 <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 rounded-3xl blur-md opacity-70 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
                 <div className="relative bg-zinc-900/80 backdrop-blur p-2 rounded-3xl overflow-hidden h-full">
                   <Image
-                    src="/create_mobile.png"
+                    src="/"
                     alt="Interface de criação do CliqueNaBio - Mobile"
                     width={1200}
                     height={800}
