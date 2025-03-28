@@ -303,7 +303,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
           <div className="mt-5 lg:mt-0 w-full max-w-[1000px]">
 
-          <div className="container gap-4 w-full h-full mx-auto">
+          <div className="container-content gap-4 w-full h-full mx-auto">
             {bioData.content
               .sort((a, b) => {
                 const dateA = a.updated_at ? new Date(a.updated_at) : new Date(0);

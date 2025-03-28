@@ -37,7 +37,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div>
+    <div className='overflow-hidden'>
       <div className="bg-[#F8F8F8] h-fit">
         <NoSSRBanner />
       </div>
