@@ -1,7 +1,7 @@
 
 export interface ContentItem {
   id: string;
-  type: "link" | "photo";
+  type: "link" | "photo" | "text";
   content: string;
   name?: string ;
   small_description?: string;
@@ -110,6 +110,13 @@ export interface SnapItem {
   image: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface NoteItem {
+  id: string;
+  text: string;
+  created_at: string; 
+  updated_at: string; 
 }
 
 export interface Dashboard {

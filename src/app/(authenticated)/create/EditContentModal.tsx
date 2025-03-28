@@ -10,15 +10,23 @@ import { AlertModal } from '@/components/common/AlertModal';
 interface EditContentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  type: "link" | "photo";
+  type: "link" | "photo" | "text";
   content: {
     url?: string;
     title?: string;
     name?: string;
     small_description?: string;
     image?: string;
+    text?: string;
   };
-  onSave: (data: { url?: string; title?: string; name?: string; small_description?: string; image?: string }) => Promise<void>;
+  onSave: (data: { 
+    url?: string; 
+    title?: string; 
+    name?: string; 
+    small_description?: string; 
+    image?: string;
+    text?: string;
+  }) => Promise<void>;
 }
 
 export const EditContentModal = ({ isOpen, onClose, type, content, onSave }: EditContentModalProps) => {
@@ -26,9 +34,9 @@ export const EditContentModal = ({ isOpen, onClose, type, content, onSave }: Edi
   const [title, setTitle] = useState(content.title || "");
   const [name, setName] = useState(content.name || "");
   const [smallDescription, setSmallDescription] = useState(content.small_description || "");
+  const [text, setText] = useState(content.text || "");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('success');
@@ -55,6 +63,11 @@ export const EditContentModal = ({ isOpen, onClose, type, content, onSave }: Edi
       return;
     }
 
+    if (type === "text" && !text.trim()) {
+      showAlert('error', 'Por favor, digite algum texto para a nota.');
+      return;
+    }
+
     setLoading(true);
     try {
       let imageUrl = content.image || "";
@@ -68,6 +81,7 @@ export const EditContentModal = ({ isOpen, onClose, type, content, onSave }: Edi
         name,
         small_description: smallDescription,
         image: imageUrl,
+        text: type === "text" ? text : undefined,
       });
 
       onClose();
@@ -84,7 +98,10 @@ export const EditContentModal = ({ isOpen, onClose, type, content, onSave }: Edi
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div className="bg-white dark:bg-black p-6 rounded-lg shadow-lg w-96 dark:border dark:border-yellow-400 max-h-[80vh] overflow-y-auto">
-        <h3 className="text-lg font-bold mb-4">Editar {type === "link" ? "Link" : "Publicação"}</h3>
+        <h3 className="text-lg font-bold mb-4">
+          Editar {type === "link" ? "Link" : type === "photo" ? "Publicação" : "Nota"}
+        </h3>
+
         {type === "link" ? (
           <>
             <Input
@@ -102,7 +119,7 @@ export const EditContentModal = ({ isOpen, onClose, type, content, onSave }: Edi
               className="mb-4 text-gray-700 dark:bg-gray-200"
             />
           </>
-        ) : (
+        ) : type === "photo" ? (
           <>
             <div className="mb-4">
               <label htmlFor="image-upload" className="cursor-pointer flex flex-col items-center">
@@ -139,28 +156,51 @@ export const EditContentModal = ({ isOpen, onClose, type, content, onSave }: Edi
             </div>
             <Input
               type="text"
-              placeholder="Titulo da publicação"
-              value={content.name}
+              placeholder="Título da publicação"
+              value={name}
               onChange={(e) => setName(e.target.value)}
               className="mb-4 text-gray-700 dark:bg-gray-200"
             />
             <textarea
               placeholder="Descrição pequena da publicação"
-              value={content.small_description}
+              value={smallDescription}
               onChange={(e) => setSmallDescription(e.target.value)}
               className="mb-4 p-2 w-full border rounded text-gray-700 dark:bg-gray-200"
               rows={4}
             />
           </>
+        ) : (
+          <div className="mt-4">
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2"
+              rows={6}
+              placeholder="Digite seu texto aqui..."
+            />
+          </div>
         )}
 
-        <AlertModal type={modalType} message={modalMessage} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <AlertModal 
+          type={modalType} 
+          message={modalMessage} 
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)} 
+        />
 
-        <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={onClose} className="dark:bg-red-900 font-bold">
+        <div className="flex justify-end gap-2 mt-4">
+          <Button 
+            variant="outline" 
+            onClick={onClose} 
+            className="dark:bg-red-900 font-bold"
+          >
             Cancelar
           </Button>
-          <Button onClick={handleSave} disabled={loading} className="dark:bg-green-600 dark:text-white font-bold">
+          <Button 
+            onClick={handleSave} 
+            disabled={loading} 
+            className="dark:bg-green-600 dark:text-white font-bold"
+          >
             {loading ? "Salvando..." : "Salvar"}
           </Button>
         </div>
