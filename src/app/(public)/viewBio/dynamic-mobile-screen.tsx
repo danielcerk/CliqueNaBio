@@ -436,7 +436,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                         </div>
                       )}
 
-                    {item.type === "note" && (
+                                                                                                                                     {item.type === "note" && (
                       <div className="w-full p-4 rounded-md" style={{
                         backgroundColor: bioData.theme[0]?.background_color || 'white',
                         color: bioData.theme[0]?.foreground_color || 'black',

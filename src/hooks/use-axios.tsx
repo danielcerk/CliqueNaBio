@@ -10,6 +10,16 @@ type ConfigRequest<T = unknown> = {
   responseType?: T;
 };
 
+
+
+
+
+
+ 
+
+  
+
+
 export default function useAxios<T = unknown>(configRequest: ConfigRequest<T>) {
   const { axiosInstance, method, url, othersConfig = {} } = configRequest;
 
@@ -19,6 +29,7 @@ export default function useAxios<T = unknown>(configRequest: ConfigRequest<T>) {
   const [data, setData] = useState<T | null>(null); 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<AxiosError | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -43,7 +54,15 @@ export default function useAxios<T = unknown>(configRequest: ConfigRequest<T>) {
             // A requisição foi abortada, podemos ignorar esse erro
             return;
           }
-          setError(err); // Armazenando o erro completo
+          // Se for erro 401 e ainda não tentamos refazer a requisição
+          if (err.response?.status === 401 && retryCount < 1) {
+            setRetryCount(prev => prev + 1);
+            // Aguarda um tempo para o interceptor fazer o refresh do token
+            await new Promise(resolve => setTimeout(resolve, 300));
+            return fetchData(); // Tenta novamente
+          }
+  
+          setError(err);
         } else if (err instanceof Error) {
           setError(new AxiosError(err.message)); // Convertendo para AxiosError
         } else {
@@ -59,8 +78,10 @@ export default function useAxios<T = unknown>(configRequest: ConfigRequest<T>) {
     return () => {
       controller.abort();
     };
-  }, [axiosInstance, method, url, memoizedOthersConfig]); // Use memoizedOthersConfig here
+  }, [axiosInstance, method, url, memoizedOthersConfig, retryCount]); // Use memoizedOthersConfig here
 
   return [data, loading, error] as const;
 
 }
+
+

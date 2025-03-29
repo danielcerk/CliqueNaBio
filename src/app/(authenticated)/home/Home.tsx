@@ -67,9 +67,12 @@ export default function Home() {
 
 
   useEffect(() => {
-    if (errorDashboard || errorUser) {
-      console.error('Erro ao carregar informações:', errorDashboard || errorUser);
-      showAlert('error', 'Erro ao carregar informações.');
+    if (errorDashboard && errorDashboard.response?.status !== 401) {
+      showAlert('error', 'Erro ao carregar dashboard.');
+    }
+    
+    if (errorUser && errorUser.response?.status !== 401) {
+      showAlert('error', 'Erro ao carregar dados do usuário.');
     }
   }, [errorDashboard, errorUser]);
 
