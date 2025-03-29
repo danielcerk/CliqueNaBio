@@ -540,7 +540,9 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
             <h2 className="text-xl font-semibold">{selectedPhoto.title || "Foto"}</h2>
               <button
                 onClick={() => setIsPhotoModalOpen(false)}
-                className="text-gray-700 hover:text-gray-700 ml-auto text-2xl dark:text-white"
+                className=" ml-auto text-2xl " style={{
+                  color: bioData.theme[0]?.foreground_color || 'black',
+                }}
               >
                 &times;
               </button>

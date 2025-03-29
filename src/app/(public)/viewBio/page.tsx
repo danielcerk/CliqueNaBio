@@ -64,6 +64,7 @@ export default function ViewBio() {
   
         const profileResponse = await axiosInstance.get(`/api/v1/profile/${slug}/`);
         const profileData = profileResponse.data;
+        console.log(profileData)
  
         const theme = profileData.theme ? {
           background_color: profileData.theme.background_color || 'white',
@@ -97,7 +98,7 @@ export default function ViewBio() {
         }));
 
 
-        const notes = profileData.snaps.map((note: any) => ({
+        const notes = profileData.notes.map((note: any) => ({
           id: note?.id,
           type: "note",
           content: note?.text || "",
