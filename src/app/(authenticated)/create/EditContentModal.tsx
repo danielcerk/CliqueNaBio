@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Globe, ImageIcon } from "lucide-react";
-import { cloudinaryUpload } from "@/hooks/cloudinaryUpload";
+import { cloudinaryUpload } from "@/services/cloudinaryUpload";
 import { AlertModal } from '@/components/common/AlertModal';
 
 interface EditContentModalProps {

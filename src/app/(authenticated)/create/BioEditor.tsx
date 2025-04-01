@@ -10,16 +10,17 @@ import Cookie from "js-cookie";
 import LoadingSkeleton from "./loading-skeleton";
 import axiosInstance from "@/helper/axios-instance";
 import useAxios from "@/hooks/use-axios";
-import { cloudinaryUpload } from "@/hooks/cloudinaryUpload";
-import { deleteImageFromCloudinary } from "@/hooks/cloudinaryUpload";
-import { createLink, createSnap } from "@/hooks/use-content";
+import { cloudinaryUpload } from "@/services/cloudinaryUpload";
+import { deleteImageFromCloudinary } from "@/services/cloudinaryUpload";
+import { createSnap } from "@/services/content/snaps";
 import { nanoid } from "nanoid";
 import { AlertModal } from '@/components/common/AlertModal';
 import { AddContentModal } from "./AddContentModal";
 import { EditContentModal } from "./EditContentModal";
 import AlertDecisionModal from "@/components/common/AlertDecisionModal";
 import { ContentItem, BioData, UserData, SnapItem, LinkItem, NoteItem} from "../../../lib/types"
-import { createNote, updateNote, deleteNote } from "@/hooks/use-content";
+import { createNote, updateNote, deleteNote } from "@/services/content/notes";
+import {createLink } from "@/services/content/links"
 
 
 

@@ -1,4 +1,4 @@
-import { login } from '@/hooks/use-auth';
+import { login } from '@/services/auth/auth';
 import axiosInstance from '@/helper/axios-instance';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';

@@ -11,15 +11,6 @@ type ConfigRequest<T = unknown> = {
 };
 
 
-
-
-
-
- 
-
-  
-
-
 export default function useAxios<T = unknown>(configRequest: ConfigRequest<T>) {
   const { axiosInstance, method, url, othersConfig = {} } = configRequest;
 
