@@ -64,6 +64,7 @@ export default function ViewBio() {
   
         const profileResponse = await axiosInstance.get(`/api/v1/profile/${slug}/`);
         const profileData = profileResponse.data;
+        console.log(profileData)
  
         const theme = profileData.theme ? {
           background_color: profileData.theme.background_color || 'white',
@@ -95,6 +96,16 @@ export default function ViewBio() {
           small_description: snap.small_description || "",
           updated_at: snap.updated_at || snap.created_at || "",
         }));
+
+
+        const notes = profileData.notes.map((note: any) => ({
+          id: note?.id,
+          type: "note",
+          content: note?.text || "",
+          created_at: note?.created_at || new Date().toISOString(),
+          updated_at: note?.updated_at || new Date().toISOString(),
+          created: true,
+        }))
   
 
         setBioData({
@@ -103,11 +114,15 @@ export default function ViewBio() {
           biografy: profileData.biografy,
           image: profileData.image,
           banner: profileData.banner,
-          content: [...links, ...snaps],
+          content: [...links, ...snaps, ...notes],
           form_contact: profileData.form_contact,
           copyright: profileData.copyright,
           theme: theme ? [theme] : []
         });
+
+        console.log(snaps)
+        console.log(notes)
+
       } catch (err) {
         let errorMessage = "Erro ao carregar dados.";
   

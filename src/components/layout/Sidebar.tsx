@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AlertModal } from '@/components/common/AlertModal';
 import axiosInstance from '@/helper/axios-instance';
-import { logout } from '@/hooks/use-auth';
+import { logout } from '@/services/auth/auth';
 import { useRouter, usePathname } from 'next/navigation';
 
 export default function SideBar() {

@@ -238,7 +238,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
              <div className="absolute w-full h-[30%] rounded-t overflow-hidden">
                <div className="w-full h-full cursor-pointer">
                  <Image
-                  src={bioData.banner || ''}
+                  src={bioData.banner || '/bg-01.jpg'}
                   alt={`Imagem de fundo`}
                   layout="fill"
                   objectFit="cover"
@@ -248,9 +248,9 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
             <div className="text-center">
               <Avatar className="w-32 h-32 mx-auto mt-10 shadow">
                 <AvatarImage src={bioData.image} alt={bioData.name} style={{ objectFit: 'cover' }}/>
-                <AvatarFallback>@{bioData.name}</AvatarFallback>
+                <AvatarFallback>{bioData.name.charAt(0)}</AvatarFallback>
               </Avatar>
-              <p className="mt-4 font-medium capitalize">@{bioData.name}</p>
+              <p className="mt-4 font-bold capitalize">@{bioData.name}</p>
               <p className="mt-2  text-sm max-w-[400px]  mx-auto mb-2">{bioData.biografy}</p>
 
               {bioData.form_contact === true ? (
@@ -303,7 +303,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
 
           <div className="mt-5 lg:mt-0 w-full max-w-[1000px]">
 
-          <div className="container gap-4 w-full h-full mx-auto">
+          <div className="container-content gap-4 w-full h-full mx-auto">
             {bioData.content
               .sort((a, b) => {
                 const dateA = a.updated_at ? new Date(a.updated_at) : new Date(0);
@@ -436,6 +436,27 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
                         </div>
                       )}
 
+                                                                                                                                     {item.type === "note" && (
+                      <div className="w-full p-4 rounded-md" style={{
+                        backgroundColor: bioData.theme[0]?.background_color || 'white',
+                        color: bioData.theme[0]?.foreground_color || 'black',
+                        fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
+                      }}>
+                        <p className="whitespace-pre-wrap">
+                          {item.content}
+                        </p>
+                        {item.created_at && (
+                          <p className="text-xs mt-2" style={{
+                            backgroundColor: bioData.theme[0]?.background_color || 'white',
+                            color: bioData.theme[0]?.foreground_color || 'black',
+                            fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
+                          }}>
+                            Criado em: {new Date(item.created_at).toLocaleString()}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
                   </div>
                  );
               })}
@@ -519,7 +540,9 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData }) => {
             <h2 className="text-xl font-semibold">{selectedPhoto.title || "Foto"}</h2>
               <button
                 onClick={() => setIsPhotoModalOpen(false)}
-                className="text-gray-700 hover:text-gray-700 ml-auto text-2xl dark:text-white"
+                className=" ml-auto text-2xl " style={{
+                  color: bioData.theme[0]?.foreground_color || 'black',
+                }}
               >
                 &times;
               </button>

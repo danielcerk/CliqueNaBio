@@ -10,15 +10,17 @@ import Cookie from "js-cookie";
 import LoadingSkeleton from "./loading-skeleton";
 import axiosInstance from "@/helper/axios-instance";
 import useAxios from "@/hooks/use-axios";
-import { cloudinaryUpload } from "@/hooks/cloudinaryUpload";
-import { deleteImageFromCloudinary } from "@/hooks/cloudinaryUpload";
-import { createLink, createSnap } from "@/hooks/use-content";
+import { cloudinaryUpload } from "@/services/cloudinaryUpload";
+import { deleteImageFromCloudinary } from "@/services/cloudinaryUpload";
+import { createSnap } from "@/services/content/snaps";
 import { nanoid } from "nanoid";
 import { AlertModal } from '@/components/common/AlertModal';
 import { AddContentModal } from "./AddContentModal";
 import { EditContentModal } from "./EditContentModal";
 import AlertDecisionModal from "@/components/common/AlertDecisionModal";
-import { ContentItem, BioData, UserData, SnapItem, LinkItem} from "../../../lib/types"
+import { ContentItem, BioData, UserData, SnapItem, LinkItem, NoteItem} from "../../../lib/types"
+import { createNote, updateNote, deleteNote } from "@/services/content/notes";
+import {createLink } from "@/services/content/links"
 
 
 
@@ -31,7 +33,7 @@ const BioEditor = () => {
 
   // Estados para o modal de criação de conteúdo
   const [isAddContentModalOpen, setIsAddContentModalOpen] = useState(false);
-  const [contentType, setContentType] = useState<"link" | "photo">("link");
+  const [contentType, setContentType] = useState<"link" | "photo" | "note">("link");
 
   const [isEditContentModalOpen, setIsEditContentModalOpen] = useState(false);
   const [contentToEdit, setContentToEdit] = useState<ContentItem | null>(null);
@@ -63,9 +65,9 @@ const BioEditor = () => {
     biografy: "",     
     image: "",        
     content: [],      
-    form_contact: false,
+    form_contact: false,  
     copyright: false,
-    theme: [],
+    theme: [] 
   });
 
   const [planLimits, setPlanLimits] = useState({ maxLinks: 0, maxSnaps: 0 });
@@ -74,7 +76,7 @@ const BioEditor = () => {
   const [error, setError] = useState(false);
   const [loadingSave, setLoadingSave] = useState<string | null>(null); 
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState<{ id: string | number; type: "link" | "photo" } | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<{ id: string | number; type: "link" | "photo" | "note" } | null>(null);
 
   const generateUniqueId = () => `${Date.now()}-${nanoid()}`;
 
@@ -100,13 +102,16 @@ const BioEditor = () => {
         });
 
         const userData = userResponse.data;
-        const [linkResponse, snapResponse] = await Promise.all([
+        const [linkResponse, snapResponse, noteResponse] = await Promise.all([
             axiosInstance.get("/api/v1/account/me/link/", {
                 headers: { Authorization: `Bearer ${token}` },
             }),
             axiosInstance.get("/api/v1/account/me/snap/", {
                 headers: { Authorization: `Bearer ${token}` },
             }),
+            axiosInstance.get("/api/v1/account/me/note/", {
+                headers: { Authorization: `Bearer ${token}` },
+            })
         ]);
 
         const links = linkResponse.data.map((link: LinkItem) => ({
@@ -130,12 +135,21 @@ const BioEditor = () => {
             created: true,
         }));
 
+        const notes = noteResponse.data.map((note: NoteItem)=> ({
+          id: note?.id,
+          type: "note",
+          content: note?.text || "",
+          created_at: note?.created_at || new Date().toISOString(),
+          updated_at: note?.updated_at || new Date().toISOString(),
+          created: true,
+        }))
+
         setBioData({
           id:'',
           name: "",         
           biografy: "",     
           image: "",        
-          content: [...links, ...snaps],   
+          content: [...links, ...snaps, ...notes],   
           form_contact: false,  
           copyright: false,  
           theme: []
@@ -152,7 +166,7 @@ const BioEditor = () => {
   }, [fetchContent]);
 
 
-  const addContent = (type: "link" | "photo") => {
+  const addContent = (type: "link" | "photo" | "note") => {
     const linksCount = bioData.content.filter((item) => item.type === "link").length;
     const snapsCount = bioData.content.filter((item) => item.type === "photo").length;
   
@@ -165,13 +179,22 @@ const BioEditor = () => {
     setIsAddContentModalOpen(true);
   };
 
-  const handleSaveNewContent = async (data: { url?: string; title?: string; name?: string; small_description?: string; image?: string }) => {
+  const handleSaveNewContent = async (data: { 
+    url?: string; 
+    title?: string; 
+    name?: string; 
+    small_description?: string; 
+    image?: string, 
+    text?: string 
+  }) => {
     const newContent: ContentItem = {
       id: generateUniqueId(),
       type: contentType,
-      content: contentType === "link" ? data.url || "" : data.image || "",
+      content: contentType === "link" ? data.url || "" : 
+              contentType === "photo" ? data.image || "" : 
+              data.text || "",
       url: data.url,
-      name: data.name ,
+      name: data.name,
       title: data.title,
       small_description: data.small_description,
       created: false,
@@ -180,10 +203,29 @@ const BioEditor = () => {
     // Adiciona o novo item ao estado
     setBioData((prev) => ({ ...prev, content: [...prev.content, newContent] }));
   
-    // Salva o conteúdo no backend
-    await saveContent(newContent);
-  
-    setIsAddContentModalOpen(false);
+    try {
+      if (contentType === "note") {
+        if (!data.text) {
+          throw new Error("Texto da nota não pode estar vazio");
+        }
+        await createNote(axiosInstance, data.text);
+        await fetchContent(); // Atualiza a lista após criação
+      } else {
+        await saveContent(newContent);
+      }
+      showAlert('success', 'Item criado com sucesso!');
+    } catch (error) {
+      // Remove o item se a criação falhar
+      setBioData(prev => ({
+        ...prev,
+        content: prev.content.filter(item => item.id !== newContent.id)
+      }));
+      
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao criar item. Tente novamente.';
+      showAlert('error', errorMessage);
+    } finally {
+      setIsAddContentModalOpen(false);
+    }
   };
 
   const handleEditContent = (item: ContentItem) => {
@@ -191,7 +233,8 @@ const BioEditor = () => {
     setIsEditContentModalOpen(true);
   };
 
-  const handleSaveEditedContent = async (data: { url?: string; title?: string; name?: string; small_description?: string; image?: string }) => {
+  const handleSaveEditedContent = async (data: { url?: string; title?: string; name?: string; small_description?: string; image?: string, 
+    text?: string; }) => {
     if (!contentToEdit) return;
 
     const updatedContent = {
@@ -200,7 +243,9 @@ const BioEditor = () => {
       title: data.title || contentToEdit.title,
       name: data.name || contentToEdit.name,
       small_description: data.small_description || contentToEdit.small_description,
-      content: data.image || contentToEdit.content,
+      content: contentType === "photo" ? data.image || contentToEdit.content :
+      contentType === "note" ? data.text || contentToEdit.content :
+      contentToEdit.content,
     };
 
     setBioData((prev) => ({
@@ -210,7 +255,18 @@ const BioEditor = () => {
       ),
     }));
 
-    await updateItem(updatedContent);
+    try {
+      if (contentToEdit.type === "note" && data.text) {
+        await updateNote(axiosInstance, data.text, contentToEdit.id.toString());
+        await fetchContent(); 
+      } else {
+        await updateItem(updatedContent);
+      }
+      showAlert('success', 'Item atualizado com sucesso!');
+    } catch (error) {
+      showAlert('error', 'Erro ao atualizar item. Tente novamente.');
+    }
+  
     setIsEditContentModalOpen(false);
   };
 
@@ -341,7 +397,7 @@ const BioEditor = () => {
   };
 
 
-  const deleteItem = async (id: string | number, type: "link" | "photo") => {
+  const deleteItem = async (id: string | number, type: "link" | "photo" | "note") => {
     const stringId = id.toString();
     const numericId = stringId.split("-")[0];
     try {
@@ -361,6 +417,8 @@ const BioEditor = () => {
         await axiosInstance.delete(`/api/v1/account/me/snap/${numericId}/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+      }else if (type === "note") {
+        await deleteNote(axiosInstance, numericId);
       }
 
       setBioData((prev) => ({
@@ -396,11 +454,14 @@ const BioEditor = () => {
         <h2 className="text-2xl font-bold text-gray-900 text-center mb-6 dark:text-white">Editor de Bio</h2>
 
         <div className="flex flex-wrap gap-4 mb-8 w-full justify-center">
-          <Button onClick={() => addContent("link")} className="flex items-center gap-2 hover:scale-105 transition-all duration-300 font-bold dark:bg-yellow-400">
+          <Button onClick={() => addContent("link")} className="flex items-center p-5 gap-2 hover:scale-105 transition-all duration-300 font-bold dark:bg-yellow-400">
             <Globe className="w-5 h-5" /> Adicionar Link
           </Button>
-          <Button onClick={() => addContent("photo")} className="flex items-center gap-2 hover:scale-105 transition-all duration-300 font-bold dark:bg-blue-400">
-            <ImageIcon className="w-5 h-5" /> Adicionar Snap
+          <Button onClick={() => addContent("photo")} className="flex items-center p-5 gap-2 hover:scale-105 transition-all duration-300 font-bold dark:bg-blue-400">
+            <ImageIcon className="w-5 h-5" /> Adicionar Foto
+          </Button>
+          <Button onClick={() => addContent("note")} className="flex items-center p-5 gap-2 hover:scale-105 transition-all duration-300 font-bold dark:bg-green-400">
+            <ImageIcon className="w-5 h-5" /> Adicionar Texto
           </Button>
         </div>
 
@@ -426,25 +487,6 @@ const BioEditor = () => {
                                 unoptimized/>
                             </div>
                           ) : <Globe className="w-8 h-8 text-gray-500" />}
-                          
-                          <Input
-                            type="url"
-                            className="w-full text-gray-700 dark:bg-gray-200"
-                            placeholder="https://exemplo.com"
-                            value={item.url || ""}
-                            onChange={(e) => updateContent(item.id, item.content, e.target.value)}
-                            required
-                          />
-                          <Input
-                            type="text"
-                            className="w-full text-gray-700 mt-2 dark:bg-gray-200"
-                            placeholder="Título do Link"
-                            value={item.title || ""}
-                            onChange={(e) =>
-                              updateContent(item.id, item.content, item.url, item.title, e.target.value)
-                            }
-                            required
-                          />
                         </>
                       )}
                       {item.type === "photo" && (
@@ -473,27 +515,19 @@ const BioEditor = () => {
                             onChange={(e) => handlePhotoUpload(item.id, e)}
                             required
                           />
-                          <Input
-                            type="text"
-                            className="w-full text-gray-700 dark:bg-gray-200"
-                            placeholder="Nome do Snap"
-                            value={item.name || ""}
-                            onChange={(e) =>
-                              updateContent(item.id, item.content, item.url, e.target.value, item.small_description)
-                            }
-                            required
-                          />
-                          <Input
-                            type="text"
-                            className="w-full text-gray-700 dark:bg-gray-200"
-                            placeholder="Descrição pequena do Snap"
-                            value={item.small_description || ""}
-                            onChange={(e) =>
-                              updateContent(item.id, item.content, item.url, item.name, item.small_description, e.target.value)
-                            }
-                            required
-                          />
                         </>
+                      )}
+                     {item.type === "note" && (
+                        <div className="w-full p-4 bg-gray-100 dark:bg-gray-700 rounded-md">
+                          <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+                            {item.content}
+                          </p>
+                          {item.created_at && (
+                            <p className="text-xs text-gray-500 mt-2">
+                              Criado em: {new Date(item.created_at).toLocaleString()}
+                            </p>
+                          )}
+                        </div>
                       )}
                       <Button
                         variant="secondary"

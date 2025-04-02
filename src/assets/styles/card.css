@@ -28,7 +28,7 @@
 
 
 
-.container {
+.container-content {
   column-count: 3;
   column-fill: balance;
 }
@@ -40,15 +40,15 @@
   overflow: hidden;
 }
 
-.container img,
-.container a {
+.container-content img,
+.container-content a {
   max-width: 100%; 
   height: auto; 
 }
 
 /* Para telas pequenas (largura máxima de 767px) */
 @media (max-width: 767px) {
-  .container {
+  .container-content {
     column-count: 2;
     column-fill: balance;
   }

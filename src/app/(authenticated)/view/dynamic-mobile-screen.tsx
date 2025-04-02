@@ -178,7 +178,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData}) => {
                   <AvatarImage src={bioData.image} alt={bioData.name} style={{ objectFit: 'cover' }}/>
                   <AvatarFallback>{bioData.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <p className="mt-4 font-medium capitalize ">{bioData.name}</p>
+                <p className="mt-4 font-bold capitalize ">{bioData.name}</p>
                 <p className="mt-2  text-sm max-w-[400px] mx-auto ">{bioData.biografy}</p>
               </div>
               
@@ -218,7 +218,7 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData}) => {
 
         <div className="mt-5 lg:mt-0 w-full max-w-[1000px]">
 
-        <div className="container gap-4 w-full h-full mx-auto">
+        <div className="container-content gap-4 w-full h-full mx-auto">
           {bioData.content
             .sort((a, b) => {
               const dateA = a.updated_at ? new Date(a.updated_at) : new Date(0);
@@ -345,6 +345,27 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData}) => {
                           objectFit="cover"
                         />
 
+                      </div>
+                    )}
+
+                    {item.type === "note" && (
+                      <div className="w-full p-4 rounded-md" style={{
+                        backgroundColor: bioData.theme[0]?.background_color || 'white',
+                        color: bioData.theme[0]?.foreground_color || 'black',
+                        fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
+                      }}>
+                        <p className="whitespace-pre-wrap">
+                          {item.content}
+                        </p>
+                        {item.created_at && (
+                          <p className="text-xs mt-2" style={{
+                            backgroundColor: bioData.theme[0]?.background_color || 'white',
+                            color: bioData.theme[0]?.foreground_color || 'black',
+                            fontFamily: bioData.theme[0]?.font_family || 'Arial, sans-serif',
+                          }}>
+                            Criado em: {new Date(item.created_at).toLocaleString()}
+                          </p>
+                        )}
                       </div>
                     )}
 
