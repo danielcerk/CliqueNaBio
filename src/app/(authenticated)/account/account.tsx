@@ -15,18 +15,6 @@ import { AlertModal } from '@/components/common/AlertModal';
 import { User, Profile, FormEmail, LinkItem} from "../../../lib/types"
 
 export default function Account() {
-  const socialIcons = {
-    Facebook: "/icons/facebook.svg",
-    Instagram: "/icons/instagram.svg",
-    X: "/icons/x.svg", // Ícone do X
-    LinkedIn: "/icons/linkedin.svg",
-    YouTube: "/icons/youtube.svg",
-    TikTok: "/icons/tiktok.svg",
-    GitHub: "/icons/github.svg",
-    Pinterest: "/icons/pinterest.svg",
-    Twitch: "/icons/twitch.svg",
-    Globe: "/icons/globe.svg", // Ícone padrão para redes não listadas
-  };
 
   const token = Cookie.get("access_token");
 
@@ -62,7 +50,6 @@ export default function Account() {
     },
   });
 
-  console.log(profileData)
 
   const [formEmail] = useAxios<FormEmail>({
     axiosInstance,
@@ -92,9 +79,11 @@ export default function Account() {
   const [user, setUser] = useState<User | null>(userData || null);
   const [showForm, setShowForm] = useState<boolean>(formEmail?.is_activate || false);
 
+
   useEffect(() => {
     if (userData && profileData) {
       setUser({ ...userData, slug: profileData.slug });
+      setProfile({...profileData})
     }
     if (formEmail) setShowForm(formEmail.is_activate);
   }, [userData, profileData, formEmail]);
@@ -135,6 +124,8 @@ export default function Account() {
           ? { ...prevUser, image: response.data.image }
           : { image: response.data.image }
       );
+      
+      showAlert('success', 'Sua foto foi atualizada com sucesso!');
     } catch (error) {
       showAlert('error', 'Erro ao enviar Imagem!');
     }
@@ -161,7 +152,6 @@ export default function Account() {
           : { banner: response.data.banner }
       );
 
-      console.log(response.data);
       showAlert('success', 'Banner atualizado com sucesso!');
     } catch (error) {
       showAlert('error', 'Erro ao enviar Imagem do Banner!');
@@ -188,29 +178,6 @@ export default function Account() {
     }
   };
 
-  const handleShowProfileFormChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.checked;
-
-    try {
-      await axiosInstance.put(
-        "/api/v1/account/me/",
-        { showProfileForm: newValue },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setUser((prevUser: User | null) =>
-        prevUser
-          ? { ...prevUser, showProfileForm: newValue }
-          : { showProfileForm: newValue }
-      );
-    } catch (error) {
-      showAlert('error', 'Erro ao atualizar a visibilidade do formulário de perfil!');
-    }
-  };
 
   const generatePublicLink = () => {
     if (!user?.slug) {
@@ -252,7 +219,7 @@ export default function Account() {
 
             <div className="w-full h-full cursor-pointer" onClick={handleBannerClick}>
               <Image
-                src={user?.banner?.trim() ? user.banner : "/bg-01.jpg"}
+                src={profile?.banner?.trim() ? profile.banner : "/bg-01.jpg"}
                 alt={`Imagem de fundo`}
                 layout="fill"
                 objectFit="cover"
