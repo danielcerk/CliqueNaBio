@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { AlertModal } from '@/components/common/AlertModal';
 import LoadingSkeleton from "./loading-skeleton";
 import Link from "next/link";
-import { createLink, updateLink, deleteLink } from "@/hooks/use-content";
+import { createLink, updateLink, deleteLink } from "@/services/content/links";
 import AlertDecisionModal from "@/components/common/AlertDecisionModal";
 import {
   FaFacebook,

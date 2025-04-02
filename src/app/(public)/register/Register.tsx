@@ -1,6 +1,6 @@
 'use client'
 
-import { register } from '@/hooks/use-auth';
+import { register } from '@/services/auth/auth';
 import axiosInstance from '@/helper/axios-instance';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
