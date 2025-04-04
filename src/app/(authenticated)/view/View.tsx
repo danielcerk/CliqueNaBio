@@ -114,7 +114,7 @@ const View = (): JSX.Element | null =>{
             ? 'https://cliquenabio.com.br/' 
             : 'http://localhost:3000/';
 
-          const link = `${URL}@${userData.slug}`;
+          const link = `${URL}profile/${userData.slug}`;
           setPublicLink(link);
 
         } else {

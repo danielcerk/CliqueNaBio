@@ -1,5 +1,7 @@
-import ViewBio from "./viewBio";
+"use client";
 
-export default async function Page() {
-    return <ViewBio/>;
-  }
+import ViewBio from "../../(public)/viewBio/page";
+
+export default function PublicProfilePage() {
+  return <ViewBio />;
+}
