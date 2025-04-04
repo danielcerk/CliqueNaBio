@@ -1,10 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
-  trailingSlash: false,
-  skipMiddlewareUrlNormalize: true,
-  skipTrailingSlashRedirect: true,
   experimental: {
     optimizePackageImports: ["@chakra-ui/react"],
   },
