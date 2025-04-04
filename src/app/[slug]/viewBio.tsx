@@ -15,7 +15,7 @@ import ThemeSwitcher from "@/components/common/theme-switcher";
 import axios from 'axios';
 
 
-import { BioData} from "../../../lib/types"
+import { BioData } from "@/lib/types";
 
 export default function ViewBio() {
 
@@ -186,4 +186,3 @@ export default function ViewBio() {
 
   );
 }
-

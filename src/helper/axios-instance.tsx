@@ -10,7 +10,8 @@ const axiosInstance = axios.create({
     ? 'https://api-cliquenabio.vercel.app/'
     : 'http://127.0.0.1:8000',
   headers: { 'Content-Type': 'application/json' },
-  withCredentials: true
+  withCredentials: true,
+  timeout: 10000
 })
 
 

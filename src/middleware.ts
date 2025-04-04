@@ -8,8 +8,8 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('access_token'); // Obter o token dos cookies
   const { pathname } = request.nextUrl;
 
-  // Páginas públicas
-  const publicRoutes = ['/', '/login', '/register', '/privacy-policy', '/terms-of-use', '/status', '/viewBio'];
+  // Páginas pública
+  const publicRoutes = ['/', '/login', '/register', '/privacy-policy', '/terms-of-use', '/status'];
 
   // Normalizar a URL para minúsculas
   const normalizedPathname = pathname.toLowerCase();
@@ -47,50 +47,69 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// middleware.ts
-// import { NextResponse, type NextRequest } from 'next/server'
+
+
+// // middleware.ts
+// import { NextResponse, type NextRequest } from 'next/server';
 
 // export const config = {
 //   matcher: [
-//     '/((?!api|_next/static|_next/image|favicon.ico).*)',
-//   ]
-// }
+//     '/((?!api|_next/static|_next/image|favicon.ico|.*\\.).*)',
+//   ],
+// };
 
 // export function middleware(request: NextRequest) {
-//   const { pathname } = request.nextUrl
-//   const token = request.cookies.get('access_token')
+//   const token = request.cookies.get('access_token')?.value;
+//   const { pathname } = request.nextUrl;
 
-//   // Debug obrigatório
-//   console.log(`[Middleware] Path: ${pathname}`)
-
-//   // 1. Caso especial para rota raiz
-//   if (pathname === '/') {
-//     if (token) {
-//       return NextResponse.redirect(new URL('/home', request.url))
-//     }
-//     return NextResponse.next()
+//   // 1. Early return para arquivos estáticos
+//   if (
+//     pathname.startsWith('/_next/') || 
+//     pathname.startsWith('/api/') ||
+//     pathname.startsWith('/static/') ||
+//     /\.(\w+)$/.test(pathname)
+//   ) {
+//     return NextResponse.next();
 //   }
 
-//   // 2. Tratamento de perfis (rota dinâmica)
-//   if (/^\/@?[a-zA-Z0-9_-]+$/.test(pathname)) {
-//     const username = pathname.replace(/^\/@?/, '')
-//     const newUrl = new URL(`/${username}`, request.url)
-    
-//     console.log(`[Profile] Rewriting: ${pathname} → ${newUrl.pathname}`)
-//     return NextResponse.rewrite(newUrl)
+//   // 2. Normalização de URL (case-insensitive)
+//   const normalizedPath = pathname.toLowerCase();
+//   if (pathname !== normalizedPath) {
+//     const newUrl = new URL(normalizedPath, request.url);
+//     return NextResponse.redirect(newUrl);
 //   }
 
-//   // 3. Rotas públicas
-//   const publicRoutes = ['/login', '/register', '/privacy-policy', '/terms-of-use', '/status']
-//   if (publicRoutes.includes(pathname)) {
-//     return NextResponse.next()
+//   // 3. Definição de rotas públicas
+//   const publicRoutes = [
+//     '/',
+//     '/login', 
+//     '/register',
+//     '/privacy-policy',
+//     '/terms-of-use',
+//     '/status',
+//     // Padrão para rotas de perfil público (ex: /@username ou /username)
+//     /^(\/(@)?[a-z0-9_-]+)$/i
+//   ];
+
+//   const isPublicRoute = publicRoutes.some(route => 
+//     typeof route === 'string' ? route === pathname : route.test(pathname)
+//   );
+
+//   // 4. Redirecionamentos especiais
+//   if (token && pathname === '/') {
+//     return NextResponse.redirect(new URL('/home', request.url));
 //   }
 
-//   // 4. Proteção de rotas privadas
-//   if (!token) {
-//     console.log(`[Auth] Redirecting to login: ${pathname}`)
-//     return NextResponse.redirect(new URL('/login', request.url))
+//   // 5. Rewrite para rotas de perfil (opcional)
+//   if (/^\/@[a-z0-9_-]+$/i.test(pathname)) {
+//     const username = pathname.slice(2);
+//     return NextResponse.rewrite(new URL(`/${username}`, request.url));
 //   }
 
-//   return NextResponse.next()
+//   // 6. Proteção de rotas privadas
+//   if (!token && !isPublicRoute) {
+//     return NextResponse.redirect(new URL('/login', request.url));
+//   }
+
+//   return NextResponse.next();
 // }

@@ -97,12 +97,10 @@ export default function Account() {
 
   const handleAvatarClick = () => {
     fileInputRefAvatar.current?.click();
-    console.log('clicou image user')
   };
   
   const handleBannerClick = () => {
     fileInputRefBanner.current?.click();
-    console.log('clicou banner')
   };
   const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
