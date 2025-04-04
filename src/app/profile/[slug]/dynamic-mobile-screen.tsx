@@ -74,7 +74,7 @@ const getSocialIcon = (title: string): React.ComponentType<Omit<LucideProps, "re
 };
 
 
-import { MobileScreenProps } from "../../lib/types"
+import { MobileScreenProps } from "../../../lib/types"
 
 
 type PhotoModalData = {
