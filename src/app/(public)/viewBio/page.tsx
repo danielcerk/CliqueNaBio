@@ -56,14 +56,19 @@ export default function ViewBio() {
   
       try {
         setLoading(true);
-  
+        setError(null); 
         if (!slug) {
           showAlert('error', 'Usuário não encontrado na URL!');
         }
-  
+
         const profileResponse = await axiosInstance.get(`/api/v1/profile/${slug}/`);
         const profileData = profileResponse.data;
-        console.log(profileData)
+        console.log("Dados recebidos:", profileData);
+        // Verificação explícita se os dados são válidos
+        if (!profileResponse.data || !profileResponse.data.id) {
+        throw new Error("Perfil não encontrado");
+        }
+          
  
         const theme = profileData.theme ? {
           background_color: profileData.theme.background_color || 'white',
@@ -123,17 +128,13 @@ export default function ViewBio() {
         console.log(notes)
 
       } catch (err) {
-        let errorMessage = "Erro ao carregar dados.";
-  
-        if (axios.isAxiosError(err)) {
-          errorMessage += ` ${err.response?.data?.message || err.message}`;
-        } else if (err instanceof Error) {
-          errorMessage += ` ${err.message}`;
+        console.error("Erro na requisição:", err);
+        if (axios.isAxiosError(err) && err.response?.status === 404) {
+          setError("Perfil não encontrado");
         } else {
-          errorMessage += " Erro desconhecido.";
+          // Para outros erros, você pode querer tentar novamente ou mostrar mensagem diferente
+          setError("Erro ao carregar perfil. Tente recarregar a página.");
         }
-  
-        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -144,13 +145,12 @@ export default function ViewBio() {
 
   return (
     <>
-      {loading ? (
-          <div className="flex flex-col lg:flex-row">
-          <div className="mx-auto">
-            <LoadingSkeleton />
-          </div>
-        </div>
+     {loading ? (
+        <LoadingSkeleton />
+      ) : error === "Perfil não encontrado" ? ( // Só mostra NotFound para erros 404
+        <UserNotFound />
       ) : (
+
         <div className="flex flex-col lg:flex-row" style={{
           backgroundColor: bioData.theme[0]?.background_color || 'white',
           color: bioData.theme[0]?.foreground_color || 'black',
