@@ -1,5 +1,15 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "out"
+  "builds": [
+    {
+      "src": "next.config.js",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/profile/(?<slug>[^/]+)",
+      "dest": "/profile/[slug]"
+    }
+  ]
 }
