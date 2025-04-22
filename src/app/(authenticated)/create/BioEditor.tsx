@@ -197,6 +197,7 @@ const BioEditor = () => {
       name: data.name,
       title: data.title,
       small_description: data.small_description,
+      text: data.text,
       created: false,
     };
   
@@ -243,6 +244,7 @@ const BioEditor = () => {
       title: data.title || contentToEdit.title,
       name: data.name || contentToEdit.name,
       small_description: data.small_description || contentToEdit.small_description,
+      text: data.text || contentToEdit.text,
       content: contentType === "photo" ? data.image || contentToEdit.content :
       contentType === "note" ? data.text || contentToEdit.content :
       contentToEdit.content,
@@ -276,7 +278,8 @@ const BioEditor = () => {
     url?: string,
     name?: string,
     title?: string,
-    small_description?: string
+    small_description?: string,
+    text?:string
   ) => {
     setBioData((prev) => ({
       ...prev,
@@ -289,6 +292,7 @@ const BioEditor = () => {
               name: name !== undefined ? name : item.name, 
               title: title !== undefined ? title : item.title, 
               small_description: small_description !== undefined ? small_description : item.small_description, 
+              text: text !== undefined ? text : item.text, 
             }
           : item
       ),
@@ -582,6 +586,7 @@ const BioEditor = () => {
             name: contentToEdit.name,
             small_description: contentToEdit.small_description,
             image: contentToEdit.content,
+            text: contentToEdit.type === "note" ? contentToEdit.content : undefined
           }}
           onSave={handleSaveEditedContent}
         />

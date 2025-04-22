@@ -111,6 +111,8 @@ export default function ViewBio() {
           updated_at: note?.updated_at || new Date().toISOString(),
           created: !!note?.id,
         }));
+
+        
         
   
         setBioData({
@@ -122,12 +124,12 @@ export default function ViewBio() {
           content: [...links, ...snaps, ...notes], // Agora notes sempre será um array
           form_contact: profileData.form_contact || false,
           copyright: profileData.copyright || false,
-          theme: profileData.theme ? [{
-            background_color: profileData.theme.background_color || 'white',
-            foreground_color: profileData.theme.foreground_color || 'black',
-            font_family: profileData.theme.font_family || 'Arial, sans-serif',
-          }] : []
+          theme: theme ? [theme] : []
         });
+
+        console.log(snaps)
+        console.log(links)
+        console.log(notes)
 
       } catch (err) {
         console.error("Erro na requisição:", err);

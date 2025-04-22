@@ -9,6 +9,7 @@ export interface ContentItem {
   url?: string;
   owner?: string;
   title?: string;
+  text?:string,
   og_image?: string;
   is_profile_link?: boolean;
   social_network?: string;
