@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["@chakra-ui/react"],
   },
 
+  skipMiddlewareUrlNormalize: true,
+  skipTrailingSlashRedirect: true,
+
   images: {
     remotePatterns: [
       {
