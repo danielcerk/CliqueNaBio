@@ -102,6 +102,7 @@ export default function ViewBio() {
           updated_at: snap.updated_at || snap.created_at || "",
         }));
   
+
         const notes = (profileData.notes || []).map((note: any) => ({
           id: note?.id || nanoid(),
           type: "note" as const,
@@ -110,14 +111,15 @@ export default function ViewBio() {
           updated_at: note?.updated_at || new Date().toISOString(),
           created: !!note?.id,
         }));
+        
   
         setBioData({
           id: profileData.id,
-          name: profileData.name,
+          name: profileData.name || profileData.full_name || "",
           biografy: profileData.biografy || "",
           image: profileData.image || "",
           banner: profileData.banner || "",
-          content: [...links, ...snaps, ...notes],
+          content: [...links, ...snaps, ...notes], // Agora notes sempre será um array
           form_contact: profileData.form_contact || false,
           copyright: profileData.copyright || false,
           theme: profileData.theme ? [{
