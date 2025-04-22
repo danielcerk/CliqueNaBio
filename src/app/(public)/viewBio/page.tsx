@@ -75,8 +75,9 @@ export default function ViewBio() {
           foreground_color: profileData.theme.foreground_color || 'black',
           font_family: profileData.theme.font_family || 'Arial, sans-serif',
         } : null;
-  
-        const links = profileData.links.map((link: any) => ({
+
+
+        const links = (profileData.links || []).map((link: any) => ({
           id: nanoid(),
           type: "link" as const,
           content: link.url || "",
@@ -92,7 +93,7 @@ export default function ViewBio() {
           updated_at: link.updated_at || "",
         }));
   
-        const snaps = profileData.snaps.map((snap: any) => ({
+        const snaps = (profileData.snaps || []).map((snap: any) => ({
           id: nanoid(),
           type: "photo" as const,
           content: snap.name || "",
@@ -100,32 +101,31 @@ export default function ViewBio() {
           small_description: snap.small_description || "",
           updated_at: snap.updated_at || snap.created_at || "",
         }));
-
-
-        const notes = profileData.notes.map((note: any) => ({
-          id: note?.id,
-          type: "note",
+  
+        const notes = (profileData.notes || []).map((note: any) => ({
+          id: note?.id || nanoid(),
+          type: "note" as const,
           content: note?.text || "",
           created_at: note?.created_at || new Date().toISOString(),
           updated_at: note?.updated_at || new Date().toISOString(),
-          created: true,
-        }))
+          created: !!note?.id,
+        }));
   
-
         setBioData({
           id: profileData.id,
           name: profileData.name,
-          biografy: profileData.biografy,
-          image: profileData.image,
-          banner: profileData.banner,
+          biografy: profileData.biografy || "",
+          image: profileData.image || "",
+          banner: profileData.banner || "",
           content: [...links, ...snaps, ...notes],
-          form_contact: profileData.form_contact,
-          copyright: profileData.copyright,
-          theme: theme ? [theme] : []
+          form_contact: profileData.form_contact || false,
+          copyright: profileData.copyright || false,
+          theme: profileData.theme ? [{
+            background_color: profileData.theme.background_color || 'white',
+            foreground_color: profileData.theme.foreground_color || 'black',
+            font_family: profileData.theme.font_family || 'Arial, sans-serif',
+          }] : []
         });
-
-        console.log(snaps)
-        console.log(notes)
 
       } catch (err) {
         console.error("Erro na requisição:", err);
