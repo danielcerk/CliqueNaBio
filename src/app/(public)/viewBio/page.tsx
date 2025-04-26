@@ -103,14 +103,25 @@ export default function ViewBio() {
         }));
   
 
-        const notes = (profileData.notes || []).map((note: any) => ({
-          id: note?.id || nanoid(),
-          type: "note" as const,
-          content: note?.text || "",
-          created_at: note?.created_at || new Date().toISOString(),
-          updated_at: note?.updated_at || new Date().toISOString(),
-          created: !!note?.id,
-        }));
+        // const notes = (profileData.notes || []).map((note: any) => ({
+        //   id: note?.id || nanoid(),
+        //   type: "note" as const,
+        //   content: note?.text || "",
+        //   created_at: note?.created_at || new Date().toISOString(),
+        //   updated_at: note?.updated_at || new Date().toISOString(),
+        //   created: !!note?.id,
+        // }));
+
+        const notes = Array.isArray(profileData.notes) 
+        ? profileData.notes.map((note: any) => ({
+            id: note?.id || nanoid(),
+            type: "note" as const,
+            content: note?.text || "",
+            created_at: note?.created_at || new Date().toISOString(),
+            updated_at: note?.updated_at || new Date().toISOString(),
+            created: !!note?.id,
+          }))
+        : [];
 
         
         
@@ -130,6 +141,9 @@ export default function ViewBio() {
         console.log(snaps)
         console.log(links)
         console.log(notes)
+
+        console.log("Resposta completa da API:", profileResponse.data);
+        console.log("Notes recebidas da API:", profileResponse.data.notes);
 
       } catch (err) {
         console.error("Erro na requisição:", err);
