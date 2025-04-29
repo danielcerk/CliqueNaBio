@@ -147,8 +147,6 @@ const MobileScreen: React.FC<MobileScreenProps> = ({ bioData}) => {
     return imageExtensions.some((ext) => url.toLowerCase().endsWith(ext));
   };
 
-  console.log(bioData.theme)
-
 
   return (
     <div className="lg:max-w-[90%] w-full lg:flex lg:justify-around rounded-xl"  >

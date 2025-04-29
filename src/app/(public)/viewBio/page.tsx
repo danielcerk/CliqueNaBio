@@ -14,8 +14,7 @@ import ThemeSwitcher from "@/components/common/theme-switcher";
 
 import axios from 'axios';
 
-
-import { BioData} from "../../../lib/types"
+import { BioData } from "@/lib/types";
 
 export default function ViewBio() {
 
@@ -57,22 +56,28 @@ export default function ViewBio() {
   
       try {
         setLoading(true);
-  
+        setError(null); 
         if (!slug) {
           showAlert('error', 'Usuário não encontrado na URL!');
         }
-  
+
         const profileResponse = await axiosInstance.get(`/api/v1/profile/${slug}/`);
         const profileData = profileResponse.data;
-        console.log(profileData)
+        console.log("Dados recebidos:", profileData);
+        // Verificação explícita se os dados são válidos
+        if (!profileResponse.data || !profileResponse.data.id) {
+        throw new Error("Perfil não encontrado");
+        }
+          
  
         const theme = profileData.theme ? {
           background_color: profileData.theme.background_color || 'white',
           foreground_color: profileData.theme.foreground_color || 'black',
           font_family: profileData.theme.font_family || 'Arial, sans-serif',
         } : null;
-  
-        const links = profileData.links.map((link: any) => ({
+
+
+        const links = (profileData.links || []).map((link: any) => ({
           id: nanoid(),
           type: "link" as const,
           content: link.url || "",
@@ -88,7 +93,7 @@ export default function ViewBio() {
           updated_at: link.updated_at || "",
         }));
   
-        const snaps = profileData.snaps.map((snap: any) => ({
+        const snaps = (profileData.snaps || []).map((snap: any) => ({
           id: nanoid(),
           type: "photo" as const,
           content: snap.name || "",
@@ -96,45 +101,58 @@ export default function ViewBio() {
           small_description: snap.small_description || "",
           updated_at: snap.updated_at || snap.created_at || "",
         }));
-
-
-        const notes = profileData.notes.map((note: any) => ({
-          id: note?.id,
-          type: "note",
-          content: note?.text || "",
-          created_at: note?.created_at || new Date().toISOString(),
-          updated_at: note?.updated_at || new Date().toISOString(),
-          created: true,
-        }))
   
 
+        // const notes = (profileData.notes || []).map((note: any) => ({
+        //   id: note?.id || nanoid(),
+        //   type: "note" as const,
+        //   content: note?.text || "",
+        //   created_at: note?.created_at || new Date().toISOString(),
+        //   updated_at: note?.updated_at || new Date().toISOString(),
+        //   created: !!note?.id,
+        // }));
+
+        const notes = Array.isArray(profileData.notes) 
+        ? profileData.notes.map((note: any) => ({
+            id: note?.id || nanoid(),
+            type: "note" as const,
+            content: note?.text || "",
+            created_at: note?.created_at || new Date().toISOString(),
+            updated_at: note?.updated_at || new Date().toISOString(),
+            created: !!note?.id,
+          }))
+        : [];
+
+        
+        
+  
         setBioData({
           id: profileData.id,
-          name: profileData.name,
-          biografy: profileData.biografy,
-          image: profileData.image,
-          banner: profileData.banner,
-          content: [...links, ...snaps, ...notes],
-          form_contact: profileData.form_contact,
-          copyright: profileData.copyright,
+          name: profileData.name || profileData.full_name || "",
+          biografy: profileData.biografy || "",
+          image: profileData.image || "",
+          banner: profileData.banner || "",
+          content: [...links, ...snaps, ...notes], // Agora notes sempre será um array
+          form_contact: profileData.form_contact || false,
+          copyright: profileData.copyright || false,
           theme: theme ? [theme] : []
         });
 
         console.log(snaps)
+        console.log(links)
         console.log(notes)
 
+        console.log("Resposta completa da API:", profileResponse.data);
+        console.log("Notes recebidas da API:", profileResponse.data.notes);
+
       } catch (err) {
-        let errorMessage = "Erro ao carregar dados.";
-  
-        if (axios.isAxiosError(err)) {
-          errorMessage += ` ${err.response?.data?.message || err.message}`;
-        } else if (err instanceof Error) {
-          errorMessage += ` ${err.message}`;
+        console.error("Erro na requisição:", err);
+        if (axios.isAxiosError(err) && err.response?.status === 404) {
+          setError("Perfil não encontrado");
         } else {
-          errorMessage += " Erro desconhecido.";
+          // Para outros erros, você pode querer tentar novamente ou mostrar mensagem diferente
+          setError("Erro ao carregar perfil. Tente recarregar a página.");
         }
-  
-        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -145,13 +163,12 @@ export default function ViewBio() {
 
   return (
     <>
-      {loading ? (
-          <div className="flex flex-col lg:flex-row">
-          <div className="mx-auto">
-            <LoadingSkeleton />
-          </div>
-        </div>
+     {loading ? (
+        <LoadingSkeleton />
+      ) : error === "Perfil não encontrado" ? ( // Só mostra NotFound para erros 404
+        <UserNotFound />
       ) : (
+
         <div className="flex flex-col lg:flex-row" style={{
           backgroundColor: bioData.theme[0]?.background_color || 'white',
           color: bioData.theme[0]?.foreground_color || 'black',

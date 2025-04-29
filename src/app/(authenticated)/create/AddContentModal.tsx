@@ -167,7 +167,7 @@ export const AddContentModal = ({ isOpen, onClose, type, onSave }: AddContentMod
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2"
+              className="mt-1 block w-full rounded-md text-gray-700 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2"
               rows={6}
               placeholder="Digite seu texto aqui..."
             />

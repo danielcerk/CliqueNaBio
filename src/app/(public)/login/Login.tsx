@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { AlertModal } from '@/components/common/AlertModal';
 import Cookie from 'js-cookie';
+import Cookies from 'js-cookie';
 import Loading from './loading';
 import Image from 'next/image';
 
@@ -29,6 +30,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     setLoading(true);
+    setError('');
     try {
       await login(axiosInstance, email, password);
       showAlert('success', 'Login bem-sucedido!');
@@ -37,10 +39,17 @@ export default function Login() {
       console.error('Erro no login:', error);
       setError('Email ou senha inválidos. Tente novamente.');
       showAlert('error', 'Erro! Senha ou email incorretos');
+
+      Cookies.remove('access_token');
+      Cookies.remove('refresh_token');
+
+      delete axiosInstance.defaults.headers.common["Authorization"];
     } finally {
       setLoading(false);
     }
   };
+
+
   
   useEffect(() => {
     const code = searchParams.get('code');
