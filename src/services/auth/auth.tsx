@@ -51,6 +51,7 @@ export const register = async (
 }
 
 
+
 export const login = async (
   apiBase: AxiosInstance,
   email: string,
@@ -67,7 +68,7 @@ export const login = async (
     const { access, refresh } = response.data;
 
     if (!access || !refresh) {
-      throw new Error("A resposta do servidor não contém tokens válidos.");
+      throw new Error("Autenticação falhou: tokens não recebidos");
     }
 
     // Salva os tokens nos cookies

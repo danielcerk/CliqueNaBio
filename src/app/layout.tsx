@@ -3,7 +3,7 @@ import "../assets/styles/variables.css";
 
 import React from "react";
 import Script from 'next/script';
-
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Poppins, DM_Serif_Text } from "next/font/google";
 
 
@@ -93,6 +93,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
        
         <main className="bg-white">
             {children}
+            <SpeedInsights />
         </main>
 
       </body>

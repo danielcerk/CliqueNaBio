@@ -21,6 +21,7 @@
     "@radix-ui/react-visually-hidden": "^1.1.2",
     "@react-google-maps/api": "^2.20.5",
     "@tailwindcss/line-clamp": "^0.4.4",
+    "@vercel/speed-insights": "^1.2.0",
     "aos": "^2.3.4",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.9",

@@ -186,10 +186,6 @@ const View = (): JSX.Element | null =>{
           theme: [themeData], // Use o tema do backend, se existir
         });
 
-        console.log("aqui")
-        console.log(themeData)
-        console.log("Não")
-
       } catch (err) {
         setError(true);
       } finally {

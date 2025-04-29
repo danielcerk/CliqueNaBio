@@ -81,5 +81,5 @@ export default {
       },
     },
   },
-  plugins: [lineClamp, tailwindcssAnimate],
+  plugins: [tailwindcssAnimate],
 } satisfies Config;
